@@ -114,7 +114,7 @@ interface IReactBigCalendarProps {
     onChangeConfig: (newConfig: object) => void;
 }
 
-const ReactBigCalendar: FC<IReactBigCalendarProps> = () => {
+const ReactBigCalendar: FC<IReactBigCalendarProps> = ({ config, onChangeConfig }) => {
     const options = useMemo(() => getOptions(0, 23), []);
     const optionsInterviewTime = useMemo(() => ["10:00", "12:00", "15:00", "20:00", "30:00", "60:00"], []);
     const eventOptions = useMemo(() => ["Ночь Музеев", "Ночь Музыки"], []);
@@ -124,22 +124,29 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = () => {
     const [interviewTime, setInterviewTime] = useState(optionsInterviewTime[4]);
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
     const [selectData, setData] = useState<RequiterInfo | null>(null);
-    resizeCells(min, max, interviewTime);
-    console.log(config);
 
     const [viewModel, setView] = useState<{ data: SchedulerData }>(() => {
-        const data = new SchedulerData(
-            moment().format(DATE_FORMAT),
-            ViewTypes.Day,
-            false,
-            false,
-            config, //{ ...config, dayStartFrom: getHour(min), dayStopTo: getHour(max), minuteStep: getHour(interviewTime) },
-            behaviours
-        );
+        const data = new SchedulerData(moment().format(DATE_FORMAT), ViewTypes.Day, false, false, config, behaviours);
         data.setResources(resources);
         data.setEvents(events);
         return { data };
     });
+
+    useEffect(() => {
+        setView(() => {
+            const data = new SchedulerData(
+                moment().format(DATE_FORMAT),
+                ViewTypes.Day,
+                false,
+                false,
+                config,
+                behaviours
+            );
+            data.setResources(resources);
+            data.setEvents(events);
+            return { data };
+        });
+    }, [config]);
 
     const getIntervals = (eventInfo: ScheduleEvent) => {
         const minutes = ["00"];
@@ -190,8 +197,8 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = () => {
         setInterviewTime(newTime);
         setSelectedEvent(null);
         setData(null);
-        //onChangeConfig({ ...config, minuteStep: getHour(newTime) });
-        config.minuteStep = getHour(newTime);
+        onChangeConfig({ ...config, minuteStep: getHour(newTime) });
+        //config.minuteStep = getHour(newTime);
         resizeCells(min, max, interviewTime);
         setView(() => {
             const data = new SchedulerData(
@@ -210,8 +217,8 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = () => {
 
     const changeMax = (max: string) => {
         setMax(max);
-        //onChangeConfig({ ...config, dayStopTo: getHour(max) });
-        config.dayStopTo = getHour(max);
+        onChangeConfig({ ...config, dayStopTo: getHour(max) });
+        //config.dayStopTo = getHour(max);
         resizeCells(min, max, interviewTime);
         setView(() => {
             const data = new SchedulerData(
@@ -230,8 +237,8 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = () => {
 
     const changeMin = (min: string) => {
         setMin(min);
-        //onChangeConfig({ ...config, dayStartFrom: getHour(min) });
-        config.dayStartFrom = getHour(min);
+        onChangeConfig({ ...config, dayStartFrom: getHour(min) });
+        //config.dayStartFrom = getHour(min);
         resizeCells(min, max, interviewTime);
         setView(() => {
             const data = new SchedulerData(
