@@ -107,6 +107,11 @@ const App: FC = () => {
         setConfig(newConfig);
     };
 
+    const addingEvent = (ev: ScheduleEvent) => {
+        setEvents([...events, ev]);
+    };
+
+
     return (
         <div className="app">
             <ReactBigCalendar
@@ -115,6 +120,7 @@ const App: FC = () => {
                 events={events}
                 behaviours={behaviours}
                 onChangeConfig={changeConfig}
+                onAddEvent={addingEvent}
             />
         </div>
     );

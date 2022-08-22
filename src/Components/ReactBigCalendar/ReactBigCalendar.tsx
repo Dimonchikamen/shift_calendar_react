@@ -51,9 +51,10 @@ interface IReactBigCalendarProps {
     events: ScheduleEvent[];
     behaviours: object;
     onChangeConfig: (newConfig: object) => void;
+    onAddEvent: (ev: ScheduleEvent) => void;
 }
 
-const ReactBigCalendar: FC<IReactBigCalendarProps> = ({ config, resources, events, behaviours, onChangeConfig }) => {
+const ReactBigCalendar: FC<IReactBigCalendarProps> = ({ config, resources, events, behaviours, onChangeConfig, onAddEvent }) => {
     const options = useMemo(() => getOptions(0, 23), []);
     const optionsInterviewTime = useMemo(() => ["10:00", "12:00", "15:00", "20:00", "30:00", "60:00"], []);
     const eventOptions = useMemo(() => ["Ночь Музеев", "Ночь Музыки"], []);
@@ -173,6 +174,19 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({ config, resources, event
         setSelectedEvent(event);
     };
 
+    const addingEvent = (schedulerData: SchedulerData, slotId: string, slotName: string, start: string, end: string) => {
+        onAddEvent({
+            id: 2,
+            start: start.substring(0, start.length - 3),
+            end: end.substring(0, end.length - 3),
+            resourceId: slotId,
+            title: createTitle(start.substring(0, start.length - 3), end.substring(0, end.length - 3)),
+            resizable: false,
+            bgColor: "#D9EDF7",
+            bookedTimes: [],
+        });
+    }
+
     return (
         <div className={s.table_container}>
             <CalendarHeader
@@ -198,6 +212,10 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({ config, resources, event
                         onSelectDate={selectDate}
                         onViewChange={viewChange}
                         eventItemClick={eventItemClick}
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        newEvent={addingEvent}
+                        
                     />
                 </div>
                 {selectedEvent && selectData && <InformationContainer data={selectData} />}
