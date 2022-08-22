@@ -1,0 +1,34 @@
+.calendar_header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 100px;
+    margin-bottom: 20px;
+}
+
+.select_event_container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.select_event_label {
+    font-weight: 700;
+}
+
+.select_event {
+    width: 300px;
+    text-align: left;
+}
+
+.select_work_time_container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.select_interview_time_container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}

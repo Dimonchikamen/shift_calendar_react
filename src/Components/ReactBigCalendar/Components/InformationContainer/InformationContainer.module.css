@@ -1,0 +1,47 @@
+.requiter_info {
+    border-radius: 4px;
+    width: 80%;
+    max-width: 300px;
+    min-width: 100px;
+    background-color: #D9EDF7;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 350px;
+    max-height: 500px;
+    padding: 15px;
+}
+
+.requiter,
+.work_time{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.available_interviews {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.interview {
+    align-items: center;
+    width: 100%;
+}
+
+.interview_times {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.time {
+    font-weight: 700;
+}
+
+.font_size_18 {
+    font-size: 18px;
+}
+
