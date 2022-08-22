@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import Scheduler, { Resource, SchedulerData, ViewTypes } from "react-big-scheduler";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
@@ -25,60 +25,6 @@ const widthDragDropContext = DragDropContext(HTML5Backend);
 
 const DATE_FORMAT = "YYYY-MM-DD HH:mm";
 
-const resources: Resource[] = [
-    { id: "1", name: "Попов Николай" },
-    { id: "2", name: "Мальцева Кристина" },
-];
-
-const events: ScheduleEvent[] = [
-    {
-        id: 1,
-        start: "2022-08-19 09:00",
-        end: "2022-08-19 11:00",
-        resourceId: "1",
-        title: createTitle("2022-08-19 09:00", "2022-08-19 11:00"),
-        resizable: false,
-        bgColor: "#D9EDF7",
-        bookedTimes: [
-            { name: "Ольшанский Кирилл", start: "2022-08-19 10:00", end: "2022-08-19 10:30" },
-            { name: "Денежный чел", start: "2022-08-19 10:30", end: "2022-08-19 11:00" },
-        ],
-    },
-    {
-        id: 2,
-        start: "2022-08-19 12:00",
-        end: "2022-08-19 15:00",
-        resourceId: "2",
-        title: createTitle("2022-08-19 12:00", "2022-08-19 15:00"),
-        resizable: false,
-        bgColor: "#D9EDF7",
-        bookedTimes: [],
-    },
-];
-
-const config = {
-    dayCellWidth: 100,
-    dayResourceTableWidth: 300,
-    schedulerWidth: 1000,
-    startResizable: true,
-    endResizable: true,
-    movable: false,
-    resourceName: "Рекрутеры:",
-    eventItemPopoverDateFormat: "D/MM",
-    nonAgendaDayCellHeaderFormat: "H:mm",
-    dayStartFrom: 9,
-    dayStopTo: 19,
-    minuteStep: 30,
-    views: [
-        { viewName: "День", viewType: ViewTypes.Day, showAgenda: false, isEventPerspective: false },
-        { viewName: "Неделя", viewType: ViewTypes.Week, showAgenda: false, isEventPerspective: false },
-    ],
-};
-
-const behaviours = {
-    isNonWorkingTimeFunc: () => false,
-};
-
 const getHoursInAllDateTime = (dateTime: string) => dateTime.split(" ")[1].split(":")[0];
 
 const getMinutesInAllDateTime = (dateTime: string) => dateTime.split(" ")[1].split(":")[1];
@@ -99,22 +45,15 @@ const getInterviewInfos = (event: ScheduleEvent) => {
     return allInterviewInfo;
 };
 
-const getWidth = () => {
-    return config.schedulerWidth - config.dayResourceTableWidth;
-};
-
-const getDiff = (min: string, max: string) => getHour(max) - getHour(min) + 1;
-
-const resizeCells = (min: string, max: string, minuteStep: string) => {
-    config.dayCellWidth = getWidth() / (getDiff(min, max) * (60 / getHour(minuteStep)));
-};
-
 interface IReactBigCalendarProps {
     config: object;
+    resources: Resource[];
+    events: ScheduleEvent[];
+    behaviours: object;
     onChangeConfig: (newConfig: object) => void;
 }
 
-const ReactBigCalendar: FC<IReactBigCalendarProps> = ({ config, onChangeConfig }) => {
+const ReactBigCalendar: FC<IReactBigCalendarProps> = ({ config, resources, events, behaviours, onChangeConfig }) => {
     const options = useMemo(() => getOptions(0, 23), []);
     const optionsInterviewTime = useMemo(() => ["10:00", "12:00", "15:00", "20:00", "30:00", "60:00"], []);
     const eventOptions = useMemo(() => ["Ночь Музеев", "Ночь Музыки"], []);
@@ -124,9 +63,10 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({ config, onChangeConfig }
     const [interviewTime, setInterviewTime] = useState(optionsInterviewTime[4]);
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
     const [selectData, setData] = useState<RequiterInfo | null>(null);
+    const [viewType, setViewType] = useState<ViewTypes>(ViewTypes.Day);
 
     const [viewModel, setView] = useState<{ data: SchedulerData }>(() => {
-        const data = new SchedulerData(moment().format(DATE_FORMAT), ViewTypes.Day, false, false, config, behaviours);
+        const data = new SchedulerData(moment().format(DATE_FORMAT), viewType, false, false, config, behaviours);
         data.setResources(resources);
         data.setEvents(events);
         return { data };
@@ -134,19 +74,12 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({ config, onChangeConfig }
 
     useEffect(() => {
         setView(() => {
-            const data = new SchedulerData(
-                moment().format(DATE_FORMAT),
-                ViewTypes.Day,
-                false,
-                false,
-                config,
-                behaviours
-            );
+            const data = new SchedulerData(moment().format(DATE_FORMAT), viewType, false, false, config, behaviours);
             data.setResources(resources);
             data.setEvents(events);
             return { data };
         });
-    }, [config]);
+    }, [config, resources, events, behaviours]);
 
     const getIntervals = (eventInfo: ScheduleEvent) => {
         const minutes = ["00"];
@@ -193,93 +126,48 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({ config, onChangeConfig }
         return { name: requiter.name, workTime: event.title, availableInterviewTimes, interviews };
     };
 
+    const setSchedulerData = (schedulerData: SchedulerData) => {
+        schedulerData.setResources(resources);
+        schedulerData.setEvents(events);
+        setView({ data: schedulerData });
+    };
+
     const changeInterviewTime = (newTime: string) => {
         setInterviewTime(newTime);
         setSelectedEvent(null);
         setData(null);
         onChangeConfig({ ...config, minuteStep: getHour(newTime) });
-        //config.minuteStep = getHour(newTime);
-        resizeCells(min, max, interviewTime);
-        setView(() => {
-            const data = new SchedulerData(
-                moment().format(DATE_FORMAT),
-                ViewTypes.Day,
-                false,
-                false,
-                { ...config },
-                behaviours
-            );
-            data.setResources(resources);
-            data.setEvents(events);
-            return { data };
-        });
     };
 
     const changeMax = (max: string) => {
         setMax(max);
         onChangeConfig({ ...config, dayStopTo: getHour(max) });
-        //config.dayStopTo = getHour(max);
-        resizeCells(min, max, interviewTime);
-        setView(() => {
-            const data = new SchedulerData(
-                moment().format(DATE_FORMAT),
-                ViewTypes.Day,
-                false,
-                false,
-                { ...config },
-                behaviours
-            );
-            data.setResources(resources);
-            data.setEvents(events);
-            return { data };
-        });
     };
 
     const changeMin = (min: string) => {
         setMin(min);
         onChangeConfig({ ...config, dayStartFrom: getHour(min) });
-        //config.dayStartFrom = getHour(min);
-        resizeCells(min, max, interviewTime);
-        setView(() => {
-            const data = new SchedulerData(
-                moment().format(DATE_FORMAT),
-                ViewTypes.Day,
-                false,
-                false,
-                { ...config },
-                behaviours
-            );
-            data.setResources(resources);
-            data.setEvents(events);
-            return { data };
-        });
     };
 
     const prevClick = (schedulerData: SchedulerData) => {
         schedulerData.prev();
-        schedulerData.setResources(resources);
-        schedulerData.setEvents(events);
-        setView({ data: schedulerData });
+        setSchedulerData(schedulerData);
     };
     const nextClick = (schedulerData: SchedulerData) => {
         schedulerData.next();
-        schedulerData.setResources(resources);
-        schedulerData.setEvents(events);
-        setView({ data: schedulerData });
+        setSchedulerData(schedulerData);
     };
     const selectDate = (schedulerData: SchedulerData, date: string) => {
         schedulerData.setDate(date);
-        schedulerData.setResources(resources);
-        schedulerData.setEvents(events);
-        setView({ data: schedulerData });
+        setSchedulerData(schedulerData);
     };
 
     const viewChange = (schedulerData: SchedulerData, view: any) => {
         schedulerData.setViewType(view.viewType, view.showAgenda, view.isEventPerspective);
-        schedulerData.setResources(resources);
-        schedulerData.setEvents(events);
-        setView({ data: schedulerData });
+        setViewType(view.viewType);
+        setSchedulerData(schedulerData);
     };
+
     const eventItemClick = (schedulerData: SchedulerData, event: ScheduleEvent) => {
         setData(createData(schedulerData, event));
         setSelectedEvent(event);

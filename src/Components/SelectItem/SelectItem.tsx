@@ -25,7 +25,7 @@ const SelectItem: FC<ISelectItemProps> = ({
             displayEmpty
             value={value}
             size={size}
-            MenuProps={{ PaperProps: { style: { maxHeight: "200px" } } }}
+            MenuProps={{ PaperProps: { style: { maxHeight: "200px", scrollbarColor: "red" } } }}
         >
             {options.map((v, i) => (
                 <MenuItem

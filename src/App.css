@@ -1,5 +1,5 @@
 .app {
-    padding: 20px 0px;
+    padding: 20px 0;
     text-align: center;
     height: 600px;
 }
@@ -24,19 +24,6 @@
     border-collapse: collapse;
     width: 100%;
 }
-
-/*th {*/
-/*    height: 15px;*/
-/*    border-left: 1px solid lightgray;*/
-/*    border-right: 1px solid lightgray;*/
-/*}*/
-
-/*td {*/
-/*    height: 37px;*/
-/*    width: 84px;*/
-/*    border: 1px solid lightgray;*/
-/*    box-sizing: border-box;*/
-/*}*/
 
 .recruiter {
     width: 250px !important;
