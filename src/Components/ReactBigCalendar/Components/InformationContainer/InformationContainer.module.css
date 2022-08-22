@@ -3,7 +3,7 @@
     width: 80%;
     max-width: 300px;
     min-width: 100px;
-    background-color: #D9EDF7;
+    background-color: #d9edf7;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -13,7 +13,7 @@
 }
 
 .requiter,
-.work_time{
+.work_time {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -44,4 +44,3 @@
 .font_size_18 {
     font-size: 18px;
 }
-
