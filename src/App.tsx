@@ -1,5 +1,6 @@
 import "./App.css";
 import { FC, useEffect, useState } from "react";
+import moment from 'moment';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "@toast-ui/calendar/dist/toastui-calendar.min.css";
 import ReactBigCalendar from "./Components/ReactBigCalendar/ReactBigCalendar";
@@ -82,6 +83,22 @@ const App: FC = () => {
         setConfig(newConfig);
     };
 
+    const addingEvent = (ev: ScheduleEvent) => {
+        let redFlag = false
+        events.filter(obj => {return obj.resourceId == ev.resourceId}).forEach(elem => {
+            if(elem.start.slice(0,10) == ev.start.slice(0,10)){
+                if(ev.start < elem.end && ev.start > elem.start || ev.end < elem.end && ev.end > elem.start){
+                    redFlag = true
+                }
+            }
+        })
+        if (!redFlag){
+            setEvents([...events, ev]);
+            redFlag = false
+        }
+    };
+
+
     return (
         <div className="app">
             <ReactBigCalendar
@@ -90,6 +107,7 @@ const App: FC = () => {
                 events={events}
                 behaviours={behaviours}
                 onChangeConfig={changeConfig}
+                onAddEvent={addingEvent}
             />
         </div>
     );
