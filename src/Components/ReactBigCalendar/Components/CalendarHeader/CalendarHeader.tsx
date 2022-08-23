@@ -3,8 +3,7 @@ import { SchedulerData } from "react-big-scheduler";
 import SelectItem from "../../../SelectItem/SelectItem";
 import s from "./CalendarHeader.module.css";
 import { SelectChangeEvent } from "@mui/material";
-import { getHour } from "../../../../Helpers/GetHour";
-import SelectEvent from "../../../SelectEvent/SelectEvent";
+import { getHour } from "../../../../Helpers/DateTimeHelpers";
 
 interface ICalendarHeaderProps {
     data: SchedulerData;

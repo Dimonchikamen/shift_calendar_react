@@ -5,12 +5,11 @@ import "@toast-ui/calendar/dist/toastui-calendar.min.css";
 import ReactBigCalendar from "./Components/ReactBigCalendar/ReactBigCalendar";
 import { Resource, ViewTypes } from "react-big-scheduler";
 import { ScheduleEvent } from "./Types/ScheduleEvent";
+import mockRecruiters from "./Mocks/Requiters.json";
+import { createResourcesAndEvents } from "./Helpers/CreateResourcesAndEvents";
+import { Recruiter } from "./Types/Recruiter";
 
 const getDiff = (min: number, max: number) => max - min + 1;
-
-const createTitle = (start: string, end: string) => {
-    return `${start.split(" ")[1]} - ${end.split(" ")[1]}`;
-};
 
 const App: FC = () => {
     const [config, setConfig] = useState<any>({
@@ -34,36 +33,9 @@ const App: FC = () => {
         ],
     });
 
-    const [events, setEvents] = useState<ScheduleEvent[]>([
-        {
-            id: 1,
-            start: "2022-08-22 09:00",
-            end: "2022-08-22 11:00",
-            resourceId: "1",
-            title: createTitle("2022-08-22 09:00", "2022-08-22 11:00"),
-            resizable: false,
-            bgColor: "#D9EDF7",
-            bookedTimes: [
-                { name: "Ольшанский Кирилл", start: "2022-08-22 10:00", end: "2022-08-22 10:30" },
-                { name: "Денежный чел", start: "2022-08-22 10:30", end: "2022-08-22 11:00" },
-            ],
-        },
-        {
-            id: 2,
-            start: "2022-08-22 12:00",
-            end: "2022-08-22 15:00",
-            resourceId: "2",
-            title: createTitle("2022-08-22 12:00", "2022-08-22 15:00"),
-            resizable: false,
-            bgColor: "#D9EDF7",
-            bookedTimes: [],
-        },
-    ]);
+    const [events, setEvents] = useState<ScheduleEvent[]>([]);
 
-    const [resources, setResources] = useState<Resource[]>([
-        { id: "1", name: "Попов Николай" },
-        { id: "2", name: "Мальцева Кристина" },
-    ]);
+    const [resources, setResources] = useState<Resource[]>([]);
 
     const behaviours = {
         isNonWorkingTimeFunc: () => false,
@@ -94,6 +66,9 @@ const App: FC = () => {
     useEffect(() => {
         window.addEventListener("resize", resize);
         resize();
+        const [resources, events] = createResourcesAndEvents(mockRecruiters as unknown as Recruiter[]);
+        setEvents(events);
+        setResources(resources);
         return () => {
             window.removeEventListener("resize", resize);
         };

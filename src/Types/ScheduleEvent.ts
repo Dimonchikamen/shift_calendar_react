@@ -1,14 +1,13 @@
+import { Interview } from "./Interview";
+import { FullDateTime } from "./FullDateTime";
+
 export type ScheduleEvent = {
     id: number;
-    start: string;
-    end: string;
+    start: FullDateTime;
+    end: FullDateTime;
     resourceId: string;
     title: string;
     resizable: boolean;
     bgColor: string;
-    bookedTimes: {
-        name: string;
-        start: string;
-        end: string;
-    }[];
+    interviews: Interview[];
 };
