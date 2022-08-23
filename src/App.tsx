@@ -1,6 +1,5 @@
 import "./App.css";
 import { FC, useEffect, useState } from "react";
-import moment from 'moment';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "@toast-ui/calendar/dist/toastui-calendar.min.css";
 import ReactBigCalendar from "./Components/ReactBigCalendar/ReactBigCalendar";
@@ -9,6 +8,7 @@ import { ScheduleEvent } from "./Types/ScheduleEvent";
 import mockRecruiters from "./Mocks/Requiters.json";
 import { createResourcesAndEvents } from "./Helpers/CreateResourcesAndEvents";
 import { Recruiter } from "./Types/Recruiter";
+import PopUp from "./Components/ReactBigCalendar/Components/PopUp/PopUp"
 
 const getDiff = (min: number, max: number) => max - min + 1;
 
@@ -37,6 +37,10 @@ const App: FC = () => {
     const [events, setEvents] = useState<ScheduleEvent[]>([]);
 
     const [resources, setResources] = useState<Resource[]>([]);
+
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+
+    const [eventAdding, setEventAdding] = useState<ScheduleEvent>()
 
     const behaviours = {
         isNonWorkingTimeFunc: () => false,
@@ -83,6 +87,16 @@ const App: FC = () => {
         setConfig(newConfig);
     };
 
+    const eventSubmit = (submit: boolean) => {
+        setIsOpen(false)
+        if(submit){
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            setEvents([...events, eventAdding]);
+        }
+        
+    }
+
     const addingEvent = (ev: ScheduleEvent) => {
         let redFlag = false
         events.filter(obj => {return obj.resourceId == ev.resourceId}).forEach(elem => {
@@ -93,7 +107,8 @@ const App: FC = () => {
             }
         })
         if (!redFlag){
-            setEvents([...events, ev]);
+            setIsOpen(true)
+            setEventAdding(ev)
             redFlag = false
         }
     };
@@ -101,6 +116,13 @@ const App: FC = () => {
 
     return (
         <div className="app">
+            <PopUp
+                isOpen={isOpen}
+                onEventSubmit={eventSubmit}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                event={eventAdding}
+            />
             <ReactBigCalendar
                 config={config}
                 resources={resources}

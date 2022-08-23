@@ -133,7 +133,7 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
         end: string
     ) => {
         onAddEvent({
-            id: 2,
+            id: Math.floor(Math.random() * 1000),
             start: start.substring(0, start.length - 3),
             end: end.substring(0, end.length - 3),
             resourceId: slotId,
