@@ -13,6 +13,7 @@ import { RequiterInfo } from "../../Types/RequiterInfo";
 import { getHour } from "../../Helpers/DateTimeHelpers";
 import { Time } from "../../Types/Time";
 import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
+import { createTitle } from "../../Helpers/CreateTitle";
 
 const widthDragDropContext = DragDropContext(HTML5Backend);
 
@@ -30,7 +31,14 @@ interface IReactBigCalendarProps {
     onAddEvent: (ev: ScheduleEvent) => void;
 }
 
-const ReactBigCalendar: FC<IReactBigCalendarProps> = ({ config, resources, events, behaviours, onChangeConfig, onAddEvent }) => {
+const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
+    config,
+    resources,
+    events,
+    behaviours,
+    onChangeConfig,
+    onAddEvent,
+}) => {
     const [event, setEvent] = useState(eventOptions[0]);
     const [min, setMin] = useState<Time>(hourOptions[9]);
     const [max, setMax] = useState<Time>(hourOptions[19]);
@@ -117,7 +125,13 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({ config, resources, event
         setSelectedEvent(event);
     };
 
-    const addingEvent = (schedulerData: SchedulerData, slotId: string, slotName: string, start: string, end: string) => {
+    const addingEvent = (
+        schedulerData: SchedulerData,
+        slotId: string,
+        slotName: string,
+        start: string,
+        end: string
+    ) => {
         onAddEvent({
             id: 2,
             start: start.substring(0, start.length - 3),
@@ -126,9 +140,9 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({ config, resources, event
             title: createTitle(start.substring(0, start.length - 3), end.substring(0, end.length - 3)),
             resizable: false,
             bgColor: "#D9EDF7",
-            bookedTimes: [],
+            interviews: [],
         });
-    }
+    };
 
     return (
         <div className={s.table_container}>
@@ -158,7 +172,6 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({ config, resources, event
                         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         // @ts-ignore
                         newEvent={addingEvent}
-                        
                     />
                 </div>
                 {selectedEvent && selectData && <InformationContainer data={selectData} />}
