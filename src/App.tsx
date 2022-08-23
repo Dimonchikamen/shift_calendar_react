@@ -117,7 +117,7 @@ const App: FC = () => {
                 }
             }
         })
-        if (redFlag){
+        if (!redFlag){
             setEvents([...events, ev]);
             redFlag = false
         }
