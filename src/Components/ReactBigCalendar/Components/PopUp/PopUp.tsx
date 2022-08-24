@@ -42,7 +42,7 @@ const AlertDialog: React.FC<IProps> = ({isOpen, onEventSubmit, event, recruiterN
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Хотите установить рабочее время для {recruiterName} на период {event?.title}?
+            Хотите установить рабочее время для <strong>{recruiterName}</strong> на период <strong>{event?.title.split(' ').join('\u00A0')}</strong>?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
