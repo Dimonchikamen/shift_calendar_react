@@ -11,9 +11,10 @@ interface IProps {
     isOpen: boolean
     onEventSubmit: (submit: boolean) => void;
     event: ScheduleEvent
+    recruiterName: string
 }
 
-const AlertDialog: React.FC<IProps> = ({isOpen, onEventSubmit, event}) => {
+const AlertDialog: React.FC<IProps> = ({isOpen, onEventSubmit, event, recruiterName}) => {
   const [open, setOpen] = React.useState(false);
   const [prevProps, setPrevProps] = React.useState(isOpen)
 
@@ -22,10 +23,6 @@ const AlertDialog: React.FC<IProps> = ({isOpen, onEventSubmit, event}) => {
         setOpen(isOpen)
     }
   })
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const eventSubmit = (submit: boolean) => {
     onEventSubmit(submit)
@@ -41,11 +38,11 @@ const AlertDialog: React.FC<IProps> = ({isOpen, onEventSubmit, event}) => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Запланировать событие?"}
+          {"Установить рабочее время?"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Хотите запланировать событие на время {event?.title}?
+            Хотите установить рабочее время для {recruiterName} на период {event?.title}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

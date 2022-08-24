@@ -122,6 +122,7 @@ const App: FC = () => {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 event={eventAdding}
+                recruiterName={resources.filter(obj => {return obj.id === eventAdding?.resourceId})[0]?.name}
             />
             <ReactBigCalendar
                 config={config}
