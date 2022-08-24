@@ -41,6 +41,8 @@ const App: FC = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
 
     const [eventAdding, setEventAdding] = useState<ScheduleEvent>()
+    const [isAdding, setIsAdding] = useState<boolean>(true)
+
 
     const behaviours = {
         isNonWorkingTimeFunc: () => false,
@@ -87,12 +89,17 @@ const App: FC = () => {
         setConfig(newConfig);
     };
 
-    const eventSubmit = (submit: boolean) => {
+    const eventSubmit = (submit: boolean, isAdding: boolean) => {
         setIsOpen(false)
-        if(submit){
+        if(submit && isAdding){
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             setEvents([...new Set([...events, eventAdding])]);
+        }
+        else{
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            setEvents([...events.filter(obj => {return obj != eventAdding})])
         }
     }
 
@@ -107,10 +114,17 @@ const App: FC = () => {
         })
         if (!redFlag){
             setIsOpen(true)
+            setIsAdding(true)
             setEventAdding(ev)
             redFlag = false
         }
     };
+
+    const deleteEvent = (ev: ScheduleEvent) => {
+        setIsOpen(true)
+        setEventAdding(ev)
+        setIsAdding(false)
+    }
 
 
     return (
@@ -121,6 +135,7 @@ const App: FC = () => {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 event={eventAdding}
+                isAdding={isAdding}
                 recruiterName={resources.filter(obj => {return obj.id === eventAdding?.resourceId})[0]?.name}
             />
             <ReactBigCalendar
@@ -130,6 +145,7 @@ const App: FC = () => {
                 behaviours={behaviours}
                 onChangeConfig={changeConfig}
                 onAddEvent={addingEvent}
+                onDeleteEvent={deleteEvent}
             />
         </div>
     );
