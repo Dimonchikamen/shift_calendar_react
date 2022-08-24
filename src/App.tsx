@@ -92,9 +92,8 @@ const App: FC = () => {
         if(submit){
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            setEvents([...events, eventAdding]);
+            setEvents([...new Set([...events, eventAdding])]);
         }
-        
     }
 
     const addingEvent = (ev: ScheduleEvent) => {
