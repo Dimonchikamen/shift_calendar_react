@@ -2,16 +2,15 @@ import "./App.css";
 import React, { FC, useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "@toast-ui/calendar/dist/toastui-calendar.min.css";
-import ReactBigCalendar, { DATE_FORMAT } from "./Components/ReactBigCalendar/ReactBigCalendar";
-import Scheduler, { Resource, SchedulerData, ViewTypes } from "react-big-scheduler";
+import ReactBigCalendar from "./Components/ReactBigCalendar/ReactBigCalendar";
+import { Resource, ViewTypes } from "react-big-scheduler";
 import { ScheduleEvent } from "./Types/ScheduleEvent";
 import mockRecruiters from "./Mocks/Requiters.json";
 import { createResourcesAndEvents } from "./Helpers/CreateResourcesAndEvents";
 import { Recruiter } from "./Types/Recruiter";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
-import moment from "moment";
 import MonthCalendar from "./Components/MonthCalendar/MonthCalendar";
-import PopUp from "./Components/ReactBigCalendar/Components/PopUp/PopUp"
+import PopUp from "./Components/ReactBigCalendar/Components/PopUp/PopUp";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -77,17 +76,16 @@ const App: FC = () => {
     const monthViewType = ViewTypes.Month;
     const monthConfig = { ...config, views: [], headerEnabled: false };
 
-    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [isOpen, setIsOpen] = useState<boolean>(false);
 
-    const [eventAdding, setEventAdding] = useState<ScheduleEvent>()
-    const [isAdding, setIsAdding] = useState<boolean>(true)
-
+    const [eventAdding, setEventAdding] = useState<ScheduleEvent>();
+    const [isAdding, setIsAdding] = useState<boolean>(true);
 
     const behaviours = {
         isNonWorkingTimeFunc: () => false,
     };
     //-----------------------------------NAVIGATION_TABS-----------------------------------------
-    const [value, setValue] = React.useState(2);
+    const [value, setValue] = React.useState(0);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -135,42 +133,46 @@ const App: FC = () => {
     };
 
     const eventSubmit = (submit: boolean, isAdding: boolean) => {
-        setIsOpen(false)
-        if(submit && isAdding){
+        setIsOpen(false);
+        if (submit && isAdding) {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             setEvents([...new Set([...events, eventAdding])]);
+        } else {
+            setEvents([
+                ...events.filter(obj => {
+                    return obj != eventAdding;
+                }),
+            ]);
         }
-        else{
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            setEvents([...events.filter(obj => {return obj != eventAdding})])
-        }
-    }
+    };
 
     const addingEvent = (ev: ScheduleEvent) => {
-        let redFlag = false
-        events.filter(obj => {return obj.resourceId == ev.resourceId}).forEach(elem => {
-            if(elem.start.slice(0,10) == ev.start.slice(0,10)){
-                if(ev.start < elem.end && ev.start > elem.start || ev.end < elem.end && ev.end > elem.start){
-                    redFlag = true
+        let redFlag = false;
+        events
+            .filter(obj => {
+                return obj.resourceId == ev.resourceId;
+            })
+            .forEach(elem => {
+                if (elem.start.slice(0, 10) == ev.start.slice(0, 10)) {
+                    if ((ev.start < elem.end && ev.start > elem.start) || (ev.end < elem.end && ev.end > elem.start)) {
+                        redFlag = true;
+                    }
                 }
-            }
-        })
-        if (!redFlag){
-            setIsOpen(true)
-            setIsAdding(true)
-            setEventAdding(ev)
-            redFlag = false
+            });
+        if (!redFlag) {
+            setIsOpen(true);
+            setIsAdding(true);
+            setEventAdding(ev);
+            redFlag = false;
         }
     };
 
     const deleteEvent = (ev: ScheduleEvent) => {
-        setIsOpen(true)
-        setEventAdding(ev)
-        setIsAdding(false)
-    }
-
+        setIsOpen(true);
+        setEventAdding(ev);
+        setIsAdding(false);
+    };
 
     return (
         <div className="app">
@@ -189,25 +191,23 @@ const App: FC = () => {
                             label="Item Two"
                             {...a11yProps(1)}
                         />
-                        <Tab
-                            label="Item Three"
-                            {...a11yProps(2)}
-                        />
                     </Tabs>
                 </Box>
                 <TabPanel
                     value={value}
                     index={0}
                 >
-                                <PopUp
-                isOpen={isOpen}
-                onEventSubmit={eventSubmit}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                event={eventAdding}
-                isAdding={isAdding}
-                recruiterName={resources.filter(obj => {return obj.id === eventAdding?.resourceId})[0]?.name}
-            />
+                    <PopUp
+                        isOpen={isOpen}
+                        onEventSubmit={eventSubmit}
+                        event={eventAdding!}
+                        isAdding={isAdding}
+                        recruiterName={
+                            resources.filter(obj => {
+                                return obj.id === eventAdding?.resourceId;
+                            })[0]?.name
+                        }
+                    />
                     <ReactBigCalendar
                         config={config}
                         resources={resources}
@@ -223,21 +223,6 @@ const App: FC = () => {
                 <TabPanel
                     value={value}
                     index={1}
-                >
-                    <ReactBigCalendar
-                        config={monthConfig}
-                        resources={resources}
-                        events={events}
-                        behaviours={behaviours}
-                        viewType={monthViewType}
-                        onChangeConfig={changeConfig}
-                        onAddEvent={addingEvent}
-                        onDeleteEvent={deleteEvent}
-                    />
-                </TabPanel>
-                <TabPanel
-                    value={value}
-                    index={2}
                 >
                     <MonthCalendar events={events} />
                 </TabPanel>

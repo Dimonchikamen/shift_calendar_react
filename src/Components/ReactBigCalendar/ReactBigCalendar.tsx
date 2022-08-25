@@ -14,9 +14,10 @@ import { getHour } from "../../Helpers/DateTimeHelpers";
 import { Time } from "../../Types/Time";
 import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
 import { createTitle } from "../../Helpers/CreateTitle";
-import Col from 'antd/lib/col'
-import Row from 'antd/lib/row'
-import Button from 'antd/lib/button'
+import Col from "antd/lib/col";
+import Row from "antd/lib/row";
+import Button from "antd/lib/button";
+import { FullDateTime } from "../../Types/FullDateTime";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
@@ -47,7 +48,7 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
     onChangeViewType,
     onChangeConfig,
     onAddEvent,
-    onDeleteEvent
+    onDeleteEvent,
 }) => {
     const [event, setEvent] = useState(eventOptions[0]);
     const [min, setMin] = useState<Time>(hourOptions[9]);
@@ -55,21 +56,10 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
     const [interviewTime, setInterviewTime] = useState<Time>(optionsInterviewTime[4]);
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
     const [selectData, setData] = useState<RequiterInfo | null>(null);
-    const [isEditing, setIsEditing] = useState<boolean>(false)
-    console.log(viewType);
-    // const scheduleData = useMemo(
-    //     () =>{
-    //         const data = new SchedulerData(moment().format(DATE_FORMAT), viewType, false, false, config, behaviours);
-    //         data.setResources(resources);
-    //         data.setEvents(events);
-    //         return data;
-    //     },
-    //     [viewType, config, behaviours]
-    // );
-
+    const [isEditing, setIsEditing] = useState<boolean>(false);
     const [viewModel, setView] = useState<{ data: SchedulerData }>(() => {
         moment.locale("ru");
-        const data = new SchedulerData(moment().format(DATE_FORMAT), ViewTypes.Month, false, false, config, behaviours);
+        const data = new SchedulerData(moment().format(DATE_FORMAT), viewType, false, false, config, behaviours);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         data.setLocaleMoment(moment);
@@ -80,14 +70,7 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
 
     useEffect(() => {
         setView(() => {
-            const data = new SchedulerData(
-                moment().format(DATE_FORMAT),
-                ViewTypes.Month,
-                false,
-                false,
-                config,
-                behaviours
-            );
+            const data = new SchedulerData(moment().format(DATE_FORMAT), viewType, false, false, config, behaviours);
             data.setResources(resources);
             data.setEvents(events);
             return { data };
@@ -174,46 +157,74 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
     };
 
     const deleteEvent = (event: ScheduleEvent) => {
-        onDeleteEvent(event)
-    }
+        onDeleteEvent(event);
+    };
 
     const customPopover = (
-        schedulerData: SchedulerData, 
-        eventItem: ScheduleEvent, 
-        title: string, 
-        start: any, 
-        end: any, 
+        schedulerData: SchedulerData,
+        eventItem: ScheduleEvent,
+        title: string,
+        start: any,
+        end: any,
         statusColor: string
     ) => {
-        return(
-            <div style={{width: '300px'}}>
-                <Row type="flex" align="middle">
+        return (
+            <div style={{ width: "300px" }}>
+                <Row
+                    type="flex"
+                    align="middle"
+                >
                     <Col span={2}>
-                        <div className="status-dot" style={{backgroundColor: statusColor}} />
+                        <div
+                            className="status-dot"
+                            style={{ backgroundColor: statusColor }}
+                        />
                     </Col>
-                    <Col span={22} className="overflow-text">
-                        <span className="header2-text" title={title}>{title}</span>
+                    <Col
+                        span={22}
+                        className="overflow-text"
+                    >
+                        <span
+                            className="header2-text"
+                            title={title}
+                        >
+                            {title}
+                        </span>
                     </Col>
                 </Row>
-                <Row type="flex" align="middle">
+                <Row
+                    type="flex"
+                    align="middle"
+                >
                     <Col span={2}>
                         <div />
                     </Col>
                     <Col span={22}>
-                        <span className="header1-text">{start.format(DATE_FORMAT).slice(-5)} − {end.format(DATE_FORMAT).slice(-5)}</span>
+                        <span className="header1-text">
+                            {start.format(DATE_FORMAT).slice(-5)} − {end.format(DATE_FORMAT).slice(-5)}
+                        </span>
                     </Col>
                 </Row>
-                <Row type="flex" align="middle">
+                <Row
+                    type="flex"
+                    align="middle"
+                >
                     <Col span={2}>
                         <div />
                     </Col>
                     <Col span={22}>
-                        <Button onClick={()=>{deleteEvent(eventItem)}}>Delete</Button>
+                        <Button
+                            onClick={() => {
+                                deleteEvent(eventItem);
+                            }}
+                        >
+                            Delete
+                        </Button>
                     </Col>
                 </Row>
             </div>
-        )
-    }
+        );
+    };
 
     return (
         <div className={s.table_container}>
