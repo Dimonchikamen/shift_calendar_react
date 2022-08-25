@@ -9,13 +9,13 @@ import { ScheduleEvent } from "../../../../Types/ScheduleEvent";
 
 interface IProps {
     isOpen: boolean;
-    onEventSubmit: (submit: boolean, isAdding: boolean) => void;
     event: ScheduleEvent;
     isAdding: boolean;
     recruiterName: string;
+    onEventSubmit: (submit: boolean, isAdding: boolean) => void;
 }
 
-const AlertDialog: React.FC<IProps> = ({ isOpen, onEventSubmit, event, isAdding, recruiterName }) => {
+const AlertDialog: React.FC<IProps> = ({ isOpen, event, isAdding, recruiterName, onEventSubmit }) => {
     const [open, setOpen] = React.useState(false);
     const [prevProps, setPrevProps] = React.useState(isOpen);
 

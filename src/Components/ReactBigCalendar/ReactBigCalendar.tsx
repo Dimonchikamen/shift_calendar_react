@@ -14,8 +14,6 @@ import { getHour } from "../../Helpers/DateTimeHelpers";
 import { Time } from "../../Types/Time";
 import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
 import { createTitle } from "../../Helpers/CreateTitle";
-import Col from 'antd/lib/col'
-import Row from 'antd/lib/row'
 import Button from 'antd/lib/button'
 
 const widthDragDropContext = DragDropContext(HTML5Backend);
@@ -33,6 +31,7 @@ interface IReactBigCalendarProps {
     onChangeConfig: (newConfig: object) => void;
     onAddEvent: (ev: ScheduleEvent) => void;
     onDeleteEvent: (ev: ScheduleEvent) => void;
+    onEditEvent: (oldEvent: ScheduleEvent, newEvent: ScheduleEvent) => void;
 }
 
 const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
@@ -42,7 +41,8 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
     behaviours,
     onChangeConfig,
     onAddEvent,
-    onDeleteEvent
+    onDeleteEvent,
+    onEditEvent
 }) => {
     const [event, setEvent] = useState(eventOptions[0]);
     const [min, setMin] = useState<Time>(hourOptions[9]);
@@ -152,6 +152,22 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
 
     const deleteEvent = (event: ScheduleEvent) => {
         onDeleteEvent(event)
+        setSelectedEvent(null)
+    }
+
+    const editEvent = (schedulerData: SchedulerData, event: ScheduleEvent) => {
+        setData(createData(schedulerData, event))
+        setSelectedEvent(event)
+        setIsEditing(true)
+    }
+    const editingEvent = (eventEditing: ScheduleEvent, dayStart: string, dayEnd: string) => {
+        let newEvent = JSON.parse(JSON.stringify(eventEditing))
+        const formatTime = (time: string) => {return time.length < 5 ? '0'+time : time}
+        newEvent.start = newEvent.start.slice(0,11) + formatTime(dayStart)
+        newEvent.end = newEvent.end.slice(0,11) + formatTime(dayEnd)
+        newEvent.title = dayStart +' − ' + dayEnd
+        onEditEvent(eventEditing, newEvent)
+        setSelectedEvent(null)
     }
 
     const customPopover = (
@@ -163,31 +179,30 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
         statusColor: string
     ) => {
         return(
-            <div style={{width: '300px'}}>
-                <Row type="flex" align="middle">
-                    <Col span={2}>
-                        <div className="status-dot" style={{backgroundColor: statusColor}} />
-                    </Col>
-                    <Col span={22} className="overflow-text">
-                        <span className="header2-text" title={title}>{title}</span>
-                    </Col>
-                </Row>
-                <Row type="flex" align="middle">
-                    <Col span={2}>
-                        <div />
-                    </Col>
-                    <Col span={22}>
-                        <span className="header1-text">{start.format(DATE_FORMAT).slice(-5)} − {end.format(DATE_FORMAT).slice(-5)}</span>
-                    </Col>
-                </Row>
-                <Row type="flex" align="middle">
-                    <Col span={2}>
-                        <div />
-                    </Col>
-                    <Col span={22}>
-                        <Button onClick={()=>{deleteEvent(eventItem)}}>Delete</Button>
-                    </Col>
-                </Row>
+            <div style={{width: '200px'}}>
+                <span className="header2-text" title={title}>{start.format(DATE_FORMAT).slice(-5)} − {end.format(DATE_FORMAT).slice(-5)}</span>
+                <Button style={{
+                    border: '1px solid #1890ff', 
+                    borderRadius: '4px', 
+                    background: 'transparent', 
+                    marginTop: '10px',
+                    padding: '3px 12px',
+                    color: '#1890ff'
+                }} 
+                onClick={()=>{deleteEvent(eventItem)}}>
+                    Удалить
+                </Button>
+                <Button style={{
+                    border: '1px solid #1890ff', 
+                    borderRadius: '4px', 
+                    background: 'transparent', 
+                    marginTop: '10px',
+                    padding: '3px 12px',
+                    color: '#1890ff'
+                }} 
+                onClick={()=>{editEvent(schedulerData, eventItem)}}>
+                    Редактировать
+                </Button>
             </div>
         )
     }
@@ -223,8 +238,16 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
                         eventItemPopoverTemplateResolver={customPopover}
                     />
                 </div>
-                {selectedEvent && selectData && <InformationContainer data={selectData} />}
-            </div>
+                    {selectedEvent && selectData && <InformationContainer 
+                    data={selectData} 
+                    isEditing={isEditing} 
+                    eventEditing={selectedEvent}
+                    min={min} 
+                    max={max} 
+                    options={getOptions(getHour(min), getHour(max))}
+                    onEditEvent={editingEvent}
+                     /> }
+                </div>
         </div>
     );
 };

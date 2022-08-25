@@ -42,3 +42,10 @@
     align-items: center;
     line-height: 100%;
 }
+
+.MuiOutlinedInput-root > fieldset {
+    top: 0;
+}
+.MuiOutlinedInput-root > fieldset > legend{
+    display: none;
+}

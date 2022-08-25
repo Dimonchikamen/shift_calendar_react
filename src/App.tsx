@@ -126,6 +126,12 @@ const App: FC = () => {
         setIsAdding(false)
     }
 
+    const editEvent = (oldEvent: ScheduleEvent, newEvent: ScheduleEvent) => {
+        deleteEvent(oldEvent)
+        addingEvent(newEvent)
+        console.log(oldEvent, newEvent)
+    }
+
 
     return (
         <div className="app">
@@ -146,6 +152,7 @@ const App: FC = () => {
                 onChangeConfig={changeConfig}
                 onAddEvent={addingEvent}
                 onDeleteEvent={deleteEvent}
+                onEditEvent={editEvent}
             />
         </div>
     );
