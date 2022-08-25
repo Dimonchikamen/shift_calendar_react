@@ -21,16 +21,6 @@ const mergeInterviewsInfo = (interviews: Interview[]) => {
     return res;
 };
 
-const mapWhere = <T,>(array: T[], predicate: (el: T) => boolean) => {
-    const res: T[] = [];
-    array.forEach(elem => {
-        if (predicate(elem)) {
-            res.push(elem);
-        }
-    });
-    return res;
-};
-
 interface IInformationContainerProps {
     data: RequiterInfo;
     role?: "admin" | "user";

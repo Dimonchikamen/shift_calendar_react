@@ -1,5 +1,5 @@
 import "./App.css";
-import { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "@toast-ui/calendar/dist/toastui-calendar.min.css";
 import ReactBigCalendar from "./Components/ReactBigCalendar/ReactBigCalendar";
@@ -8,7 +8,42 @@ import { ScheduleEvent } from "./Types/ScheduleEvent";
 import mockRecruiters from "./Mocks/Requiters.json";
 import { createResourcesAndEvents } from "./Helpers/CreateResourcesAndEvents";
 import { Recruiter } from "./Types/Recruiter";
-import PopUp from "./Components/ReactBigCalendar/Components/PopUp/PopUp"
+import { Box, Tab, Tabs, Typography } from "@mui/material";
+import MonthCalendar from "./Components/MonthCalendar/MonthCalendar";
+import PopUp from "./Components/ReactBigCalendar/Components/PopUp/PopUp";
+
+interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box sx={{ p: 3 }}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
+
+function a11yProps(index: number) {
+    return {
+        id: `simple-tab-${index}`,
+        "aria-controls": `simple-tabpanel-${index}`,
+    };
+}
 
 const getDiff = (min: number, max: number) => max - min + 1;
 
@@ -37,17 +72,25 @@ const App: FC = () => {
     const [events, setEvents] = useState<ScheduleEvent[]>([]);
 
     const [resources, setResources] = useState<Resource[]>([]);
+    const [viewType, setViewType] = useState<ViewTypes>(ViewTypes.Day);
+    const monthViewType = ViewTypes.Month;
+    const monthConfig = { ...config, views: [], headerEnabled: false };
 
-    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [isOpen, setIsOpen] = useState<boolean>(false);
 
-    const [eventAdding, setEventAdding] = useState<ScheduleEvent>()
-    const [isAdding, setIsAdding] = useState<boolean>(true)
-
+    const [eventAdding, setEventAdding] = useState<ScheduleEvent>();
+    const [isAdding, setIsAdding] = useState<boolean>(true);
 
     const behaviours = {
         isNonWorkingTimeFunc: () => false,
     };
+    //-----------------------------------NAVIGATION_TABS-----------------------------------------
+    const [value, setValue] = React.useState(0);
 
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
+    //-----------------------------------NAVIGATION_TABS-----------------------------------------
     const resize = () => {
         const newWidth = window.innerWidth * 0.75;
         let newResourceTableWidth = config.dayResourceTableWidth;
@@ -90,33 +133,38 @@ const App: FC = () => {
     };
 
     const eventSubmit = (submit: boolean, isAdding: boolean) => {
-        setIsOpen(false)
-        if(submit && isAdding){
+        setIsOpen(false);
+        if (submit && isAdding) {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             setEvents([...new Set([...events, eventAdding])]);
+        } else {
+            setEvents([
+                ...events.filter(obj => {
+                    return obj != eventAdding;
+                }),
+            ]);
         }
-        else{
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            setEvents([...events.filter(obj => {return obj != eventAdding})])
-        }
-    }
+    };
 
     const addingEvent = (ev: ScheduleEvent) => {
-        let redFlag = false
-        events.filter(obj => {return obj.resourceId == ev.resourceId}).forEach(elem => {
-            if(elem.start.slice(0,10) == ev.start.slice(0,10)){
-                if(ev.start < elem.end && ev.start > elem.start || ev.end < elem.end && ev.end > elem.start){
-                    redFlag = true
+        let redFlag = false;
+        events
+            .filter(obj => {
+                return obj.resourceId == ev.resourceId;
+            })
+            .forEach(elem => {
+                if (elem.start.slice(0, 10) == ev.start.slice(0, 10)) {
+                    if ((ev.start < elem.end && ev.start > elem.start) || (ev.end < elem.end && ev.end > elem.start)) {
+                        redFlag = true;
+                    }
                 }
-            }
-        })
-        if (!redFlag){
-            setIsOpen(true)
-            setIsAdding(true)
-            setEventAdding(ev)
-            redFlag = false
+            });
+        if (!redFlag) {
+            setIsOpen(true);
+            setIsAdding(true);
+            setEventAdding(ev);
+            redFlag = false;
         }
     };
 
@@ -135,25 +183,58 @@ const App: FC = () => {
 
     return (
         <div className="app">
-            <PopUp
-                isOpen={isOpen}
-                onEventSubmit={eventSubmit}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                event={eventAdding}
-                isAdding={isAdding}
-                recruiterName={resources.filter(obj => {return obj.id === eventAdding?.resourceId})[0]?.name}
+            <Box sx={{ width: "100%" }}>
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                    <Tabs
+                        value={value}
+                        onChange={handleChange}
+                        aria-label="basic tabs example"
+                    >
+                        <Tab
+                            label="Item One"
+                            {...a11yProps(0)}
+                        />
+                        <Tab
+                            label="Item Two"
+                            {...a11yProps(1)}
+                        />
+                    </Tabs>
+                </Box>
+                <TabPanel
+                    value={value}
+                    index={0}
+                >
+                    <PopUp
+                        isOpen={isOpen}
+                        onEventSubmit={eventSubmit}
+                        event={eventAdding!}
+                        isAdding={isAdding}
+                        recruiterName={
+                            resources.filter(obj => {
+                                return obj.id === eventAdding?.resourceId;
+                            })[0]?.name
+                        }
+                    />
+                    <ReactBigCalendar
+                        config={config}
+                        resources={resources}
+                        events={events}
+                        behaviours={behaviours}
+                        viewType={viewType}
+                        onChangeViewType={setViewType}
+                        onChangeConfig={changeConfig}
+                        onAddEvent={addingEvent}
+                        onDeleteEvent={deleteEvent}
+                        onEditEvent={editEvent}
             />
-            <ReactBigCalendar
-                config={config}
-                resources={resources}
-                events={events}
-                behaviours={behaviours}
-                onChangeConfig={changeConfig}
-                onAddEvent={addingEvent}
-                onDeleteEvent={deleteEvent}
-                onEditEvent={editEvent}
-            />
+                </TabPanel>
+                <TabPanel
+                    value={value}
+                    index={1}
+                >
+                    <MonthCalendar events={events} />
+                </TabPanel>
+            </Box>
         </div>
     );
 };

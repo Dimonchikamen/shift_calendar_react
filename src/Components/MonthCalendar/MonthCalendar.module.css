@@ -1,0 +1,46 @@
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.date {
+    width: 120px;
+}
+
+.icon {
+    width: 20px;
+    height: auto;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.calendar_container {
+    display: grid;
+    grid-template-rows: auto auto;
+    font-family: "Segoe UI", sans-serif;
+    color: #151515;
+}
+
+.calendar_header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    font-weight: 400;
+    margin-bottom: 10px;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto auto auto auto;
+    gap: 0;
+    border-collapse: collapse;
+    border-left: 1px solid lightgray;
+    border-top: 1px solid lightgray;
+}
+

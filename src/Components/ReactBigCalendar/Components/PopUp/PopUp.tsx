@@ -1,4 +1,4 @@
-import * as React from "react";
+import { FC } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -15,50 +15,35 @@ interface IProps {
     onEventSubmit: (submit: boolean, isAdding: boolean) => void;
 }
 
-const AlertDialog: React.FC<IProps> = ({ isOpen, event, isAdding, recruiterName, onEventSubmit }) => {
-    const [open, setOpen] = React.useState(false);
-    const [prevProps, setPrevProps] = React.useState(isOpen);
-
-    React.useEffect(() => {
-        if (prevProps !== isOpen) {
-            setOpen(isOpen);
-        }
-    });
-
+const AlertDialog: FC<IProps> = ({ isOpen, event, isAdding, recruiterName, onEventSubmit }) => {
     const eventSubmit = (submit: boolean) => {
         onEventSubmit(submit, isAdding);
-        setOpen(false);
     };
+
+    let title = "Установить рабочее время?";
+    let text = "Хотите установить рабочее время для ";
+
+    if (!isAdding) {
+        title = "Удалить рабочее время?";
+        text = "Хотите удалить рабочее время для ";
+    }
 
     return (
         <div>
             <Dialog
-                open={open}
+                open={isOpen}
                 onClose={() => eventSubmit(false)}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                {isAdding ? (
-                    <>
-                        <DialogTitle id="alert-dialog-title">{"Установить рабочее время?"}</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText id="alert-dialog-description">
-                                Хотите установить рабочее время для <strong>{recruiterName}</strong> на период{" "}
-                                <strong>{event?.title.split(" ").join("\u00A0")}</strong>?
-                            </DialogContentText>
-                        </DialogContent>
-                    </>
-                ) : (
-                    <>
-                        <DialogTitle id="alert-dialog-title">{"Удалить рабочее время?"}</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText id="alert-dialog-description">
-                                Хотите удалить рабочее время для <strong>{recruiterName}</strong> на период{" "}
-                                <strong>{event?.title.split(" ").join("\u00A0")}</strong>?
-                            </DialogContentText>
-                        </DialogContent>
-                    </>
-                )}
+                <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {text}
+                        <strong>{recruiterName}</strong> на период{" "}
+                        <strong>{event?.title.split(" ").join("\u00A0")}</strong>?
+                    </DialogContentText>
+                </DialogContent>
                 <DialogActions>
                     <Button onClick={() => eventSubmit(false)}>Отмена</Button>
                     <Button
