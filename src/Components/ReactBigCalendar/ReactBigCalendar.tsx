@@ -15,18 +15,21 @@ import { Time } from "../../Types/Time";
 import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
 import { createTitle } from "../../Helpers/CreateTitle";
 
-const widthDragDropContext = DragDropContext(HTML5Backend);
+export const widthDragDropContext = DragDropContext(HTML5Backend);
 
 export const DATE_FORMAT = "YYYY-MM-DD H:mm";
 const hourOptions: Time[] = getOptions(0, 23);
 const optionsInterviewTime: Time[] = ["10:00", "12:00", "15:00", "20:00", "30:00", "60:00"];
 const eventOptions = ["Ночь Музеев", "Ночь Музыки"];
+moment.locale("ru-ru");
 
 interface IReactBigCalendarProps {
     config: object;
     resources: Resource[];
     events: ScheduleEvent[];
     behaviours: object;
+    viewType: ViewTypes;
+    onChangeViewType?: (newView: any) => void;
     onChangeConfig: (newConfig: object) => void;
     onAddEvent: (ev: ScheduleEvent) => void;
 }
@@ -36,6 +39,8 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
     resources,
     events,
     behaviours,
+    viewType,
+    onChangeViewType,
     onChangeConfig,
     onAddEvent,
 }) => {
@@ -45,10 +50,23 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
     const [interviewTime, setInterviewTime] = useState<Time>(optionsInterviewTime[4]);
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
     const [selectData, setData] = useState<RequiterInfo | null>(null);
-    const [viewType, setViewType] = useState<ViewTypes>(ViewTypes.Day);
+    console.log(viewType);
+    // const scheduleData = useMemo(
+    //     () =>{
+    //         const data = new SchedulerData(moment().format(DATE_FORMAT), viewType, false, false, config, behaviours);
+    //         data.setResources(resources);
+    //         data.setEvents(events);
+    //         return data;
+    //     },
+    //     [viewType, config, behaviours]
+    // );
 
     const [viewModel, setView] = useState<{ data: SchedulerData }>(() => {
-        const data = new SchedulerData(moment().format(DATE_FORMAT), viewType, false, false, config, behaviours);
+        moment.locale("ru");
+        const data = new SchedulerData(moment().format(DATE_FORMAT), ViewTypes.Month, false, false, config, behaviours);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        data.setLocaleMoment(moment);
         data.setResources(resources);
         data.setEvents(events);
         return { data };
@@ -56,12 +74,19 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
 
     useEffect(() => {
         setView(() => {
-            const data = new SchedulerData(moment().format(DATE_FORMAT), viewType, false, false, config, behaviours);
+            const data = new SchedulerData(
+                moment().format(DATE_FORMAT),
+                ViewTypes.Month,
+                false,
+                false,
+                config,
+                behaviours
+            );
             data.setResources(resources);
             data.setEvents(events);
             return { data };
         });
-    }, [config, resources, events, behaviours]);
+    }, [config, resources, events, viewType, behaviours]);
 
     const createData = (schedulerData: SchedulerData, event: ScheduleEvent): RequiterInfo => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -115,9 +140,7 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
     };
 
     const viewChange = (schedulerData: SchedulerData, view: any) => {
-        schedulerData.setViewType(view.viewType, view.showAgenda, view.isEventPerspective);
-        setViewType(view.viewType);
-        setSchedulerData(schedulerData);
+        onChangeViewType?.(view.viewType);
     };
 
     const eventItemClick = (schedulerData: SchedulerData, event: ScheduleEvent) => {
