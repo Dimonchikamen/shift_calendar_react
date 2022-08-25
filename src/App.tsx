@@ -80,6 +80,7 @@ const App: FC = () => {
 
     const [eventAdding, setEventAdding] = useState<ScheduleEvent>();
     const [isAdding, setIsAdding] = useState<boolean>(true);
+    const [isEditing, setIsEditing] = useState<boolean>(false);
 
     const behaviours = {
         isNonWorkingTimeFunc: () => false,
@@ -147,7 +148,7 @@ const App: FC = () => {
         }
     };
 
-    const addingEvent = (ev: ScheduleEvent) => {
+    const addingEvent = (ev: ScheduleEvent, isEditing = false) => {
         let redFlag = false;
         events
             .filter(obj => {
@@ -161,23 +162,33 @@ const App: FC = () => {
                 }
             });
         if (!redFlag) {
-            setIsOpen(true);
             setIsAdding(true);
             setEventAdding(ev);
             redFlag = false;
+            if(isEditing){
+                eventSubmit(true, true)
+                setIsEditing(false)
+                return
+            }
+            setIsOpen(true);
         }
     };
 
-    const deleteEvent = (ev: ScheduleEvent) => {
-        setIsOpen(true)
+    const deleteEvent = (ev: ScheduleEvent, isEditing = false) => {
         setEventAdding(ev)
         setIsAdding(false)
+        if(isEditing){
+            eventSubmit(true, false)
+            setIsEditing(false)
+            return
+        }
+        setIsOpen(true)
     }
 
     const editEvent = (oldEvent: ScheduleEvent, newEvent: ScheduleEvent) => {
-        deleteEvent(oldEvent)
-        addingEvent(newEvent)
-        console.log(oldEvent, newEvent)
+        setIsEditing(true)
+        deleteEvent(oldEvent, isEditing)
+        addingEvent(newEvent, isEditing)
     }
 
 
@@ -209,6 +220,7 @@ const App: FC = () => {
                         onEventSubmit={eventSubmit}
                         event={eventAdding!}
                         isAdding={isAdding}
+                        isEditing={isEditing}
                         recruiterName={
                             resources.filter(obj => {
                                 return obj.id === eventAdding?.resourceId;

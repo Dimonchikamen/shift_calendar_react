@@ -39,7 +39,8 @@ const InformationContainer: FC<IInformationContainerProps> = ({ data, role = "us
     const [dayEnd, setDayEnd] = useState(max)
 
     const editingEvent = (eventEditing: ScheduleEvent, dayStart: string, dayEnd: string) => {
-        if(dayStart >= dayEnd) {alert('Выбери нормально время'); return}
+        // TODO: сделать нормальное уведомление
+        if(parseInt(dayStart) >= parseInt(dayEnd)) {alert('Выбери нормально время'); return}
         onEditEvent(eventEditing, dayStart, dayEnd)
     }
 
