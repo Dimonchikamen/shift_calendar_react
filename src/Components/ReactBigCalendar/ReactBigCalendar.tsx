@@ -14,6 +14,9 @@ import { getHour } from "../../Helpers/DateTimeHelpers";
 import { Time } from "../../Types/Time";
 import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
 import { createTitle } from "../../Helpers/CreateTitle";
+import Col from 'antd/lib/col'
+import Row from 'antd/lib/row'
+import Button from 'antd/lib/button'
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
@@ -32,6 +35,7 @@ interface IReactBigCalendarProps {
     onChangeViewType?: (newView: any) => void;
     onChangeConfig: (newConfig: object) => void;
     onAddEvent: (ev: ScheduleEvent) => void;
+    onDeleteEvent: (ev: ScheduleEvent) => void;
 }
 
 const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
@@ -43,6 +47,7 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
     onChangeViewType,
     onChangeConfig,
     onAddEvent,
+    onDeleteEvent
 }) => {
     const [event, setEvent] = useState(eventOptions[0]);
     const [min, setMin] = useState<Time>(hourOptions[9]);
@@ -50,6 +55,7 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
     const [interviewTime, setInterviewTime] = useState<Time>(optionsInterviewTime[4]);
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
     const [selectData, setData] = useState<RequiterInfo | null>(null);
+    const [isEditing, setIsEditing] = useState<boolean>(false)
     console.log(viewType);
     // const scheduleData = useMemo(
     //     () =>{
@@ -156,7 +162,7 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
         end: string
     ) => {
         onAddEvent({
-            id: 2,
+            id: Math.floor(Math.random() * 1000),
             start: start.substring(0, start.length - 3),
             end: end.substring(0, end.length - 3),
             resourceId: slotId,
@@ -166,6 +172,48 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
             interviews: [],
         });
     };
+
+    const deleteEvent = (event: ScheduleEvent) => {
+        onDeleteEvent(event)
+    }
+
+    const customPopover = (
+        schedulerData: SchedulerData, 
+        eventItem: ScheduleEvent, 
+        title: string, 
+        start: any, 
+        end: any, 
+        statusColor: string
+    ) => {
+        return(
+            <div style={{width: '300px'}}>
+                <Row type="flex" align="middle">
+                    <Col span={2}>
+                        <div className="status-dot" style={{backgroundColor: statusColor}} />
+                    </Col>
+                    <Col span={22} className="overflow-text">
+                        <span className="header2-text" title={title}>{title}</span>
+                    </Col>
+                </Row>
+                <Row type="flex" align="middle">
+                    <Col span={2}>
+                        <div />
+                    </Col>
+                    <Col span={22}>
+                        <span className="header1-text">{start.format(DATE_FORMAT).slice(-5)} − {end.format(DATE_FORMAT).slice(-5)}</span>
+                    </Col>
+                </Row>
+                <Row type="flex" align="middle">
+                    <Col span={2}>
+                        <div />
+                    </Col>
+                    <Col span={22}>
+                        <Button onClick={()=>{deleteEvent(eventItem)}}>Delete</Button>
+                    </Col>
+                </Row>
+            </div>
+        )
+    }
 
     return (
         <div className={s.table_container}>
@@ -195,6 +243,7 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
                         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         // @ts-ignore
                         newEvent={addingEvent}
+                        eventItemPopoverTemplateResolver={customPopover}
                     />
                 </div>
                 {selectedEvent && selectData && <InformationContainer data={selectData} />}
