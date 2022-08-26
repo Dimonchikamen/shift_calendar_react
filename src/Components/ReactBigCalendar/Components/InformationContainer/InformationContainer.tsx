@@ -37,11 +37,12 @@ const InformationContainer: FC<IInformationContainerProps> = ({ data, role = "us
 
     const [dayStart, setDayStart] = useState(min)
     const [dayEnd, setDayEnd] = useState(max)
+    const [isTimeWrong, setIsTimeWrong] = useState(false)
 
     const editingEvent = (eventEditing: ScheduleEvent, dayStart: string, dayEnd: string) => {
-        // TODO: сделать нормальное уведомление
-        if(parseInt(dayStart) >= parseInt(dayEnd)) {alert('Выбери нормально время'); return}
+        if(parseInt(dayStart) >= parseInt(dayEnd)) {setIsTimeWrong(true); return}
         onEditEvent(eventEditing, dayStart, dayEnd)
+        setIsTimeWrong(false)
     }
 
     return (
@@ -130,8 +131,8 @@ const InformationContainer: FC<IInformationContainerProps> = ({ data, role = "us
                         }}
                         className={s.work_time_selector}
                     />
+                    {isTimeWrong ? <><br/><span style={{color: 'red', fontSize: '13px'}}>Введите корректное время</span></> : <></>}
                 </div>
-                
                 <Button className={s.save_btn} onClick={() => {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
