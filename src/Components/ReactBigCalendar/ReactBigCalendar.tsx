@@ -4,6 +4,7 @@ import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import "react-big-scheduler/lib/css/style.css";
 import moment from "moment";
+import 'moment/locale/ru'
 import s from "./ReactBigCalendar.module.css";
 import CalendarHeader from "./Components/CalendarHeader/CalendarHeader";
 import { ScheduleEvent } from "../../Types/ScheduleEvent";
