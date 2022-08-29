@@ -81,7 +81,7 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
 
     useEffect(() => {
         if(selectedEvent !== null){
-            selectedEvent.bgColor = '#FBA711'
+            selectedEvent.bgColor = '#1890ff'
             setSelectedEvent(selectedEvent)
         }
         return () => {
