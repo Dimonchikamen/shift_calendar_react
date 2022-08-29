@@ -79,6 +79,7 @@ const App: FC = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     const [eventAdding, setEventAdding] = useState<ScheduleEvent>();
+    const [eventEditing, setEventEditing] = useState<ScheduleEvent>();
     const [isAdding, setIsAdding] = useState<boolean>(true);
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -129,66 +130,79 @@ const App: FC = () => {
         resize();
     }, [config.dayStartFrom, config.dayStopTo, config.minuteStep]);
 
+    useEffect(() => {
+        if(isEditing){
+            addingEvent(eventAdding!, isEditing)
+            setIsEditing(false)
+        }
+    }, [isEditing])
+
     const changeConfig = (newConfig: object) => {
         setConfig(newConfig);
     };
 
+    const hasOverlap = (ev: ScheduleEvent, elem: ScheduleEvent) => {
+        if (elem.start.slice(0, 10) === ev.start.slice(0, 10)) {
+            if ((ev.start < elem.end && ev.start > elem.start) 
+            || (ev.end < elem.end && ev.end > elem.start) 
+            || (ev.start == elem.start && ev.end == elem.end)) {
+                if(ev.id != elem.id) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     const eventSubmit = (submit: boolean, isAdding: boolean) => {
         setIsOpen(false);
-        if (submit && isAdding) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            setEvents([...new Set([...events, eventAdding])]);
-        } else {
-            setEvents([
-                ...events.filter(obj => {
-                    return obj != eventAdding;
-                }),
-            ]);
+        if (submit) {
+            if (isEditing) {
+                let newEvents = events.filter(obj => obj.id != eventEditing?.id)
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                setEvents([...newEvents, eventAdding])
+                setIsEditing(false)
+                return
+            }
+            if (isAdding) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                setEvents([...new Set([...events, eventAdding])]);
+            } else {
+                setEvents([...events.filter(obj => obj != eventAdding)]);
+            }
         }
     };
 
     const addingEvent = (ev: ScheduleEvent, isEditing = false) => {
         let redFlag = false;
         events
-            .filter(obj => {
-                return obj.resourceId == ev.resourceId;
-            })
+            .filter(obj => obj.resourceId === ev.resourceId)
             .forEach(elem => {
-                if (elem.start.slice(0, 10) == ev.start.slice(0, 10)) {
-                    if ((ev.start < elem.end && ev.start > elem.start) || (ev.end < elem.end && ev.end > elem.start)) {
-                        redFlag = true;
-                    }
+                if (hasOverlap(ev, elem)) {
+                    redFlag = true
+                    alert('Изменение невозможно: накладка по времени')
                 }
             });
         if (!redFlag) {
             setIsAdding(true);
             setEventAdding(ev);
-            redFlag = false;
-            if(isEditing){
-                eventSubmit(true, true)
-                setIsEditing(false)
-                return
-            }
             setIsOpen(true);
+            redFlag = false;
         }
     };
 
-    const deleteEvent = (ev: ScheduleEvent, isEditing = false) => {
+    const deleteEvent = (ev: ScheduleEvent) => {
         setEventAdding(ev)
         setIsAdding(false)
-        if(isEditing){
-            eventSubmit(true, false)
-            setIsEditing(false)
-            return
-        }
         setIsOpen(true)
     }
 
     const editEvent = (oldEvent: ScheduleEvent, newEvent: ScheduleEvent) => {
         setIsEditing(true)
-        deleteEvent(oldEvent, isEditing)
-        addingEvent(newEvent, isEditing)
+        setEventEditing(oldEvent)
+        setEventAdding(newEvent)
     }
 
 
