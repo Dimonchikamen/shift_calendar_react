@@ -1,48 +1,42 @@
-import { FC } from "react";
-import { SchedulerData } from "react-big-scheduler";
+import { FC, useState } from "react";
 import SelectItem from "../../../SelectItem/SelectItem";
 import s from "./CalendarHeader.module.css";
-import { SelectChangeEvent } from "@mui/material";
-import { getHour } from "../../../../Helpers/DateTimeHelpers";
+import { FormControl, FormHelperText, MenuItem, SelectChangeEvent, Select } from "@mui/material";
+import { getHour, getTimeFromHours } from "../../../../Helpers/DateTimeHelpers";
+import { useAppDispatch, useAppSelector } from "../../../../Redux/Hooks";
+import { Time } from "../../../../Types/Time";
+import { changeStartDayAction } from "../../../../Redux/Actions/ChangeStartDayAction";
+import { changeEndDayAction } from "../../../../Redux/Actions/ChangeEndDayAction";
+import { getOptions } from "../../../../Helpers/GetOptions";
+import { changeInterviewTimeAction } from "../../../../Redux/Actions/ChangeInterviewTimeAction";
 
-interface ICalendarHeaderProps {
-    data: SchedulerData;
-    max: string;
-    min: string;
-    interviewTime: string;
-    options: string[];
-    interviewTimeOptions: string[];
-    event: string;
-    eventOptions: string[];
-    onChangeEvent: (event: string) => void;
-    onChangeMax: (max: string) => void;
-    onChangeMin: (min: string) => void;
-    onChangeInterviewTime: (time: string) => void;
-}
+const interviewTimeOptions: Time[] = ["10:00", "12:00", "15:00", "20:00", "30:00", "60:00"];
+const hourOptions: Time[] = getOptions(0, 23);
 
-const CalendarHeader: FC<ICalendarHeaderProps> = ({
-    max,
-    min,
-    interviewTime,
-    options,
-    interviewTimeOptions,
-    event,
-    eventOptions,
-    onChangeEvent,
-    onChangeMin,
-    onChangeMax,
-    onChangeInterviewTime,
-}) => {
+const CalendarHeader: FC = () => {
+    const min = getTimeFromHours(useAppSelector(state => state.main.config.dayStartFrom));
+    const max = getTimeFromHours(useAppSelector(state => state.main.config.dayStopTo));
+    const interviewTime = getTimeFromHours(useAppSelector(state => state.main.config.minuteStep));
+    const eventOptions = useAppSelector(state => state.main.events);
+    const [event, setEvent] = useState(eventOptions[0]);
+    const [age, setAge] = useState("");
+
+    const handleChange = (event: SelectChangeEvent) => {
+        setAge(event.target.value);
+    };
+
+    const dispatch = useAppDispatch();
+
     const changeInterviewTime = (e: SelectChangeEvent) => {
-        onChangeInterviewTime?.(e.target.value);
+        dispatch(changeInterviewTimeAction(getHour(e.target.value)));
     };
 
     const changeMin = (e: SelectChangeEvent) => {
-        onChangeMin?.(e.target.value);
+        dispatch(changeStartDayAction(getHour(e.target.value)));
     };
 
     const changeMax = (e: SelectChangeEvent) => {
-        onChangeMax?.(e.target.value);
+        dispatch(changeEndDayAction(getHour(e.target.value)));
     };
 
     return (
@@ -52,16 +46,18 @@ const CalendarHeader: FC<ICalendarHeaderProps> = ({
                 <SelectItem
                     className={s.select_event}
                     value={event}
+                    label="Мероприятие"
                     options={eventOptions}
                     size="small"
-                    onchange={e => onChangeEvent(e.target.value)}
+                    onchange={e => setEvent(e.target.value)}
                 />
             </div>
             <div className={s.select_work_time_container}>
                 <span>Рабочее время с</span>
                 <SelectItem
                     value={min}
-                    options={options}
+                    label="начало рабочего дня"
+                    options={hourOptions}
                     size="small"
                     optionDisableFunc={v => getHour(v) >= getHour(max)}
                     onchange={changeMin}
@@ -69,7 +65,8 @@ const CalendarHeader: FC<ICalendarHeaderProps> = ({
                 <span>до</span>
                 <SelectItem
                     value={max}
-                    options={options}
+                    label="конец рабочего дня"
+                    options={hourOptions}
                     size="small"
                     optionDisableFunc={v => getHour(v) <= getHour(min)}
                     onchange={changeMax}
@@ -79,6 +76,7 @@ const CalendarHeader: FC<ICalendarHeaderProps> = ({
                 <span>Длительность собеседования</span>
                 <SelectItem
                     value={interviewTime}
+                    label="Длительность собеседования"
                     options={interviewTimeOptions}
                     size="small"
                     onchange={changeInterviewTime}

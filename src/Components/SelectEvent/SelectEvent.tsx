@@ -12,13 +12,13 @@ const SelectEvent: FC<ISelectEventProps> = ({ event, options, onChangeEvent }) =
     return (
         <div className={s.select_event_container}>
             <span>Мероприятие</span>
-            <SelectItem
-                className={s.select_event}
-                value={event}
-                options={options}
-                size="small"
-                onchange={e => onChangeEvent(e.target.value)}
-            />
+            {/*<SelectItem*/}
+            {/*    className={s.select_event}*/}
+            {/*    value={event}*/}
+            {/*    options={options}*/}
+            {/*    size="small"*/}
+            {/*    onchange={e => onChangeEvent(e.target.value)}*/}
+            {/*/>*/}
         </div>
     );
 };

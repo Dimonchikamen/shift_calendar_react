@@ -1,13 +1,12 @@
 import { ScheduleEvent } from "../Types/ScheduleEvent";
 import { Interview } from "../Types/Interview";
-import { Time } from "../Types/Time";
 import { createTitleFromHours } from "./CreateTitle";
-import { getHour, getHoursInAllDateTime } from "./DateTimeHelpers";
+import { getHoursInAllDateTime } from "./DateTimeHelpers";
 
-const getIntervals = (eventInfo: ScheduleEvent, interviewTime: Time) => {
+const getIntervals = (eventInfo: ScheduleEvent, interviewDuration: number) => {
     const minutes = ["00"];
-    for (let i = 1; i < 60 / getHour(interviewTime); i++) {
-        minutes.push(`${i * getHour(interviewTime)}`);
+    for (let i = 1; i < 60 / interviewDuration; i++) {
+        minutes.push(`${i * interviewDuration}`);
     }
     const hours = [];
     const diff = Number(getHoursInAllDateTime(eventInfo.end)) - Number(getHoursInAllDateTime(eventInfo.start)) + 1;
@@ -15,7 +14,7 @@ const getIntervals = (eventInfo: ScheduleEvent, interviewTime: Time) => {
         hours.push(`${Number(getHoursInAllDateTime(eventInfo.start)) + i}`);
     }
 
-    const res = [];
+    const res: string[] = [];
     for (let i = 0; i < hours.length - 1; i++) {
         for (let j = 0; j < minutes.length; j++) {
             const start = `${hours[i]}:${minutes[j]}`;
@@ -26,8 +25,8 @@ const getIntervals = (eventInfo: ScheduleEvent, interviewTime: Time) => {
     return res;
 };
 
-export const getAvailableTimes = (eventInfo: ScheduleEvent, interviews: Interview[], interviewTime: Time) => {
-    const res = getIntervals(eventInfo, interviewTime);
+export const getAvailableTimes = (eventInfo: ScheduleEvent, interviews: Interview[], interviewDuration: number) => {
+    const res = getIntervals(eventInfo, interviewDuration);
     interviews.forEach(interview => {
         const title = createTitleFromHours(interview.start, interview.end);
         const index = res.findIndex(r => r === title);

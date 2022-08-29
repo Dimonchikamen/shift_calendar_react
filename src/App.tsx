@@ -242,24 +242,13 @@ const App: FC = () => {
                             })[0]?.name
                         }
                     />
-                    <ReactBigCalendar
-                        config={config}
-                        resources={resources}
-                        events={events}
-                        behaviours={behaviours}
-                        viewType={viewType}
-                        onChangeViewType={setViewType}
-                        onChangeConfig={changeConfig}
-                        onAddEvent={addingEvent}
-                        onDeleteEvent={deleteEvent}
-                        onEditEvent={editEvent}
-            />
+                    <ReactBigCalendar />
                 </TabPanel>
                 <TabPanel
                     value={value}
                     index={1}
                 >
-                    <MonthCalendar events={events} />
+                    <MonthCalendar />
                 </TabPanel>
             </Box>
         </div>

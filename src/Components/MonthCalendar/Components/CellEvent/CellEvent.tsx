@@ -6,19 +6,19 @@ import vector from "../../../../Svg/Cross.svg";
 interface ICellEventProps {
     event: ScheduleEvent;
     selected: boolean;
-    onClick: (id: number) => void;
-    onClickRemoveEvent: (id: number) => void;
+    onClick: (event: ScheduleEvent) => void;
+    onClickRemoveEvent: (event: ScheduleEvent) => void;
 }
 
 const CellEvent: FC<ICellEventProps> = ({ event, selected, onClick, onClickRemoveEvent }) => {
     const removeHandler = () => {
-        if (selected) onClickRemoveEvent(event.id);
+        if (selected) onClickRemoveEvent(event);
     };
 
     return (
         <div
             className={`${s.event} ${selected ? s.selected : ""}`}
-            onClick={() => onClick(event.id)}
+            onClick={() => onClick(event)}
         >
             <span className={s.event_title}>{event.title}</span>
             <div

@@ -2,24 +2,33 @@ import { FC } from "react";
 import { ScheduleEvent } from "../../../../Types/ScheduleEvent";
 import s from "./Cell.module.css";
 import CellEvent from "../CellEvent/CellEvent";
+import { useAppDispatch } from "../../../../Redux/Hooks";
 
 interface ICellProps {
     events: ScheduleEvent[];
     dayDate: Date;
-    selectedEventId: number | null;
+    selectedEvent: ScheduleEvent | null;
     disabled: boolean;
-    onSetSelectedEvent: (id: number) => void;
+    onAddEvent: (date: Date) => void;
+    onRemoveEvent: (event: ScheduleEvent, date: Date) => void;
+    onSetSelectedEvent: (event: ScheduleEvent) => void;
 }
 
-const Cell: FC<ICellProps> = ({ events, dayDate, selectedEventId, disabled, onSetSelectedEvent }) => {
+const Cell: FC<ICellProps> = ({
+    events,
+    dayDate,
+    selectedEvent,
+    disabled,
+    onAddEvent,
+    onRemoveEvent,
+    onSetSelectedEvent,
+}) => {
     const addEventHandler = () => {
-        //TODO
-        console.log("dwadaw");
+        onAddEvent(dayDate);
     };
 
-    const removeEventHandler = (id: number) => {
-        //TODO
-        console.log(id);
+    const removeEventHandler = (event: ScheduleEvent) => {
+        onRemoveEvent(event, dayDate);
     };
 
     return (
@@ -29,7 +38,7 @@ const Cell: FC<ICellProps> = ({ events, dayDate, selectedEventId, disabled, onSe
                     <CellEvent
                         key={`event_${e.id}_${i}`}
                         event={e}
-                        selected={e.id === selectedEventId}
+                        selected={e.id === selectedEvent?.id}
                         onClick={onSetSelectedEvent}
                         onClickRemoveEvent={removeEventHandler}
                     />

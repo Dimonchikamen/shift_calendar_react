@@ -1,27 +1,19 @@
-import { FC, useState } from "react";
-import s from "./MonthCalendar.module.css";
-import { ScheduleEvent } from "../../Types/ScheduleEvent";
-import { mapWhere } from "../../Helpers/MaoWhere";
+import { FC, useMemo, useState } from "react";
 import Cell from "./Components/Cell/Cell";
+import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
+import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents";
+import MonthCalendarPresentation from "./MonthCalendarPresentation";
+import { ScheduleEvent } from "../../Types/ScheduleEvent";
+import AddWorkTimePopup from "./Components/Popup/AddWorkTimePopup/AddWorkTimePopup";
+import { createTitle } from "../../Helpers/CreateTitle";
+import moment from "moment";
+import { DATE_FORMAT } from "../ReactBigCalendar/ReactBigCalendar";
+import { addRecruiterEventAction, removeRecruiterEventAction } from "../../Redux/Actions/RecruiterEventsActions";
+import RemoveWorkTimePopup from "./Components/Popup/RemoveWorkTimePopup/RemoveWorkTimePopup";
 
 const DAYS_IN_WEEK = 7;
 const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const WEEK_DAYS_FROM_MONDAY = [6, 0, 1, 2, 3, 4, 5];
-const monthNames = [
-    "Январь",
-    "Февраль",
-    "Март",
-    "Апрель",
-    "Май",
-    "Июнь",
-    "Июль",
-    "Август",
-    "Сентябрь",
-    "Октябрь",
-    "Ноябрь",
-    "Декабрь",
-];
-const headers = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
 
 const isLeapYear = (year: number) => !(year % 4 || (!(year % 100) && year % 400));
 
@@ -66,42 +58,17 @@ const getMonthData = (year: number, month: number) => {
     return result;
 };
 
-interface IMonthCalendarProps {
-    events: ScheduleEvent[];
-}
+const MonthCalendar: FC = () => {
+    const [currentDate, setCurrentDate] = useState<Date>(new Date());
+    const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
+    const [popupIsOpen, setPopupOpen] = useState<boolean>(false);
+    const [removeEventPopupIsOpen, setRemoveEventPopupOpen] = useState<boolean>(false);
+    const [dateForAddWorkTime, setDateForAddWorkTime] = useState<Date>(currentDate);
 
-const MonthCalendar: FC<IMonthCalendarProps> = ({ events }) => {
-    const [currentDate, setCurrentDate] = useState(new Date());
-    const [selectedEvent, setSelectedEvent] = useState<number | null>(null);
-
-    const getRow = (week: { date: Date; disabled: boolean }[]) => {
-        const res: any[] = [];
-        week.forEach((day, i) => {
-            const dayEvents = mapWhere(events, e => {
-                const startDate = new Date(e.start);
-                return (
-                    startDate.getDate() === day.date.getDate() &&
-                    startDate.getMonth() === day.date.getMonth() &&
-                    startDate.getFullYear() === day.date.getFullYear()
-                );
-            });
-            res.push(
-                <Cell
-                    events={dayEvents}
-                    dayDate={day.date}
-                    selectedEventId={selectedEvent}
-                    disabled={day.disabled}
-                    onSetSelectedEvent={setSelectedEvent}
-                />
-            );
-        });
-        return res;
-    };
-
-    const getRows = (year: number, month: number) => {
-        const data = getMonthData(year, month);
-        return data.map(row => getRow(row));
-    };
+    const recruiters = useAppSelector(state => state.main.recruiters);
+    const data = useMemo(() => getMonthData(currentDate.getFullYear(), currentDate.getMonth()), [currentDate]);
+    const [, events] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters]);
+    const dispatch = useAppDispatch();
 
     const next = () => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
@@ -111,38 +78,101 @@ const MonthCalendar: FC<IMonthCalendarProps> = ({ events }) => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
     };
 
+    const addEventClickHandler = (date: Date) => {
+        setDateForAddWorkTime(date);
+        setPopupOpen(true);
+    };
+
+    const removeEventClickHandler = () => {
+        if (selectedEvent) {
+            setRemoveEventPopupOpen(true);
+        }
+    };
+
+    const add = (startHours: number, endHours: number) => {
+        const eventStart = moment(
+            new Date(
+                dateForAddWorkTime.getFullYear(),
+                dateForAddWorkTime.getMonth(),
+                dateForAddWorkTime.getDate(),
+                startHours
+            )
+        ).format(DATE_FORMAT);
+        const eventEnd = moment(
+            new Date(
+                dateForAddWorkTime.getFullYear(),
+                dateForAddWorkTime.getMonth(),
+                dateForAddWorkTime.getDate(),
+                endHours
+            )
+        ).format(DATE_FORMAT);
+        const res: ScheduleEvent = {
+            id: Math.floor(Math.random() * 1000),
+            start: eventStart,
+            end: eventEnd,
+            resourceId: "3",
+            title: createTitle(eventStart, eventEnd),
+            resizable: false,
+            bgColor: "#D9EDF7",
+            interviews: [],
+        };
+        dispatch(addRecruiterEventAction(res));
+        setPopupOpen(false);
+        //TODO...
+    };
+
+    const remove = () => {
+        dispatch(removeRecruiterEventAction(selectedEvent!));
+        setRemoveEventPopupOpen(false);
+        setSelectedEvent(null);
+        //TODO...
+    };
+
     return (
-        <div>
-            <header className={s.header}>
-                <span
-                    className={s.icon}
-                    onClick={back}
-                    onCopy={() => false}
-                >
-                    ❮
-                </span>
-                <span className={s.date}>
-                    {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-                </span>
-                <span
-                    className={s.icon}
-                    onClick={next}
-                    onCopy={() => false}
-                >
-                    ❯
-                </span>
-            </header>
-            <div className={s.calendar_container}>
-                <header className={s.calendar_header}>
-                    {headers.map((h, i) => (
-                        <div key={`header-${i}`}>{h}</div>
-                    ))}
-                </header>
-                <div className={s.calendar}>
-                    {getRows(currentDate.getFullYear(), currentDate.getMonth()).map(row => row)}
-                </div>
-            </div>
-        </div>
+        <>
+            <MonthCalendarPresentation
+                currentDate={currentDate}
+                onClickPreviousMonth={back}
+                onClickNextMonth={next}
+            >
+                {data.map(week => {
+                    return week.map(day => {
+                        const dayEvents = events.filter(e => {
+                            const startDate = new Date(e.start);
+                            return (
+                                startDate.getDate() === day.date.getDate() &&
+                                startDate.getMonth() === day.date.getMonth() &&
+                                startDate.getFullYear() === day.date.getFullYear()
+                            );
+                        });
+                        return (
+                            <Cell
+                                key={`${day.date.getFullYear()}-${day.date.getMonth()}-${day.date.getDate()}`}
+                                events={dayEvents}
+                                dayDate={day.date}
+                                selectedEvent={selectedEvent}
+                                disabled={day.disabled}
+                                onAddEvent={addEventClickHandler}
+                                onRemoveEvent={removeEventClickHandler}
+                                onSetSelectedEvent={setSelectedEvent}
+                            />
+                        );
+                    });
+                })}
+            </MonthCalendarPresentation>
+            <AddWorkTimePopup
+                title="Добавление смены"
+                isOpen={popupIsOpen}
+                onSubmit={add}
+                onCancel={() => setPopupOpen(false)}
+            />
+            <RemoveWorkTimePopup
+                title="Удаление смены"
+                isOpen={removeEventPopupIsOpen}
+                onSubmit={remove}
+                onCancel={() => setRemoveEventPopupOpen(false)}
+            />
+        </>
     );
 };
 

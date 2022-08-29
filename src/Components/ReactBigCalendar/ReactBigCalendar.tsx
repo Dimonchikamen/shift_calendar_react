@@ -1,5 +1,5 @@
-import { FC, useEffect, useState } from "react";
-import Scheduler, { Resource, SchedulerData, ViewTypes } from "react-big-scheduler";
+import { FC, useEffect, useMemo, useState } from "react";
+import Scheduler, { Resource, SchedulerData } from "react-big-scheduler";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import "react-big-scheduler/lib/css/style.css";
@@ -7,56 +7,39 @@ import moment from "moment";
 import 'moment/locale/ru'
 import s from "./ReactBigCalendar.module.css";
 import CalendarHeader from "./Components/CalendarHeader/CalendarHeader";
-import { getOptions } from "../../Helpers/GetOptions";
 import { ScheduleEvent } from "../../Types/ScheduleEvent";
 import InformationContainer from "./Components/InformationContainer/InformationContainer";
 import { RequiterInfo } from "../../Types/RequiterInfo";
-import { getHour } from "../../Helpers/DateTimeHelpers";
-import { Time } from "../../Types/Time";
 import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
 import { createTitle } from "../../Helpers/CreateTitle";
 import Col from "antd/lib/col";
 import Row from "antd/lib/row";
 import Button from "antd/lib/button";
-import { FullDateTime } from "../../Types/FullDateTime";
+import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
+import { changeViewTypeAction } from "../../Redux/Actions/ChangeViewTypeAction";
+import PopUp from "./Components/PopUp/PopUp";
+import { addRecruiterEventAction, removeRecruiterEventAction } from "../../Redux/Actions/RecruiterEventsActions";
+import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents";
+import { resizeAction } from "../../Redux/Actions/ResizeAction";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
 export const DATE_FORMAT = "YYYY-MM-DD H:mm";
-const hourOptions: Time[] = getOptions(0, 23);
-const optionsInterviewTime: Time[] = ["10:00", "12:00", "15:00", "20:00", "30:00", "60:00"];
-const eventOptions = ["Ночь Музеев", "Ночь Музыки"];
 moment.locale("ru-ru");
 
-interface IReactBigCalendarProps {
-    config: object;
-    resources: Resource[];
-    events: ScheduleEvent[];
-    behaviours: object;
-    viewType: ViewTypes;
-    onChangeViewType?: (newView: any) => void;
-    onChangeConfig: (newConfig: object) => void;
-    onAddEvent: (ev: ScheduleEvent) => void;
-    onDeleteEvent: (ev: ScheduleEvent) => void;
-    onEditEvent: (oldEvent: ScheduleEvent, newEvent: ScheduleEvent) => void;
-}
+const ReactBigCalendar: FC = () => {
+    const recruiters = useAppSelector(state => state.main.recruiters);
+    const [resources, events] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters]);
+    const viewType = useAppSelector(state => state.main.viewType);
+    const config = useAppSelector(state => state.main.config);
+    const interviewDuration = config.minuteStep;
+    const behaviours = useAppSelector(state => state.main.behaviours);
+    const dispatch = useAppDispatch();
 
-const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
-    config,
-    resources,
-    events,
-    behaviours,
-    viewType,
-    onChangeViewType,
-    onChangeConfig,
-    onAddEvent,
-    onDeleteEvent,
-    onEditEvent
-}) => {
-    const [event, setEvent] = useState(eventOptions[0]);
-    const [min, setMin] = useState<Time>(hourOptions[9]);
-    const [max, setMax] = useState<Time>(hourOptions[19]);
-    const [interviewTime, setInterviewTime] = useState<Time>(optionsInterviewTime[4]);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [eventAdding, setEventAdding] = useState<ScheduleEvent>();
+    const [isAdding, setIsAdding] = useState<boolean>(true);
+
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
     const [selectData, setData] = useState<RequiterInfo | null>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -70,6 +53,18 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
         data.setEvents(events);
         return { data };
     });
+
+    const forceResize = () => {
+        dispatch(resizeAction());
+    };
+
+    useEffect(() => {
+        window.addEventListener("resize", forceResize);
+        forceResize();
+        return () => {
+            window.removeEventListener("resize", forceResize);
+        };
+    }, []);
 
     useEffect(() => {
         setView(() => {
@@ -97,7 +92,7 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const requiter = schedulerData.resources.find((r: Resource) => r.id === event.resourceId);
-        const availableInterviewTimes = getAvailableTimes(event, event.interviews, interviewTime);
+        const availableInterviewTimes = getAvailableTimes(event, event.interviews, interviewDuration);
         return {
             name: requiter.name,
             workTimeTitle: event.title,
@@ -110,23 +105,6 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
         schedulerData.setResources(resources);
         schedulerData.setEvents(events);
         setView({ data: schedulerData });
-    };
-
-    const changeInterviewTime = (newTime: string) => {
-        setInterviewTime(newTime);
-        setSelectedEvent(null);
-        setData(null);
-        onChangeConfig({ ...config, minuteStep: getHour(newTime) });
-    };
-
-    const changeMax = (max: string) => {
-        setMax(max);
-        onChangeConfig({ ...config, dayStopTo: getHour(max) });
-    };
-
-    const changeMin = (min: string) => {
-        setMin(min);
-        onChangeConfig({ ...config, dayStartFrom: getHour(min) });
     };
 
     const prevClick = (schedulerData: SchedulerData) => {
@@ -145,7 +123,7 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
     };
 
     const viewChange = (schedulerData: SchedulerData, view: any) => {
-        onChangeViewType?.(view.viewType);
+        dispatch(changeViewTypeAction(view.viewType));
     };
 
     const eventItemClick = (schedulerData: SchedulerData, event: ScheduleEvent) => {
@@ -160,7 +138,8 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
         start: string,
         end: string
     ) => {
-        onAddEvent({
+        let canAddEvent = true;
+        const ev = {
             id: Math.floor(Math.random() * 1000),
             start: start.substring(0, start.length - 3),
             end: end.substring(0, end.length - 3),
@@ -169,29 +148,56 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
             resizable: false,
             bgColor: "#D9EDF7",
             interviews: [],
-        });
+        };
+        events
+            .filter(event => event.resourceId === ev.resourceId)
+            .forEach(elem => {
+                if (elem.start.slice(0, 10) === ev.start.slice(0, 10)) {
+                    if ((ev.start < elem.end && ev.start > elem.start) || (ev.end < elem.end && ev.end > elem.start)) {
+                        canAddEvent = false;
+                    }
+                }
+            });
+        if (canAddEvent) {
+            setIsOpen(true);
+            setIsAdding(true);
+            setEventAdding(ev);
+        }
     };
 
     const deleteEvent = (event: ScheduleEvent) => {
-        onDeleteEvent(event)
-        setSelectedEvent(null)
-    }
+        setIsOpen(true);
+        setEventAdding(event);
+        setIsAdding(false);
+    };
 
     const editEvent = (schedulerData: SchedulerData, event: ScheduleEvent) => {
         setData(createData(schedulerData, event))
         setSelectedEvent(event)
         setIsEditing(true)
     }
+
     const editingEvent = (eventEditing: ScheduleEvent, dayStart: string, dayEnd: string) => {
         let newEvent = JSON.parse(JSON.stringify(eventEditing))
         const formatTime = (time: string) => {return time.length < 5 ? '0'+time : time}
         newEvent.start = newEvent.start.slice(0,11) + formatTime(dayStart)
         newEvent.end = newEvent.end.slice(0,11) + formatTime(dayEnd)
         newEvent.title = dayStart +' − ' + dayEnd
-        onEditEvent(eventEditing, newEvent)
+        //TODO dispatch
         setSelectedEvent(null)
         setIsEditing(false)
     }
+
+    const eventSubmit = (submit: boolean, isAdding: boolean) => {
+        setIsOpen(false);
+        if (submit && eventAdding) {
+            if (isAdding) {
+                dispatch(addRecruiterEventAction(eventAdding));
+            } else {
+                dispatch(removeRecruiterEventAction(eventAdding));
+            }
+        }
+    };
 
     const customPopover = (
         schedulerData: SchedulerData,
@@ -232,20 +238,7 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
 
     return (
         <div className={s.table_container}>
-            <CalendarHeader
-                event={event}
-                max={max}
-                min={min}
-                interviewTime={interviewTime}
-                options={hourOptions}
-                eventOptions={eventOptions}
-                interviewTimeOptions={optionsInterviewTime}
-                data={viewModel.data}
-                onChangeMin={changeMin}
-                onChangeMax={changeMax}
-                onChangeInterviewTime={changeInterviewTime}
-                onChangeEvent={setEvent}
-            />
+            <CalendarHeader />
             <div className={s.scheduler_container}>
                 <div>
                     <Scheduler
@@ -261,16 +254,17 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
                         eventItemPopoverTemplateResolver={customPopover}
                     />
                 </div>
-                    {selectedEvent && selectData && <InformationContainer 
+                    {/* {selectedEvent && selectData && <InformationContainer 
                     data={selectData} 
-                    isEditing={isEditing} 
-                    eventEditing={selectedEvent}
-                    min={min} 
-                    max={max} 
-                    options={getOptions(getHour(min), getHour(max))}
-                    onEditEvent={editingEvent}
-                     /> }
+                     /> } */}
                 </div>
+            {/* <PopUp
+                isOpen={isOpen}
+                onEventSubmit={eventSubmit}
+                event={eventAdding!}
+                isAdding={isAdding}
+                recruiterName={resources.filter(r => r.id === eventAdding?.resourceId)[0]?.name}
+            /> */}
         </div>
     );
 };
