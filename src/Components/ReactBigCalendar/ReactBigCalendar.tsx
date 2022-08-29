@@ -74,6 +74,19 @@ const ReactBigCalendar: FC = () => {
         });
     }, [config, resources, events, viewType, behaviours]);
 
+    useEffect(() => {
+        if(selectedEvent !== null){
+            selectedEvent.bgColor = '#1890ff'
+            setSelectedEvent(selectedEvent)
+        }
+        return () => {
+            if(selectedEvent !== null){
+                selectedEvent.bgColor = '#D9EDF7'
+                setSelectedEvent(selectedEvent)
+            }
+        }
+    }, [selectedEvent])
+
     const createData = (schedulerData: SchedulerData, event: ScheduleEvent): RequiterInfo => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -157,6 +170,23 @@ const ReactBigCalendar: FC = () => {
         setIsAdding(false);
     };
 
+    const editEvent = (schedulerData: SchedulerData, event: ScheduleEvent) => {
+        setData(createData(schedulerData, event))
+        setSelectedEvent(event)
+        setIsEditing(true)
+    }
+
+    const editingEvent = (eventEditing: ScheduleEvent, dayStart: string, dayEnd: string) => {
+        let newEvent = JSON.parse(JSON.stringify(eventEditing))
+        const formatTime = (time: string) => {return time.length < 5 ? '0'+time : time}
+        newEvent.start = newEvent.start.slice(0,11) + formatTime(dayStart)
+        newEvent.end = newEvent.end.slice(0,11) + formatTime(dayEnd)
+        newEvent.title = dayStart +' − ' + dayEnd
+        //TODO dispatch
+        setSelectedEvent(null)
+        setIsEditing(false)
+    }
+
     const eventSubmit = (submit: boolean, isAdding: boolean) => {
         setIsOpen(false);
         if (submit && eventAdding) {
@@ -176,60 +206,31 @@ const ReactBigCalendar: FC = () => {
         end: any,
         statusColor: string
     ) => {
-        return (
-            <div style={{ width: "300px" }}>
-                <Row
-                    type="flex"
-                    align="middle"
-                >
-                    <Col span={2}>
-                        <div
-                            className="status-dot"
-                            style={{ backgroundColor: statusColor }}
-                        />
-                    </Col>
-                    <Col
-                        span={22}
-                        className="overflow-text"
-                    >
-                        <span
-                            className="header2-text"
-                            title={title}
-                        >
-                            {title}
-                        </span>
-                    </Col>
-                </Row>
-                <Row
-                    type="flex"
-                    align="middle"
-                >
-                    <Col span={2}>
-                        <div />
-                    </Col>
-                    <Col span={22}>
-                        <span className="header1-text">
-                            {start.format(DATE_FORMAT).slice(-5)} − {end.format(DATE_FORMAT).slice(-5)}
-                        </span>
-                    </Col>
-                </Row>
-                <Row
-                    type="flex"
-                    align="middle"
-                >
-                    <Col span={2}>
-                        <div />
-                    </Col>
-                    <Col span={22}>
-                        <Button
-                            onClick={() => {
-                                deleteEvent(eventItem);
-                            }}
-                        >
-                            Delete
-                        </Button>
-                    </Col>
-                </Row>
+        return(
+            <div style={{width: '200px'}}>
+                <span className="header2-text" title={title}>{start.format(DATE_FORMAT).slice(-5)} − {end.format(DATE_FORMAT).slice(-5)}</span>
+                <Button style={{
+                    border: '1px solid #1890ff', 
+                    borderRadius: '4px', 
+                    background: 'transparent', 
+                    marginTop: '10px',
+                    padding: '3px 12px',
+                    color: '#1890ff'
+                }} 
+                onClick={()=>{deleteEvent(eventItem)}}>
+                    Удалить
+                </Button>
+                <Button style={{
+                    border: '1px solid #1890ff', 
+                    borderRadius: '4px', 
+                    background: 'transparent', 
+                    marginTop: '10px',
+                    padding: '3px 12px',
+                    color: '#1890ff'
+                }} 
+                onClick={()=>{editEvent(schedulerData, eventItem)}}>
+                    Редактировать
+                </Button>
             </div>
         );
     };
@@ -252,15 +253,17 @@ const ReactBigCalendar: FC = () => {
                         eventItemPopoverTemplateResolver={customPopover}
                     />
                 </div>
-                {selectedEvent && selectData && <InformationContainer data={selectData} />}
-            </div>
-            <PopUp
+                    {/* {selectedEvent && selectData && <InformationContainer 
+                    data={selectData} 
+                     /> } */}
+                </div>
+            {/* <PopUp
                 isOpen={isOpen}
                 onEventSubmit={eventSubmit}
                 event={eventAdding!}
                 isAdding={isAdding}
                 recruiterName={resources.filter(r => r.id === eventAdding?.resourceId)[0]?.name}
-            />
+            /> */}
         </div>
     );
 };

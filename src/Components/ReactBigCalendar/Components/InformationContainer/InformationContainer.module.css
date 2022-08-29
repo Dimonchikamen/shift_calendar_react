@@ -43,3 +43,28 @@
 .font_size_18 {
     font-size: 18px;
 }
+
+.save_btn{
+    padding: 3px 10px;
+    border-radius: 4px;
+    background-color: #1890ff;
+    color: #fff;
+    border: none;
+}
+
+.select_work_time_container{
+    text-align: left;
+}
+.work_time_selector{
+    margin-left: 10px;
+    background-color: #fff;
+}
+.work_time_selector > div{
+    padding: 2px 7px;
+}
+.work_time_selector > fieldset > legend{
+    display: none;
+}
+.work_time_selector > fieldset{
+    top: 0
+}
