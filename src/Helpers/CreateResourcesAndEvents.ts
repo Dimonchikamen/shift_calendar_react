@@ -4,6 +4,7 @@ import { createTitle } from "./CreateTitle";
 import { Resource } from "react-big-scheduler";
 import moment from "moment";
 import { DATE_FORMAT } from "../Components/ReactBigCalendar/ReactBigCalendar";
+import { compareFullDateTime } from "./Compare";
 
 export const createResourcesAndEvents = (recruiters: Recruiter[]): [resources: Resource[], events: ScheduleEvent[]] => {
     const resources: Resource[] = [];
@@ -25,5 +26,6 @@ export const createResourcesAndEvents = (recruiters: Recruiter[]): [resources: R
             });
         });
     });
-    return [resources, events];
+    const res = events.sort((a, b) => compareFullDateTime(a.start, b.start));
+    return [resources, res];
 };

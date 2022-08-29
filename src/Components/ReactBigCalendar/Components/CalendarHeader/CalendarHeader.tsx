@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import SelectItem from "../../../SelectItem/SelectItem";
 import s from "./CalendarHeader.module.css";
-import { FormControl, FormHelperText, MenuItem, SelectChangeEvent, Select } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material";
 import { getHour, getTimeFromHours } from "../../../../Helpers/DateTimeHelpers";
 import { useAppDispatch, useAppSelector } from "../../../../Redux/Hooks";
 import { Time } from "../../../../Types/Time";
@@ -19,11 +19,6 @@ const CalendarHeader: FC = () => {
     const interviewTime = getTimeFromHours(useAppSelector(state => state.main.config.minuteStep));
     const eventOptions = useAppSelector(state => state.main.events);
     const [event, setEvent] = useState(eventOptions[0]);
-    const [age, setAge] = useState("");
-
-    const handleChange = (event: SelectChangeEvent) => {
-        setAge(event.target.value);
-    };
 
     const dispatch = useAppDispatch();
 
@@ -46,7 +41,6 @@ const CalendarHeader: FC = () => {
                 <SelectItem
                     className={s.select_event}
                     value={event}
-                    label="Мероприятие"
                     options={eventOptions}
                     size="small"
                     onchange={e => setEvent(e.target.value)}
@@ -56,7 +50,6 @@ const CalendarHeader: FC = () => {
                 <span>Рабочее время с</span>
                 <SelectItem
                     value={min}
-                    label="начало рабочего дня"
                     options={hourOptions}
                     size="small"
                     optionDisableFunc={v => getHour(v) >= getHour(max)}
@@ -65,7 +58,6 @@ const CalendarHeader: FC = () => {
                 <span>до</span>
                 <SelectItem
                     value={max}
-                    label="конец рабочего дня"
                     options={hourOptions}
                     size="small"
                     optionDisableFunc={v => getHour(v) <= getHour(min)}
@@ -76,7 +68,6 @@ const CalendarHeader: FC = () => {
                 <span>Длительность собеседования</span>
                 <SelectItem
                     value={interviewTime}
-                    label="Длительность собеседования"
                     options={interviewTimeOptions}
                     size="small"
                     onchange={changeInterviewTime}

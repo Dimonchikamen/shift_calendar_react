@@ -3,7 +3,6 @@ import { FormControl, MenuItem, Select, SelectChangeEvent } from "@mui/material"
 
 interface ISelectItemProps {
     value: string;
-    label: string;
     options: string[];
     onchange: (e: SelectChangeEvent) => void;
     className?: string;

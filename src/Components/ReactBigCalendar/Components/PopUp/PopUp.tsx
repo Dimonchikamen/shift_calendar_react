@@ -12,11 +12,10 @@ interface IProps {
     event: ScheduleEvent;
     isAdding: boolean;
     recruiterName: string;
-    isEditing: boolean;
     onEventSubmit: (submit: boolean, isAdding: boolean) => void;
 }
 
-const AlertDialog: FC<IProps> = ({ isOpen, event, isAdding, recruiterName, onEventSubmit, isEditing }) => {
+const AlertDialog: FC<IProps> = ({ isOpen, event, isAdding, recruiterName, onEventSubmit }) => {
     const eventSubmit = (submit: boolean) => {
         onEventSubmit(submit, isAdding);
     };

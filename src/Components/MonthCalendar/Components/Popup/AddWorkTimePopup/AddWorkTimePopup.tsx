@@ -42,7 +42,6 @@ const AddWorkTimePopup: FC<IAddWorkingTimePopupProps> = ({ title, isOpen, onSubm
                     <SelectItem
                         value={currentStart}
                         options={hourOptions}
-                        label="начало рабочего дня"
                         size="small"
                         optionDisableFunc={v => getHour(v) >= max || getHour(v) < min}
                         onchange={e => setStart(e.target.value)}
@@ -51,7 +50,6 @@ const AddWorkTimePopup: FC<IAddWorkingTimePopupProps> = ({ title, isOpen, onSubm
                     <SelectItem
                         value={currentEnd}
                         options={hourOptions}
-                        label="конец рабочего дня"
                         size="small"
                         optionDisableFunc={v => getHour(v) <= min || getHour(v) > max}
                         onchange={e => setEnd(e.target.value)}

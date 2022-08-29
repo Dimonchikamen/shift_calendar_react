@@ -4,7 +4,7 @@ import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import "react-big-scheduler/lib/css/style.css";
 import moment from "moment";
-import 'moment/locale/ru'
+import "moment/locale/ru";
 import s from "./ReactBigCalendar.module.css";
 import CalendarHeader from "./Components/CalendarHeader/CalendarHeader";
 import { ScheduleEvent } from "../../Types/ScheduleEvent";
@@ -12,13 +12,15 @@ import InformationContainer from "./Components/InformationContainer/InformationC
 import { RequiterInfo } from "../../Types/RequiterInfo";
 import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
 import { createTitle } from "../../Helpers/CreateTitle";
-import Col from "antd/lib/col";
-import Row from "antd/lib/row";
 import Button from "antd/lib/button";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
 import { changeViewTypeAction } from "../../Redux/Actions/ChangeViewTypeAction";
 import PopUp from "./Components/PopUp/PopUp";
-import { addRecruiterEventAction, removeRecruiterEventAction } from "../../Redux/Actions/RecruiterEventsActions";
+import {
+    addRecruiterEventAction,
+    editRecruiterEventAction,
+    removeRecruiterEventAction,
+} from "../../Redux/Actions/RecruiterEventsActions";
 import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents";
 import { resizeAction } from "../../Redux/Actions/ResizeAction";
 
@@ -26,6 +28,22 @@ export const widthDragDropContext = DragDropContext(HTML5Backend);
 
 export const DATE_FORMAT = "YYYY-MM-DD H:mm";
 moment.locale("ru-ru");
+
+const hasOverlap = (ev: ScheduleEvent, elem: ScheduleEvent) => {
+    if (elem.start.slice(0, 10) === ev.start.slice(0, 10)) {
+        if (
+            (ev.start < elem.end && ev.start > elem.start) ||
+            (ev.end < elem.end && ev.end > elem.start) ||
+            (ev.start == elem.start && ev.end == elem.end) ||
+            (ev.start <= elem.start && ev.end >= elem.end)
+        ) {
+            if (ev.id != elem.id) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
 
 const ReactBigCalendar: FC = () => {
     const recruiters = useAppSelector(state => state.main.recruiters);
@@ -75,26 +93,13 @@ const ReactBigCalendar: FC = () => {
         });
     }, [config, resources, events, viewType, behaviours]);
 
-    useEffect(() => {
-        if(selectedEvent !== null){
-            selectedEvent.bgColor = '#1890ff'
-            setSelectedEvent(selectedEvent)
-        }
-        return () => {
-            if(selectedEvent !== null){
-                selectedEvent.bgColor = '#D9EDF7'
-                setSelectedEvent(selectedEvent)
-            }
-        }
-    }, [selectedEvent])
-
     const createData = (schedulerData: SchedulerData, event: ScheduleEvent): RequiterInfo => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        const requiter = schedulerData.resources.find((r: Resource) => r.id === event.resourceId);
+        const recruiter = schedulerData.resources.find((r: Resource) => r.id === event.resourceId);
         const availableInterviewTimes = getAvailableTimes(event, event.interviews, interviewDuration);
         return {
-            name: requiter.name,
+            name: recruiter.name,
             workTimeTitle: event.title,
             availableInterviewTimes,
             interviews: event.interviews,
@@ -128,6 +133,8 @@ const ReactBigCalendar: FC = () => {
 
     const eventItemClick = (schedulerData: SchedulerData, event: ScheduleEvent) => {
         setData(createData(schedulerData, event));
+        event.bgColor = "#1890ff";
+        if (selectedEvent) selectedEvent.bgColor = "#D9EDF7";
         setSelectedEvent(event);
     };
 
@@ -152,10 +159,8 @@ const ReactBigCalendar: FC = () => {
         events
             .filter(event => event.resourceId === ev.resourceId)
             .forEach(elem => {
-                if (elem.start.slice(0, 10) === ev.start.slice(0, 10)) {
-                    if ((ev.start < elem.end && ev.start > elem.start) || (ev.end < elem.end && ev.end > elem.start)) {
-                        canAddEvent = false;
-                    }
+                if (hasOverlap(elem, ev)) {
+                    canAddEvent = false;
                 }
             });
         if (canAddEvent) {
@@ -172,21 +177,23 @@ const ReactBigCalendar: FC = () => {
     };
 
     const editEvent = (schedulerData: SchedulerData, event: ScheduleEvent) => {
-        setData(createData(schedulerData, event))
-        setSelectedEvent(event)
-        setIsEditing(true)
-    }
+        setData(createData(schedulerData, event));
+        setSelectedEvent(event);
+        setIsEditing(true);
+    };
 
     const editingEvent = (eventEditing: ScheduleEvent, dayStart: string, dayEnd: string) => {
-        let newEvent = JSON.parse(JSON.stringify(eventEditing))
-        const formatTime = (time: string) => {return time.length < 5 ? '0'+time : time}
-        newEvent.start = newEvent.start.slice(0,11) + formatTime(dayStart)
-        newEvent.end = newEvent.end.slice(0,11) + formatTime(dayEnd)
-        newEvent.title = dayStart +' − ' + dayEnd
-        //TODO dispatch
-        setSelectedEvent(null)
-        setIsEditing(false)
-    }
+        const newEvent = JSON.parse(JSON.stringify(eventEditing));
+        const formatTime = (time: string) => {
+            return time.length < 5 ? "0" + time : time;
+        };
+        newEvent.start = newEvent.start.slice(0, 11) + formatTime(dayStart);
+        newEvent.end = newEvent.end.slice(0, 11) + formatTime(dayEnd);
+        newEvent.title = dayStart + " − " + dayEnd;
+        dispatch(editRecruiterEventAction(newEvent));
+        setSelectedEvent(null);
+        setIsEditing(false);
+    };
 
     const eventSubmit = (submit: boolean, isAdding: boolean) => {
         setIsOpen(false);
@@ -207,29 +214,38 @@ const ReactBigCalendar: FC = () => {
         end: any,
         statusColor: string
     ) => {
-        return(
-            <div style={{width: '200px'}}>
-                <span className="header2-text" title={title}>{start.format(DATE_FORMAT).slice(-5)} − {end.format(DATE_FORMAT).slice(-5)}</span>
-                <Button style={{
-                    border: '1px solid #1890ff', 
-                    borderRadius: '4px', 
-                    background: 'transparent', 
-                    marginTop: '10px',
-                    padding: '3px 12px',
-                    color: '#1890ff'
-                }} 
-                onClick={()=>{deleteEvent(eventItem)}}>
+        return (
+            <div style={{ width: "200px" }}>
+                <span
+                    className="header2-text"
+                    title={title}
+                >
+                    {start.format(DATE_FORMAT).slice(-5)} − {end.format(DATE_FORMAT).slice(-5)}
+                </span>
+                <Button
+                    style={{
+                        border: "1px solid #1890ff",
+                        borderRadius: "4px",
+                        background: "transparent",
+                        marginTop: "10px",
+                        padding: "3px 12px",
+                        color: "#1890ff",
+                    }}
+                    onClick={() => deleteEvent(eventItem)}
+                >
                     Удалить
                 </Button>
-                <Button style={{
-                    border: '1px solid #1890ff', 
-                    borderRadius: '4px', 
-                    background: 'transparent', 
-                    marginTop: '10px',
-                    padding: '3px 12px',
-                    color: '#1890ff'
-                }} 
-                onClick={()=>{editEvent(schedulerData, eventItem)}}>
+                <Button
+                    style={{
+                        border: "1px solid #1890ff",
+                        borderRadius: "4px",
+                        background: "transparent",
+                        marginTop: "10px",
+                        padding: "3px 12px",
+                        color: "#1890ff",
+                    }}
+                    onClick={() => editEvent(schedulerData, eventItem)}
+                >
                     Редактировать
                 </Button>
             </div>
@@ -254,17 +270,22 @@ const ReactBigCalendar: FC = () => {
                         eventItemPopoverTemplateResolver={customPopover}
                     />
                 </div>
-                    {/* {selectedEvent && selectData && <InformationContainer 
-                    data={selectData} 
-                     /> } */}
-                </div>
-            {/* <PopUp
+                {selectedEvent && selectData && (
+                    <InformationContainer
+                        data={selectData}
+                        isEditing={isEditing}
+                        eventEditing={eventAdding}
+                        onEditEvent={editingEvent}
+                    />
+                )}
+            </div>
+            <PopUp
                 isOpen={isOpen}
                 onEventSubmit={eventSubmit}
                 event={eventAdding!}
                 isAdding={isAdding}
                 recruiterName={resources.filter(r => r.id === eventAdding?.resourceId)[0]?.name}
-            /> */}
+            />
         </div>
     );
 };

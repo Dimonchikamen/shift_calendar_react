@@ -223,7 +223,7 @@ const mainReducer = (state = initialState, action: MainActions) => {
             recruiter.workedTimes[index] = {
                 ...recruiter.workedTimes[index],
                 start: action.payload.start,
-                end: action.payload.start,
+                end: action.payload.end,
                 interviews: [...action.payload.interviews],
             };
             return copy;

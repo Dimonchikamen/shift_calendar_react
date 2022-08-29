@@ -1,16 +1,10 @@
 import "./App.css";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "@toast-ui/calendar/dist/toastui-calendar.min.css";
 import ReactBigCalendar from "./Components/ReactBigCalendar/ReactBigCalendar";
-import { Resource, ViewTypes } from "react-big-scheduler";
-import { ScheduleEvent } from "./Types/ScheduleEvent";
-import mockRecruiters from "./Mocks/Requiters.json";
-import { createResourcesAndEvents } from "./Helpers/CreateResourcesAndEvents";
-import { Recruiter } from "./Types/Recruiter";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 import MonthCalendar from "./Components/MonthCalendar/MonthCalendar";
-import PopUp from "./Components/ReactBigCalendar/Components/PopUp/PopUp";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -45,167 +39,12 @@ function a11yProps(index: number) {
     };
 }
 
-const getDiff = (min: number, max: number) => max - min + 1;
-
 const App: FC = () => {
-    const [config, setConfig] = useState<any>({
-        dayCellWidth: 50,
-        weekCellWidth: 1100 / 7,
-        dayResourceTableWidth: 300,
-        weekResourceTableWidth: 300,
-        schedulerWidth: 1100,
-        startResizable: true,
-        endResizable: true,
-        movable: false,
-        resourceName: "Рекрутеры:",
-        eventItemPopoverDateFormat: "D/MM",
-        nonAgendaDayCellHeaderFormat: "H:mm",
-        dayStartFrom: 9,
-        dayStopTo: 19,
-        minuteStep: 30,
-        views: [
-            { viewName: "День", viewType: ViewTypes.Day, showAgenda: false, isEventPerspective: false },
-            { viewName: "Неделя", viewType: ViewTypes.Week, showAgenda: false, isEventPerspective: false },
-        ],
-    });
-
-    const [events, setEvents] = useState<ScheduleEvent[]>([]);
-
-    const [resources, setResources] = useState<Resource[]>([]);
-    const [viewType, setViewType] = useState<ViewTypes>(ViewTypes.Day);
-    const monthViewType = ViewTypes.Month;
-    const monthConfig = { ...config, views: [], headerEnabled: false };
-
-    const [isOpen, setIsOpen] = useState<boolean>(false);
-
-    const [eventAdding, setEventAdding] = useState<ScheduleEvent>();
-    const [eventEditing, setEventEditing] = useState<ScheduleEvent>();
-    const [isAdding, setIsAdding] = useState<boolean>(true);
-    const [isEditing, setIsEditing] = useState<boolean>(false);
-
-    const behaviours = {
-        isNonWorkingTimeFunc: () => false,
-    };
-    //-----------------------------------NAVIGATION_TABS-----------------------------------------
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
-    //-----------------------------------NAVIGATION_TABS-----------------------------------------
-    const resize = () => {
-        const newWidth = window.innerWidth * 0.75;
-        let newResourceTableWidth = config.dayResourceTableWidth;
-        if (window.innerWidth < 1200) {
-            newResourceTableWidth = 200;
-        }
-        const min = config.dayStartFrom;
-        const max = config.dayStopTo;
-        const minuteStep = config.minuteStep;
-        const timeWidth = newWidth - newResourceTableWidth;
-        const newDayCellWidth = timeWidth / (getDiff(min, max) * (60 / minuteStep));
-        const newWeekCellWidth = timeWidth / 7;
-        setConfig({
-            ...config,
-            dayResourceTableWidth: newResourceTableWidth,
-            weekResourceTableWidth: newResourceTableWidth,
-            schedulerWidth: newWidth,
-            dayCellWidth: newDayCellWidth,
-            weekCellWidth: newWeekCellWidth,
-        });
-    };
-
-    useEffect(() => {
-        window.addEventListener("resize", resize);
-        resize();
-        const [resources, events] = createResourcesAndEvents(mockRecruiters as unknown as Recruiter[]);
-        setEvents(events);
-        setResources(resources);
-        return () => {
-            window.removeEventListener("resize", resize);
-        };
-    }, []);
-
-    useEffect(() => {
-        resize();
-    }, [config.dayStartFrom, config.dayStopTo, config.minuteStep]);
-
-    useEffect(() => {
-        if(isEditing){
-            addingEvent(eventAdding!, isEditing)
-            setIsEditing(false)
-        }
-    }, [isEditing])
-
-    const changeConfig = (newConfig: object) => {
-        setConfig(newConfig);
-    };
-
-    const hasOverlap = (ev: ScheduleEvent, elem: ScheduleEvent) => {
-        if (elem.start.slice(0, 10) === ev.start.slice(0, 10)) {
-            if ((ev.start < elem.end && ev.start > elem.start) 
-            || (ev.end < elem.end && ev.end > elem.start) 
-            || (ev.start == elem.start && ev.end == elem.end)
-            || (ev.start <= elem.start && ev.end >= elem.end)) {
-                if(ev.id != elem.id) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    const eventSubmit = (submit: boolean, isAdding: boolean) => {
-        setIsOpen(false);
-        if (submit) {
-            if (isEditing) {
-                let newEvents = events.filter(obj => obj.id != eventEditing?.id)
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                setEvents([...newEvents, eventAdding])
-                setIsEditing(false)
-                return
-            }
-            if (isAdding) {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                setEvents([...new Set([...events, eventAdding])]);
-            } else {
-                setEvents([...events.filter(obj => obj != eventAdding)]);
-            }
-        }
-    };
-
-    const addingEvent = (ev: ScheduleEvent, isEditing = false) => {
-        let redFlag = false;
-        events
-            .filter(obj => obj.resourceId === ev.resourceId)
-            .forEach(elem => {
-                if (hasOverlap(ev, elem)) {
-                    redFlag = true
-                    alert('Изменение невозможно: накладка по времени')
-                }
-            });
-        if (!redFlag) {
-            setIsAdding(true);
-            setEventAdding(ev);
-            setIsOpen(true);
-            redFlag = false;
-        }
-    };
-
-    const deleteEvent = (ev: ScheduleEvent) => {
-        setEventAdding(ev)
-        setIsAdding(false)
-        setIsOpen(true)
-    }
-
-    const editEvent = (oldEvent: ScheduleEvent, newEvent: ScheduleEvent) => {
-        setIsEditing(true)
-        setEventEditing(oldEvent)
-        setEventAdding(newEvent)
-    }
-
 
     return (
         <div className="app">
@@ -230,18 +69,6 @@ const App: FC = () => {
                     value={value}
                     index={0}
                 >
-                    <PopUp
-                        isOpen={isOpen}
-                        onEventSubmit={eventSubmit}
-                        event={eventAdding!}
-                        isAdding={isAdding}
-                        isEditing={isEditing}
-                        recruiterName={
-                            resources.filter(obj => {
-                                return obj.id === eventAdding?.resourceId;
-                            })[0]?.name
-                        }
-                    />
                     <ReactBigCalendar />
                 </TabPanel>
                 <TabPanel
