@@ -23,6 +23,7 @@ import {
 } from "../../Redux/Actions/RecruiterEventsActions";
 import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents";
 import { resizeAction } from "../../Redux/Actions/ResizeAction";
+import Popover from "./Components/Popover/Popover";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
@@ -215,40 +216,15 @@ const ReactBigCalendar: FC = () => {
         statusColor: string
     ) => {
         return (
-            <div style={{ width: "200px" }}>
-                <span
-                    className="header2-text"
-                    title={title}
-                >
-                    {start.format(DATE_FORMAT).slice(-5)} − {end.format(DATE_FORMAT).slice(-5)}
-                </span>
-                <Button
-                    style={{
-                        border: "1px solid #1890ff",
-                        borderRadius: "4px",
-                        background: "transparent",
-                        marginTop: "10px",
-                        padding: "3px 12px",
-                        color: "#1890ff",
-                    }}
-                    onClick={() => deleteEvent(eventItem)}
-                >
-                    Удалить
-                </Button>
-                <Button
-                    style={{
-                        border: "1px solid #1890ff",
-                        borderRadius: "4px",
-                        background: "transparent",
-                        marginTop: "10px",
-                        padding: "3px 12px",
-                        color: "#1890ff",
-                    }}
-                    onClick={() => editEvent(schedulerData, eventItem)}
-                >
-                    Редактировать
-                </Button>
-            </div>
+            <Popover
+                schedulerData={schedulerData}
+                eventItem={eventItem}
+                title={title}
+                start={start}
+                end={end}
+                deleteEvent={deleteEvent}
+                editEvent={editEvent}
+            />
         );
     };
 

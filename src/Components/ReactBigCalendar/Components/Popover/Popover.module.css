@@ -1,0 +1,22 @@
+.Popover{
+    width: fit-content;
+}
+
+.btnswrapper{
+    display: flex;
+    gap: 0.4em;
+}
+
+.Button{
+    cursor: pointer;
+    border: 1px solid #1890ff;
+    border-radius: 3px;
+    background: transparent;
+    margin-top: 10px;
+    padding: 3px 12px;
+    color: #1890ff;
+    transition: .4s;
+}
+.Button:hover{
+    filter: opacity(0.8);
+}

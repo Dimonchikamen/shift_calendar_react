@@ -48,7 +48,6 @@ const AlertDialog: FC<IProps> = ({ isOpen, event, isAdding, recruiterName, onEve
                     <Button onClick={() => eventSubmit(false)}>Отмена</Button>
                     <Button
                         onClick={() => eventSubmit(true)}
-                        autoFocus
                     >
                         Да
                     </Button>
