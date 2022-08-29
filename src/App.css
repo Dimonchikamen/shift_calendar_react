@@ -43,6 +43,10 @@
     line-height: 100%;
 }
 
+.header2-text-label{
+    font-weight: 700;
+}
+
 .MuiOutlinedInput-root > fieldset {
     top: 0;
 }
