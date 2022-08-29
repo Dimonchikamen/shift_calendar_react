@@ -79,6 +79,19 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
         });
     }, [config, resources, events, viewType, behaviours]);
 
+    useEffect(() => {
+        if(selectedEvent !== null){
+            selectedEvent.bgColor = '#FBA711'
+            setSelectedEvent(selectedEvent)
+        }
+        return () => {
+            if(selectedEvent !== null){
+                selectedEvent.bgColor = '#D9EDF7'
+                setSelectedEvent(selectedEvent)
+            }
+        }
+    }, [selectedEvent])
+
     const createData = (schedulerData: SchedulerData, event: ScheduleEvent): RequiterInfo => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -176,6 +189,7 @@ const ReactBigCalendar: FC<IReactBigCalendarProps> = ({
         newEvent.title = dayStart +' − ' + dayEnd
         onEditEvent(eventEditing, newEvent)
         setSelectedEvent(null)
+        setIsEditing(false)
     }
 
     const customPopover = (

@@ -49,3 +49,8 @@
 .MuiOutlinedInput-root > fieldset > legend{
     display: none;
 }
+
+.event-item > span{
+    color: #151515;
+    font-size: 15px;
+}
