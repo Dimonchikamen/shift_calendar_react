@@ -109,28 +109,30 @@ const InformationContainer: FC<IInformationContainerProps> = ({
                     </div>
                     <div className={s.select_work_time_container}>
                         <div>Изменить рабочее время:</div>
-                        <span>с</span>
-                        <SelectItem
-                            value={workTimeStart}
-                            options={options}
-                            size="small"
-                            optionDisableFunc={o => getHour(o) < dayStart || getHour(o) >= getHour(workTimeEnd)}
-                            onchange={e => setDayStart(e.target.value)}
-                            className={s.work_time_selector}
-                        />
-                        <br />
-                        <span>до</span>
-                        <SelectItem
-                            value={workTimeEnd}
-                            options={options}
-                            size="small"
-                            optionDisableFunc={o => getHour(o) > dayEnd || getHour(o) <= getHour(workTimeStart)}
-                            onchange={e => setDayEnd(e.target.value)}
-                            className={s.work_time_selector}
-                        />
+                        <div className={s.selector_container}>
+                            <span>с</span>
+                            <SelectItem
+                                value={workTimeStart}
+                                options={options}
+                                size="small"
+                                optionDisableFunc={o => getHour(o) < dayStart || getHour(o) >= getHour(workTimeEnd)}
+                                onchange={e => setDayStart(e.target.value)}
+                                className={s.work_time_selector}
+                            />
+                        </div>
+                        <div className={s.selector_container}>
+                            <span>до</span>
+                            <SelectItem
+                                value={workTimeEnd}
+                                options={options}
+                                size="small"
+                                optionDisableFunc={o => getHour(o) > dayEnd || getHour(o) <= getHour(workTimeStart)}
+                                onchange={e => setDayEnd(e.target.value)}
+                                className={s.work_time_selector}
+                            />
+                        </div>
                         {isTimeWrong ? (
                             <>
-                                <br />
                                 <span style={{ color: "red", fontSize: "13px" }}>Введите корректное время</span>
                             </>
                         ) : (

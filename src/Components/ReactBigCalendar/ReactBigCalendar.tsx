@@ -12,7 +12,6 @@ import InformationContainer from "./Components/InformationContainer/InformationC
 import { RequiterInfo } from "../../Types/RequiterInfo";
 import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
 import { createTitle } from "../../Helpers/CreateTitle";
-import Button from "antd/lib/button";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
 import { changeViewTypeAction } from "../../Redux/Actions/ChangeViewTypeAction";
 import PopUp from "./Components/PopUp/PopUp";
@@ -62,9 +61,10 @@ const ReactBigCalendar: FC = () => {
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
     const [selectData, setData] = useState<RequiterInfo | null>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [currentDate, setCurrentDate] = useState<string>(moment().format(DATE_FORMAT));
     const [viewModel, setView] = useState<{ data: SchedulerData }>(() => {
         moment.locale("ru");
-        const data = new SchedulerData(moment().format(DATE_FORMAT), viewType, false, false, config, behaviours);
+        const data = new SchedulerData(currentDate, viewType, false, false, config, behaviours);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         data.setLocaleMoment(moment);
@@ -87,7 +87,7 @@ const ReactBigCalendar: FC = () => {
 
     useEffect(() => {
         setView(() => {
-            const data = new SchedulerData(moment().format(DATE_FORMAT), viewType, false, false, config, behaviours);
+            const data = new SchedulerData(currentDate, viewType, false, false, config, behaviours);
             data.setResources(resources);
             data.setEvents(events);
             return { data };
@@ -110,6 +110,7 @@ const ReactBigCalendar: FC = () => {
     const setSchedulerData = (schedulerData: SchedulerData) => {
         schedulerData.setResources(resources);
         schedulerData.setEvents(events);
+        setCurrentDate(schedulerData.startDate)
         setView({ data: schedulerData });
     };
 
@@ -136,6 +137,7 @@ const ReactBigCalendar: FC = () => {
         setData(createData(schedulerData, event));
         event.bgColor = "#1890ff";
         if (selectedEvent) selectedEvent.bgColor = "#D9EDF7";
+        setIsEditing(false)
         setSelectedEvent(event);
     };
 
@@ -175,6 +177,7 @@ const ReactBigCalendar: FC = () => {
         setIsOpen(true);
         setEventAdding(event);
         setIsAdding(false);
+        setSelectedEvent(null)
     };
 
     const editEvent = (schedulerData: SchedulerData, event: ScheduleEvent) => {
@@ -190,7 +193,7 @@ const ReactBigCalendar: FC = () => {
         };
         newEvent.start = newEvent.start.slice(0, 11) + formatTime(dayStart);
         newEvent.end = newEvent.end.slice(0, 11) + formatTime(dayEnd);
-        newEvent.title = dayStart + " − " + dayEnd;
+        newEvent.title = dayStart + " - " + dayEnd;
         dispatch(editRecruiterEventAction(newEvent));
         setSelectedEvent(null);
         setIsEditing(false);
