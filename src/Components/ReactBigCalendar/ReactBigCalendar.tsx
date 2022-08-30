@@ -23,27 +23,12 @@ import {
 import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents";
 import { resizeAction } from "../../Redux/Actions/ResizeAction";
 import Popover from "./Components/Popover/Popover";
+import { hasOverlap } from "../../Helpers/HasOverlap";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
 export const DATE_FORMAT = "YYYY-MM-DD H:mm";
 moment.locale("ru-ru");
-
-const hasOverlap = (ev: ScheduleEvent, elem: ScheduleEvent) => {
-    if (elem.start.slice(0, 10) === ev.start.slice(0, 10)) {
-        if (
-            (ev.start < elem.end && ev.start > elem.start) ||
-            (ev.end < elem.end && ev.end > elem.start) ||
-            (ev.start == elem.start && ev.end == elem.end) ||
-            (ev.start <= elem.start && ev.end >= elem.end)
-        ) {
-            if (ev.id != elem.id) {
-                return true;
-            }
-        }
-    }
-    return false;
-};
 
 const ReactBigCalendar: FC = () => {
     const recruiters = useAppSelector(state => state.main.recruiters);
@@ -55,7 +40,7 @@ const ReactBigCalendar: FC = () => {
     const dispatch = useAppDispatch();
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [eventAdding, setEventAdding] = useState<ScheduleEvent>();
+    const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
     const [isAdding, setIsAdding] = useState<boolean>(true);
 
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
@@ -110,7 +95,7 @@ const ReactBigCalendar: FC = () => {
     const setSchedulerData = (schedulerData: SchedulerData) => {
         schedulerData.setResources(resources);
         schedulerData.setEvents(events);
-        setCurrentDate(schedulerData.startDate)
+        setCurrentDate(schedulerData.startDate);
         setView({ data: schedulerData });
     };
 
@@ -137,7 +122,7 @@ const ReactBigCalendar: FC = () => {
         setData(createData(schedulerData, event));
         event.bgColor = "#1890ff";
         if (selectedEvent) selectedEvent.bgColor = "#D9EDF7";
-        setIsEditing(false)
+        setIsEditing(false);
         setSelectedEvent(event);
     };
 
@@ -177,25 +162,25 @@ const ReactBigCalendar: FC = () => {
         setIsOpen(true);
         setEventAdding(event);
         setIsAdding(false);
-        setSelectedEvent(event)
+        setSelectedEvent(event);
     };
 
     const editEvent = (schedulerData: SchedulerData, event: ScheduleEvent) => {
         setData(createData(schedulerData, event));
         setSelectedEvent(event);
         setEventAdding(event);
-        eventItemClick(schedulerData, event)
+        eventItemClick(schedulerData, event);
         setIsEditing(true);
     };
 
     const editingEvent = (eventEditing: ScheduleEvent, dayStart: string, dayEnd: string) => {
-        const newEvent = JSON.parse(JSON.stringify(eventEditing));
+        const newEvent: ScheduleEvent = JSON.parse(JSON.stringify(eventEditing));
         const formatTime = (time: string) => {
             return time.length < 5 ? "0" + time : time;
         };
         newEvent.start = newEvent.start.slice(0, 11) + formatTime(dayStart);
         newEvent.end = newEvent.end.slice(0, 11) + formatTime(dayEnd);
-        newEvent.title = dayStart + " - " + dayEnd;
+        newEvent.title = createTitle(dayStart, dayEnd);
         dispatch(editRecruiterEventAction(newEvent));
         setSelectedEvent(null);
         setIsEditing(false);
@@ -204,12 +189,12 @@ const ReactBigCalendar: FC = () => {
     const eventSubmit = (submit: boolean, isAdding: boolean) => {
         setIsOpen(false);
         if (isEditing) {
-            let newEvents = events.filter(obj => obj.id != selectedEvent?.id)
+            const newEvents = events.filter(obj => obj.id != selectedEvent?.id);
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             dispatch(editRecruiterEventAction(eventAdding));
-            setIsEditing(false)
-            return
+            setIsEditing(false);
+            return;
         }
         if (submit && eventAdding) {
             if (isAdding) {
@@ -222,14 +207,14 @@ const ReactBigCalendar: FC = () => {
 
     const conflictOccurred = (schedulerData: SchedulerData, action: string, event: ScheduleEvent) => {
         alert(`Conflict occurred. {action: ${action}, event: ${event}`);
-    }
+    };
 
     const customPopover = (
         schedulerData: SchedulerData,
         eventItem: ScheduleEvent,
         title: string,
-        start: any,
-        end: any,
+        start: moment.Moment,
+        end: moment.Moment,
         statusColor: string
     ) => {
         return (
@@ -268,7 +253,7 @@ const ReactBigCalendar: FC = () => {
                     <InformationContainer
                         data={selectData}
                         isEditing={isEditing}
-                        eventEditing={eventAdding}
+                        eventEditing={eventAdding!}
                         onEditEvent={editingEvent}
                     />
                 )}

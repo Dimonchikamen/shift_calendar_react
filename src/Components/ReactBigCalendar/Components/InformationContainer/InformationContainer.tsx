@@ -10,6 +10,8 @@ import { Time } from "../../../../Types/Time";
 import { useAppSelector } from "../../../../Redux/Hooks";
 import { getOptions } from "../../../../Helpers/GetOptions";
 import { getHour } from "../../../../Helpers/DateTimeHelpers";
+import { createResourcesAndEvents } from "../../../../Helpers/CreateResourcesAndEvents";
+import { hasOverlap } from "../../../../Helpers/HasOverlap";
 
 const mergeInterviewsInfo = (interviews: Interview[]) => {
     const res: { id: number; name: string; bookedTimes: string[] }[] = [];
@@ -29,7 +31,7 @@ interface IInformationContainerProps {
     data: RequiterInfo;
     role?: "admin" | "user";
     isEditing?: boolean;
-    eventEditing?: ScheduleEvent;
+    eventEditing: ScheduleEvent;
     onEditEvent: (eventEditing: ScheduleEvent, dayStart: string, dayEnd: string) => void;
 }
 
@@ -42,6 +44,7 @@ const InformationContainer: FC<IInformationContainerProps> = ({
 }) => {
     const dayStart = useAppSelector(state => state.main.config.dayStartFrom);
     const dayEnd = useAppSelector(state => state.main.config.dayStopTo);
+    const recruiters = useAppSelector(state => state.main.recruiters);
     const options: Time[] = getOptions(dayStart, dayEnd);
     const mergedInterviewsInfo = useMemo(() => mergeInterviewsInfo(data.interviews), [data]);
     const [leftTime, rightTime] = useMemo(() => data.workTimeTitle.split(" - "), [data.workTimeTitle]);
@@ -51,13 +54,21 @@ const InformationContainer: FC<IInformationContainerProps> = ({
     const [isTimeWrong, setIsTimeWrong] = useState(false);
 
     useEffect(() => {
-        setDayEnd(rightTime)
-        setDayStart(leftTime)
-    }, [leftTime, rightTime])
-    
+        setDayEnd(rightTime);
+        setDayStart(leftTime);
+    }, [leftTime, rightTime]);
 
     const editingEvent = (eventEditing: ScheduleEvent) => {
-        if (parseInt(workTimeStart) >= parseInt(workTimeEnd)) {
+        const index = recruiters.findIndex(r => r.id === Number(eventEditing.resourceId));
+        const currentRecruiter = recruiters[index];
+        const [, events] = createResourcesAndEvents([currentRecruiter]);
+        let hasOverlapTime = true;
+        events.forEach(e => {
+            if (hasOverlap(e, eventEditing)) {
+                hasOverlapTime = false;
+            }
+        });
+        if (hasOverlapTime && parseInt(workTimeStart) >= parseInt(workTimeEnd)) {
             setIsTimeWrong(true);
             return;
         }
@@ -147,7 +158,7 @@ const InformationContainer: FC<IInformationContainerProps> = ({
                     </div>
                     <Button
                         className={s.save_btn}
-                        onClick={() => editingEvent(eventEditing!)}
+                        onClick={() => editingEvent(eventEditing)}
                     >
                         Сохранить
                     </Button>
