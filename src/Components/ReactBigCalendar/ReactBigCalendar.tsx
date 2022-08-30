@@ -24,6 +24,7 @@ import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents
 import { resizeAction } from "../../Redux/Actions/ResizeAction";
 import Popover from "./Components/Popover/Popover";
 import { hasOverlap } from "../../Helpers/HasOverlap";
+import { ServerAPI } from "../../API/ServerAPI";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
@@ -57,6 +58,14 @@ const ReactBigCalendar: FC = () => {
         data.setEvents(events);
         return { data };
     });
+    const [isPending, setIsPending] = useState(true);
+
+    useEffect(() => {
+        ServerAPI.getDayEnd();
+        setTimeout(() => {
+            setIsPending(false);
+        }, 2000);
+    }, []);
 
     const forceResize = () => {
         dispatch(resizeAction());
@@ -230,42 +239,46 @@ const ReactBigCalendar: FC = () => {
         );
     };
 
-    return (
-        <div className={s.table_container}>
-            <CalendarHeader />
-            <div className={s.scheduler_container}>
-                <div>
-                    <Scheduler
-                        schedulerData={viewModel.data}
-                        prevClick={prevClick}
-                        nextClick={nextClick}
-                        onSelectDate={selectDate}
-                        onViewChange={viewChange}
-                        eventItemClick={eventItemClick}
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-ignore
-                        newEvent={addingEvent}
-                        eventItemPopoverTemplateResolver={customPopover}
-                        conflictOccured={conflictOccurred}
-                    />
+    if (isPending) {
+        return <div>Loading...</div>;
+    } else {
+        return (
+            <div className={s.table_container}>
+                <CalendarHeader />
+                <div className={s.scheduler_container}>
+                    <div>
+                        <Scheduler
+                            schedulerData={viewModel.data}
+                            prevClick={prevClick}
+                            nextClick={nextClick}
+                            onSelectDate={selectDate}
+                            onViewChange={viewChange}
+                            eventItemClick={eventItemClick}
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-ignore
+                            newEvent={addingEvent}
+                            eventItemPopoverTemplateResolver={customPopover}
+                            conflictOccured={conflictOccurred}
+                        />
+                    </div>
+                    {selectedEvent && selectData && (
+                        <InformationContainer
+                            data={selectData}
+                            isEditing={isEditing}
+                            eventEditing={eventAdding!}
+                            onEditEvent={editingEvent}
+                        />
+                    )}
                 </div>
-                {selectedEvent && selectData && (
-                    <InformationContainer
-                        data={selectData}
-                        isEditing={isEditing}
-                        eventEditing={eventAdding!}
-                        onEditEvent={editingEvent}
-                    />
-                )}
+                <PopUp
+                    isOpen={isOpen}
+                    onEventSubmit={eventSubmit}
+                    event={eventAdding!}
+                    isAdding={isAdding}
+                    recruiterName={resources.filter(r => r.id === eventAdding?.resourceId)[0]?.name}
+                />
             </div>
-            <PopUp
-                isOpen={isOpen}
-                onEventSubmit={eventSubmit}
-                event={eventAdding!}
-                isAdding={isAdding}
-                recruiterName={resources.filter(r => r.id === eventAdding?.resourceId)[0]?.name}
-            />
-        </div>
-    );
+        );
+    }
 };
 export default widthDragDropContext(ReactBigCalendar);
