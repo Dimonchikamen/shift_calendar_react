@@ -11,7 +11,7 @@ import { useAppSelector } from "../../../../Redux/Hooks";
 import { getOptions } from "../../../../Helpers/GetOptions";
 import { getHour } from "../../../../Helpers/DateTimeHelpers";
 import { createResourcesAndEvents } from "../../../../Helpers/CreateResourcesAndEvents";
-import { hasOverlap } from "../../../../Helpers/HasOverlap";
+import { hasOverlapDate } from "../../../../Helpers/HasOverlap";
 
 const mergeInterviewsInfo = (interviews: Interview[]) => {
     const res: { id: number; name: string; bookedTimes: string[] }[] = [];
@@ -64,11 +64,11 @@ const InformationContainer: FC<IInformationContainerProps> = ({
         const [, events] = createResourcesAndEvents([currentRecruiter]);
         let hasOverlapTime = true;
         events.forEach(e => {
-            if (hasOverlap(e, eventEditing)) {
+            if (hasOverlapDate(e.start, e.end, workTimeStart, workTimeEnd)) {
                 hasOverlapTime = false;
             }
         });
-        if (hasOverlapTime && parseInt(workTimeStart) >= parseInt(workTimeEnd)) {
+        if (hasOverlapTime || parseInt(workTimeStart) >= parseInt(workTimeEnd)) {
             setIsTimeWrong(true);
             return;
         }
