@@ -26,6 +26,8 @@ import Popover from "./Components/Popover/Popover";
 import { hasOverlap } from "../../Helpers/HasOverlap";
 import { ServerAPI } from "../../API/ServerAPI";
 import Popup from "../../UiKit/Popup/Popup";
+import { CircularProgress } from "@mui/material";
+import Alert from "@mui/material/Alert";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
@@ -60,6 +62,8 @@ const ReactBigCalendar: FC = () => {
         return { data };
     });
     const [isPending, setIsPending] = useState(true);
+
+    const [isError, setIsError] = useState(true);
 
     useEffect(() => {
         ServerAPI.getDayEnd();
@@ -236,45 +240,53 @@ const ReactBigCalendar: FC = () => {
     };
 
     if (isPending) {
-        return <div>Loading...</div>;
+        return <CircularProgress />;
     } else {
-        return (
-            <div className={s.table_container}>
-                <CalendarHeader />
-                <div className={s.scheduler_container}>
-                    <div>
-                        <Scheduler
-                            schedulerData={viewModel.data}
-                            prevClick={prevClick}
-                            nextClick={nextClick}
-                            onSelectDate={selectDate}
-                            onViewChange={viewChange}
-                            eventItemClick={eventItemClick}
-                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                            // @ts-ignore
-                            newEvent={addingEvent}
-                            eventItemPopoverTemplateResolver={customPopover}
-                        />
+        if (!isError) {
+            return (
+                <div className={s.table_container}>
+                    <CalendarHeader />
+                    <div className={s.scheduler_container}>
+                        <div>
+                            <Scheduler
+                                schedulerData={viewModel.data}
+                                prevClick={prevClick}
+                                nextClick={nextClick}
+                                onSelectDate={selectDate}
+                                onViewChange={viewChange}
+                                eventItemClick={eventItemClick}
+                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                                // @ts-ignore
+                                newEvent={addingEvent}
+                                eventItemPopoverTemplateResolver={customPopover}
+                            />
+                        </div>
+                        {selectedEvent && selectData && (
+                            <InformationContainer
+                                data={selectData}
+                                isEditing={isEditing}
+                                eventEditing={eventAdding!}
+                                onEditEvent={editingEvent}
+                            />
+                        )}
                     </div>
-                    {selectedEvent && selectData && (
-                        <InformationContainer
-                            data={selectData}
-                            isEditing={isEditing}
-                            eventEditing={eventAdding!}
-                            onEditEvent={editingEvent}
-                        />
-                    )}
+                    <PopUp
+                        isOpen={isOpen}
+                        event={eventAdding!}
+                        isAdding={isAdding}
+                        recruiterName={resources.filter(r => r.id === eventAdding?.resourceId)[0]?.name}
+                        onEventSubmit={eventSubmit}
+                        onCancel={() => setIsOpen(false)}
+                    />
                 </div>
-                <PopUp
-                    isOpen={isOpen}
-                    event={eventAdding!}
-                    isAdding={isAdding}
-                    recruiterName={resources.filter(r => r.id === eventAdding?.resourceId)[0]?.name}
-                    onEventSubmit={eventSubmit}
-                    onCancel={() => setIsOpen(false)}
-                />
-            </div>
-        );
+            );
+        } else {
+            return (
+                <Alert severity="error">
+                    Возникла ошибка при получении запроса с сервера. Или нужно поменять стейт isError на false...
+                </Alert>
+            );
+        }
     }
 };
 export default widthDragDropContext(ReactBigCalendar);

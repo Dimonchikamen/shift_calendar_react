@@ -56,11 +56,11 @@ const App: FC = () => {
                         aria-label="basic tabs example"
                     >
                         <Tab
-                            label="Item One"
+                            label="День/Неделя"
                             {...a11yProps(0)}
                         />
                         <Tab
-                            label="Item Two"
+                            label="Месяц"
                             {...a11yProps(1)}
                         />
                     </Tabs>
