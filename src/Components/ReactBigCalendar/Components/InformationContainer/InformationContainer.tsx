@@ -5,7 +5,7 @@ import { createTitleFromHours } from "../../../../Helpers/CreateTitle";
 import { Interview } from "../../../../Types/Interview";
 import { ScheduleEvent } from "../../../../Types/ScheduleEvent";
 import Button from "antd/lib/button";
-import SelectItem from "../../../SelectItem/SelectItem";
+import SelectItem from "../../../../UiKit/SelectItem/SelectItem";
 import { Time } from "../../../../Types/Time";
 import { useAppSelector } from "../../../../Redux/Hooks";
 import { getOptions } from "../../../../Helpers/GetOptions";

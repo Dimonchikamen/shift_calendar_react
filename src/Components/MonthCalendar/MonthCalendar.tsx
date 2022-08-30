@@ -4,12 +4,12 @@ import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
 import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents";
 import MonthCalendarPresentation from "./MonthCalendarPresentation";
 import { ScheduleEvent } from "../../Types/ScheduleEvent";
-import AddWorkTimePopup from "./Components/Popup/AddWorkTimePopup/AddWorkTimePopup";
+import AddWorkTimePopup from "../../UiKit/Popup/AddWorkTimePopup/AddWorkTimePopup";
 import { createTitle } from "../../Helpers/CreateTitle";
 import moment from "moment";
 import { DATE_FORMAT } from "../ReactBigCalendar/ReactBigCalendar";
 import { addRecruiterEventAction, removeRecruiterEventAction } from "../../Redux/Actions/RecruiterEventsActions";
-import RemoveWorkTimePopup from "./Components/Popup/RemoveWorkTimePopup/RemoveWorkTimePopup";
+import RemoveWorkTimePopup from "../../UiKit/Popup/RemoveWorkTimePopup/RemoveWorkTimePopup";
 
 const DAYS_IN_WEEK = 7;
 const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -118,14 +118,12 @@ const MonthCalendar: FC = () => {
         };
         dispatch(addRecruiterEventAction(res));
         setPopupOpen(false);
-        //TODO...
     };
 
     const remove = () => {
         dispatch(removeRecruiterEventAction(selectedEvent!));
         setRemoveEventPopupOpen(false);
         setSelectedEvent(null);
-        //TODO...
     };
 
     return (
