@@ -14,7 +14,7 @@ import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
 import { createTitle } from "../../Helpers/CreateTitle";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
 import { changeViewTypeAction } from "../../Redux/Actions/ChangeViewTypeAction";
-import PopUp from "./Components/PopUp/PopUp";
+import PopUp from "../../UiKit/Popup/AlertDialog/AlertDialog";
 import {
     addRecruiterEventAction,
     editRecruiterEventAction,
@@ -24,6 +24,7 @@ import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents
 import { resizeAction } from "../../Redux/Actions/ResizeAction";
 import Popover from "./Components/Popover/Popover";
 import { hasOverlap } from "../../Helpers/HasOverlap";
+import Popup from "../../UiKit/Popup/Popup";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
@@ -186,7 +187,7 @@ const ReactBigCalendar: FC = () => {
         setIsEditing(false);
     };
 
-    const eventSubmit = (submit: boolean, isAdding: boolean) => {
+    const eventSubmit = () => {
         setIsOpen(false);
         if (isEditing) {
             const newEvents = events.filter(obj => obj.id != selectedEvent?.id);
@@ -196,7 +197,7 @@ const ReactBigCalendar: FC = () => {
             setIsEditing(false);
             return;
         }
-        if (submit && eventAdding) {
+        if (eventAdding) {
             if (isAdding) {
                 dispatch(addRecruiterEventAction(eventAdding));
             } else {
@@ -260,10 +261,11 @@ const ReactBigCalendar: FC = () => {
             </div>
             <PopUp
                 isOpen={isOpen}
-                onEventSubmit={eventSubmit}
                 event={eventAdding!}
                 isAdding={isAdding}
                 recruiterName={resources.filter(r => r.id === eventAdding?.resourceId)[0]?.name}
+                onEventSubmit={eventSubmit}
+                onCancel={() => setIsOpen(false)}
             />
         </div>
     );

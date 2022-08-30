@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import SelectItem from "../../../SelectItem/SelectItem";
+import SelectItem from "../../../../UiKit/SelectItem/SelectItem";
 import s from "./CalendarHeader.module.css";
 import { SelectChangeEvent } from "@mui/material";
 import { getHour, getTimeFromHours } from "../../../../Helpers/DateTimeHelpers";
