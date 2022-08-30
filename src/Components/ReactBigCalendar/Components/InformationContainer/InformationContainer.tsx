@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useMemo, useState, useEffect } from "react";
 import s from "./InformationContainer.module.css";
 import { RequiterInfo } from "../../../../Types/RequiterInfo";
 import { createTitleFromHours } from "../../../../Helpers/CreateTitle";
@@ -49,6 +49,12 @@ const InformationContainer: FC<IInformationContainerProps> = ({
     const [workTimeStart, setDayStart] = useState<Time>(leftTime);
     const [workTimeEnd, setDayEnd] = useState<Time>(rightTime);
     const [isTimeWrong, setIsTimeWrong] = useState(false);
+
+    useEffect(() => {
+        setDayEnd(rightTime)
+        setDayStart(leftTime)
+    }, [leftTime, rightTime])
+    
 
     const editingEvent = (eventEditing: ScheduleEvent) => {
         if (parseInt(workTimeStart) >= parseInt(workTimeEnd)) {

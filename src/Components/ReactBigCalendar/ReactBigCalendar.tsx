@@ -177,12 +177,14 @@ const ReactBigCalendar: FC = () => {
         setIsOpen(true);
         setEventAdding(event);
         setIsAdding(false);
-        setSelectedEvent(null)
+        setSelectedEvent(event)
     };
 
     const editEvent = (schedulerData: SchedulerData, event: ScheduleEvent) => {
         setData(createData(schedulerData, event));
         setSelectedEvent(event);
+        setEventAdding(event);
+        eventItemClick(schedulerData, event)
         setIsEditing(true);
     };
 
@@ -201,6 +203,14 @@ const ReactBigCalendar: FC = () => {
 
     const eventSubmit = (submit: boolean, isAdding: boolean) => {
         setIsOpen(false);
+        if (isEditing) {
+            let newEvents = events.filter(obj => obj.id != selectedEvent?.id)
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            dispatch(editRecruiterEventAction(eventAdding));
+            setIsEditing(false)
+            return
+        }
         if (submit && eventAdding) {
             if (isAdding) {
                 dispatch(addRecruiterEventAction(eventAdding));
@@ -209,6 +219,10 @@ const ReactBigCalendar: FC = () => {
             }
         }
     };
+
+    const conflictOccurred = (schedulerData: SchedulerData, action: string, event: ScheduleEvent) => {
+        alert(`Conflict occurred. {action: ${action}, event: ${event}`);
+    }
 
     const customPopover = (
         schedulerData: SchedulerData,
@@ -247,6 +261,7 @@ const ReactBigCalendar: FC = () => {
                         // @ts-ignore
                         newEvent={addingEvent}
                         eventItemPopoverTemplateResolver={customPopover}
+                        conflictOccured={conflictOccurred}
                     />
                 </div>
                 {selectedEvent && selectData && (
