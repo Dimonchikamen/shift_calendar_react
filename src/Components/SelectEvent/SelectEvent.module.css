@@ -1,9 +1,0 @@
-.select_event_container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.select_event {
-    width: 250px;
-}
