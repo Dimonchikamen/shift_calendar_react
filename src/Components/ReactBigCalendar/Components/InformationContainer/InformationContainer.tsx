@@ -42,9 +42,9 @@ const InformationContainer: FC<IInformationContainerProps> = ({
     eventEditing,
     onEditEvent,
 }) => {
-    const dayStart = useAppSelector(state => state.main.config.dayStartFrom);
-    const dayEnd = useAppSelector(state => state.main.config.dayStopTo);
-    const recruiters = useAppSelector(state => state.main.recruiters);
+    const dayStart = useAppSelector(state => state.workDayState.state.config.dayStartFrom)!;
+    const dayEnd = useAppSelector(state => state.workDayState.state.config.dayStopTo)!;
+    const recruiters = useAppSelector(state => state.workDayState.state.recruiters);
     const options: Time[] = getOptions(dayStart, dayEnd);
     const mergedInterviewsInfo = useMemo(() => mergeInterviewsInfo(data.interviews), [data]);
     const [leftTime, rightTime] = useMemo(() => data.workTimeTitle.split(" - "), [data.workTimeTitle]);

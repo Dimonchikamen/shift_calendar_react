@@ -2,6 +2,7 @@ import { ViewTypes } from "react-big-scheduler";
 import { MainActions } from "../Types/MainReducerTypes";
 import { ActionTypes } from "../ActionTypes";
 import { getCopy } from "../Helpers/CopyHelper";
+import { WorkDayTypes } from "../Types/WorkDayTypes";
 
 const initialState = {
     role: "user",
@@ -169,69 +170,69 @@ const resize = (config: typeof initialState.config) => {
 };
 
 const mainReducer = (state = initialState, action: MainActions) => {
-    if (action.type === ActionTypes.CHANGE_EVENT) {
-        return state;
-    } else if (action.type === ActionTypes.CHANGE_END_DAY) {
-        const copy = getCopy(state, true);
-        copy.config.dayStopTo = action.payload;
-        copy.config = resize(copy.config);
-        return copy;
-    } else if (action.type === ActionTypes.CHANGE_START_DAY) {
-        const copy = getCopy(state, true);
-        copy.config.dayStartFrom = action.payload;
-        copy.config = resize(copy.config);
-        return copy;
-    } else if (action.type === ActionTypes.CHANGE_INTERVIEW_TIME) {
-        const copy = getCopy(state, true);
-        copy.config.minuteStep = action.payload;
-        copy.config = resize(copy.config);
-        return copy;
-    } else if (action.type === ActionTypes.CHANGE_VIEW_TYPE) {
-        const copy = getCopy(state);
-        copy.viewType = action.payload;
-        return copy;
-    } else if (action.type === ActionTypes.RESIZE) {
-        const copy = getCopy(state, true);
-        copy.config = resize(copy.config);
-        return copy;
-    } else if (action.type === ActionTypes.ADD_RECRUITER_EVENT) {
-        const copy = getCopy(state, false, true, true);
-        copy.recruiters
-            .find(r => r.id === Number(action.payload.resourceId))
-            ?.workedTimes.push({
-                id: action.payload.id,
-                events: copy.events,
-                start: action.payload.start,
-                end: action.payload.end,
-                interviews: [],
-            });
-        return copy;
-    } else if (action.type === ActionTypes.REMOVE_RECRUITER_EVENT) {
-        const copy = getCopy(state, false, true, true);
-        const recruiter = copy.recruiters.find(r => r.id === Number(action.payload.resourceId));
-        const index = recruiter?.workedTimes.findIndex(e => e.id === action.payload.id);
-        if (index !== undefined) {
-            recruiter?.workedTimes.splice(index, 1);
-            return copy;
-        }
-        return state;
-    } else if (action.type === ActionTypes.EDIT_RECRUITER_EVENT) {
-        const copy = getCopy(state, false, true, true);
-        const recruiter = copy.recruiters.find(r => r.id === Number(action.payload.resourceId));
-        const index = recruiter?.workedTimes.findIndex(e => e.id === action.payload.id);
-        if (recruiter && index !== undefined) {
-            recruiter.workedTimes[index] = {
-                ...recruiter.workedTimes[index],
-                start: action.payload.start,
-                end: action.payload.end,
-                interviews: [...action.payload.interviews],
-            };
-            return copy;
-        }
-        return state;
-    } else {
-        return state;
-    }
+    // if (action.type === ActionTypes.CHANGE_EVENT_SUCCESS) {
+    //     return state;
+    // } else if (action.type === ActionTypes.CHANGE_END_DAY_SUCCESS) {
+    //     const copy = getCopy(state, true);
+    //     copy.config.dayStopTo = action.payload;
+    //     //copy.config = resize(copy.config);
+    //     return copy;
+    // } else if (action.type === ActionTypes.CHANGE_START_DAY_SUCCESS) {
+    //     const copy = getCopy(state, true);
+    //     copy.config.dayStartFrom = action.payload;
+    //     //copy.config = resize(copy.config);
+    //     return copy;
+    // } else if (action.type === ActionTypes.CHANGE_INTERVIEW_TIME_SUCCESS) {
+    //     const copy = getCopy(state, true);
+    //     copy.config.minuteStep = action.payload;
+    //     //copy.config = resize(copy.config);
+    //     return copy;
+    // } else if (action.type === ActionTypes.CHANGE_VIEW_TYPE) {
+    //     const copy = getCopy(state);
+    //     copy.viewType = action.payload;
+    //     return copy;
+    // } else if (action.type === ActionTypes.RESIZE) {
+    //     const copy = getCopy(state, true);
+    //     //copy.config = resize(copy.config);
+    //     return copy;
+    // } else if (action.type === ActionTypes.ADD_RECRUITER_EVENT_SUCCESS) {
+    //     const copy = getCopy(state, false, true, true);
+    //     copy.recruiters
+    //         .find(r => r.id === Number(action.payload.resourceId))
+    //         ?.workedTimes.push({
+    //             id: action.payload.id,
+    //             events: copy.events,
+    //             start: action.payload.start,
+    //             end: action.payload.end,
+    //             interviews: [],
+    //         });
+    //     return copy;
+    // } else if (action.type === ActionTypes.REMOVE_RECRUITER_EVENT_SUCCESS) {
+    //     const copy = getCopy(state, false, true, true);
+    //     const recruiter = copy.recruiters.find(r => r.id === Number(action.payload.resourceId));
+    //     const index = recruiter?.workedTimes.findIndex(e => e.id === action.payload.id);
+    //     if (index !== undefined) {
+    //         recruiter?.workedTimes.splice(index, 1);
+    //         return copy;
+    //     }
+    //     return state;
+    // } else if (action.type === ActionTypes.EDIT_RECRUITER_EVENT_SUCCESS) {
+    //     const copy = getCopy(state, false, true, true);
+    //     const recruiter = copy.recruiters.find(r => r.id === Number(action.payload.resourceId));
+    //     const index = recruiter?.workedTimes.findIndex(e => e.id === action.payload.id);
+    //     if (recruiter && index !== undefined) {
+    //         recruiter.workedTimes[index] = {
+    //             ...recruiter.workedTimes[index],
+    //             start: action.payload.start,
+    //             end: action.payload.end,
+    //             interviews: [...action.payload.interviews],
+    //         };
+    //         return copy;
+    //     }
+    //     return state;
+    // } else {
+    //     return state;
+    // }
 };
 
 export default mainReducer;

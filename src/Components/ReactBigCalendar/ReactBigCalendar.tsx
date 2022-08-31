@@ -24,10 +24,16 @@ import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents
 import { resizeAction } from "../../Redux/Actions/ResizeAction";
 import Popover from "./Components/Popover/Popover";
 import { hasOverlap } from "../../Helpers/HasOverlap";
-import { ServerAPI } from "../../API/ServerAPI";
 import PopupError from "../../UiKit/Popup/ErrorDialog/ErrorDialog";
 import { CircularProgress } from "@mui/material";
 import Backdrop from "@mui/material/Backdrop";
+import Alert from "@mui/material/Alert";
+import { getStartDayRequest } from "../../Redux/Actions/WorkDayActions/GetStartDayActions";
+import { getEndDayRequest } from "../../Redux/Actions/WorkDayActions/GetEndDayActions";
+import { getInterviewTimeRequest } from "../../Redux/Actions/InterviewTimActions/GetInterviewTimeActions";
+import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
+import { getRecruitersRequest } from "../../Redux/Actions/RecruitersActions/GetRecruitersActions";
+import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
@@ -35,12 +41,16 @@ export const DATE_FORMAT = "YYYY-MM-DD H:mm";
 moment.locale("ru-ru");
 
 const ReactBigCalendar: FC = () => {
-    const recruiters = useAppSelector(state => state.main.recruiters);
-    const [resources, events] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters]);
-    const viewType = useAppSelector(state => state.main.viewType);
-    const config = useAppSelector(state => state.main.config);
+    // const recruiters = useAppSelector(state => state.main.recruiters);
+    const { pending, changePending, state, error, changeError } = useAppSelector(state => state.workDayState);
+    const viewType = state.viewType;
+    const recruiters = state.recruiters;
+    const config = state.config;
+    const behaviours = state.behaviours;
     const interviewDuration = config.minuteStep;
-    const behaviours = useAppSelector(state => state.main.behaviours);
+    const [resources, events] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters]);
+    // const viewType = useAppSelector(state => state.main.viewType);
+    // const behaviours = useAppSelector(state => state.main.behaviours);
     const dispatch = useAppDispatch();
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -61,16 +71,13 @@ const ReactBigCalendar: FC = () => {
         data.setEvents(events);
         return { data };
     });
-    const [isPending, setIsPending] = useState(true);
-
-    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
-        ServerAPI.getDayEnd();
-        setTimeout(() => {
-            setIsPending(false);
-            setIsError(true);
-        }, 2000);
+        dispatch(getStartDayRequest());
+        dispatch(getEndDayRequest());
+        dispatch(getInterviewTimeRequest());
+        dispatch(getEventsRequest());
+        // dispatch(getRecruitersRequest());
     }, []);
 
     const forceResize = () => {
@@ -98,7 +105,7 @@ const ReactBigCalendar: FC = () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const recruiter = schedulerData.resources.find((r: Resource) => r.id === event.resourceId);
-        const availableInterviewTimes = getAvailableTimes(event, event.interviews, interviewDuration);
+        const availableInterviewTimes = getAvailableTimes(event, event.interviews, interviewDuration!);
         return {
             name: recruiter.name,
             workTimeTitle: event.title,
@@ -240,56 +247,66 @@ const ReactBigCalendar: FC = () => {
         );
     };
 
-    return (
-        <div className={s.table_container}>
-            <Backdrop
-                sx={{ zIndex: 999 }}
-                open={isPending}
-            >
-                <div className={s.loader_container}>
-                    <CircularProgress sx={{ margin: "8px 8px 0 8px" }} />
+    if (pending) {
+        return <CircularProgress />;
+    } else if (error) {
+        return (
+            <Alert severity="error">
+                Возникла ошибка при получении запроса с сервера. Или нужно поменять стейт isError на false...
+            </Alert>
+        );
+    } else {
+        return (
+            <div className={s.table_container}>
+                <Backdrop
+                    sx={{ zIndex: 999 }}
+                    open={changePending}
+                >
+                    <div className={s.loader_container}>
+                        <CircularProgress sx={{ margin: "8px 8px 0 8px" }} />
+                    </div>
+                </Backdrop>
+                <PopupError
+                    isOpen={Boolean(changeError)}
+                    title={"Что-то пошло не так..."}
+                    errorCode={502}
+                    onCancel={() => dispatch(closeErrorWindowAction())}
+                />
+                <CalendarHeader />
+                <div className={s.scheduler_container}>
+                    <div>
+                        <Scheduler
+                            schedulerData={viewModel.data}
+                            prevClick={prevClick}
+                            nextClick={nextClick}
+                            onSelectDate={selectDate}
+                            onViewChange={viewChange}
+                            eventItemClick={eventItemClick}
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-ignore
+                            newEvent={addingEvent}
+                            eventItemPopoverTemplateResolver={customPopover}
+                        />
+                    </div>
+                    {selectedEvent && selectData && (
+                        <InformationContainer
+                            data={selectData}
+                            isEditing={isEditing}
+                            eventEditing={eventAdding!}
+                            onEditEvent={editingEvent}
+                        />
+                    )}
                 </div>
-            </Backdrop>
-            <PopupError
-                isOpen={isError}
-                title={"Что-то пошло не так..."}
-                errorCode={502}
-                onCancel={() => setIsError(false)}
-            />
-            <CalendarHeader />
-            <div className={s.scheduler_container}>
-                <div>
-                    <Scheduler
-                        schedulerData={viewModel.data}
-                        prevClick={prevClick}
-                        nextClick={nextClick}
-                        onSelectDate={selectDate}
-                        onViewChange={viewChange}
-                        eventItemClick={eventItemClick}
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-ignore
-                        newEvent={addingEvent}
-                        eventItemPopoverTemplateResolver={customPopover}
-                    />
-                </div>
-                {selectedEvent && selectData && (
-                    <InformationContainer
-                        data={selectData}
-                        isEditing={isEditing}
-                        eventEditing={eventAdding!}
-                        onEditEvent={editingEvent}
-                    />
-                )}
+                <PopUp
+                    isOpen={isOpen}
+                    event={eventAdding!}
+                    isAdding={isAdding}
+                    recruiterName={resources.filter(r => r.id === eventAdding?.resourceId)[0]?.name}
+                    onEventSubmit={eventSubmit}
+                    onCancel={() => setIsOpen(false)}
+                />
             </div>
-            <PopUp
-                isOpen={isOpen}
-                event={eventAdding!}
-                isAdding={isAdding}
-                recruiterName={resources.filter(r => r.id === eventAdding?.resourceId)[0]?.name}
-                onEventSubmit={eventSubmit}
-                onCancel={() => setIsOpen(false)}
-            />
-        </div>
-    );
+        );
+    }
 };
 export default widthDragDropContext(ReactBigCalendar);

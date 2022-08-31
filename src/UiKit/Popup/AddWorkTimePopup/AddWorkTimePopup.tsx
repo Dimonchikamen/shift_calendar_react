@@ -20,8 +20,8 @@ interface IAddWorkingTimePopupProps {
 }
 
 const AddWorkTimePopup: FC<IAddWorkingTimePopupProps> = ({ title, isOpen, onSubmit, onCancel }) => {
-    const min = useAppSelector(state => state.main.config.dayStartFrom);
-    const max = useAppSelector(state => state.main.config.dayStopTo);
+    const min = useAppSelector(state => state.workDayState.state.config.dayStartFrom)!;
+    const max = useAppSelector(state => state.workDayState.state.config.dayStopTo)!;
     const [currentStart, setStart] = useState(getTimeFromHours(min));
     const [currentEnd, setEnd] = useState(getTimeFromHours(max));
 

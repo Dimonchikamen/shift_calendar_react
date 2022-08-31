@@ -1,7 +1,7 @@
-import { STATE } from "../Reducers/MainReducer";
+import { littleState } from "../Reducers/WorkDayReducer";
 
 export const getCopy = (
-    state: STATE,
+    state: littleState,
     configIsDepthCopy = false,
     recruitersIsDepthCopy = false,
     workedTimesIsDepthCopy = false
