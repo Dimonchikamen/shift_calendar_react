@@ -25,9 +25,9 @@ import { resizeAction } from "../../Redux/Actions/ResizeAction";
 import Popover from "./Components/Popover/Popover";
 import { hasOverlap } from "../../Helpers/HasOverlap";
 import { ServerAPI } from "../../API/ServerAPI";
-import Popup from "../../UiKit/Popup/Popup";
+import PopupError from "../../UiKit/Popup/ErrorDialog/ErrorDialog";
 import { CircularProgress } from "@mui/material";
-import Alert from "@mui/material/Alert";
+import Backdrop from "@mui/material/Backdrop";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
@@ -63,12 +63,13 @@ const ReactBigCalendar: FC = () => {
     });
     const [isPending, setIsPending] = useState(true);
 
-    const [isError, setIsError] = useState(true);
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
         ServerAPI.getDayEnd();
         setTimeout(() => {
             setIsPending(false);
+            setIsError(true);
         }, 2000);
     }, []);
 
@@ -239,54 +240,56 @@ const ReactBigCalendar: FC = () => {
         );
     };
 
-    if (isPending) {
-        return <CircularProgress />;
-    } else {
-        if (!isError) {
-            return (
-                <div className={s.table_container}>
-                    <CalendarHeader />
-                    <div className={s.scheduler_container}>
-                        <div>
-                            <Scheduler
-                                schedulerData={viewModel.data}
-                                prevClick={prevClick}
-                                nextClick={nextClick}
-                                onSelectDate={selectDate}
-                                onViewChange={viewChange}
-                                eventItemClick={eventItemClick}
-                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                // @ts-ignore
-                                newEvent={addingEvent}
-                                eventItemPopoverTemplateResolver={customPopover}
-                            />
-                        </div>
-                        {selectedEvent && selectData && (
-                            <InformationContainer
-                                data={selectData}
-                                isEditing={isEditing}
-                                eventEditing={eventAdding!}
-                                onEditEvent={editingEvent}
-                            />
-                        )}
-                    </div>
-                    <PopUp
-                        isOpen={isOpen}
-                        event={eventAdding!}
-                        isAdding={isAdding}
-                        recruiterName={resources.filter(r => r.id === eventAdding?.resourceId)[0]?.name}
-                        onEventSubmit={eventSubmit}
-                        onCancel={() => setIsOpen(false)}
+    return (
+        <div className={s.table_container}>
+            <Backdrop
+                sx={{ zIndex: 999 }}
+                open={isPending}
+            >
+                <div className={s.loader_container}>
+                    <CircularProgress sx={{ margin: "8px 8px 0 8px" }} />
+                </div>
+            </Backdrop>
+            <PopupError
+                isOpen={isError}
+                title={"Что-то пошло не так..."}
+                errorCode={502}
+                onCancel={() => setIsError(false)}
+            />
+            <CalendarHeader />
+            <div className={s.scheduler_container}>
+                <div>
+                    <Scheduler
+                        schedulerData={viewModel.data}
+                        prevClick={prevClick}
+                        nextClick={nextClick}
+                        onSelectDate={selectDate}
+                        onViewChange={viewChange}
+                        eventItemClick={eventItemClick}
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        newEvent={addingEvent}
+                        eventItemPopoverTemplateResolver={customPopover}
                     />
                 </div>
-            );
-        } else {
-            return (
-                <Alert severity="error">
-                    Возникла ошибка при получении запроса с сервера. Или нужно поменять стейт isError на false...
-                </Alert>
-            );
-        }
-    }
+                {selectedEvent && selectData && (
+                    <InformationContainer
+                        data={selectData}
+                        isEditing={isEditing}
+                        eventEditing={eventAdding!}
+                        onEditEvent={editingEvent}
+                    />
+                )}
+            </div>
+            <PopUp
+                isOpen={isOpen}
+                event={eventAdding!}
+                isAdding={isAdding}
+                recruiterName={resources.filter(r => r.id === eventAdding?.resourceId)[0]?.name}
+                onEventSubmit={eventSubmit}
+                onCancel={() => setIsOpen(false)}
+            />
+        </div>
+    );
 };
 export default widthDragDropContext(ReactBigCalendar);
