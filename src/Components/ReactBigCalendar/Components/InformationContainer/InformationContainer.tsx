@@ -37,7 +37,7 @@ interface IInformationContainerProps {
 
 const InformationContainer: FC<IInformationContainerProps> = ({
     data,
-    role = "user",
+    role = "admin",
     isEditing,
     eventEditing,
     onEditEvent,
@@ -52,6 +52,11 @@ const InformationContainer: FC<IInformationContainerProps> = ({
     const [workTimeStart, setDayStart] = useState<Time>(leftTime);
     const [workTimeEnd, setDayEnd] = useState<Time>(rightTime);
     const [isTimeWrong, setIsTimeWrong] = useState(false);
+    //TODO: сделать прием id собеса и просмотр собесов
+    const [currentEvents, setCurrentEvents] = useState(
+        mergedInterviewsInfo[mergedInterviewsInfo.findIndex(ind => ind.id === 323)]
+    );
+    const [currentInterview, setCurrentInterview] = useState(data.interviews.find(a => a.id === currentEvents.id));
 
     useEffect(() => {
         setDayEnd(rightTime);
@@ -82,42 +87,78 @@ const InformationContainer: FC<IInformationContainerProps> = ({
                 <span className={s.font_size_18}>Рекрутёр:</span>
                 <span className={s.time}>{data.name}</span>
             </div>
-            {!isEditing ? (
-                <>
-                    <div className={s.work_time}>
-                        <span className={s.font_size_18}>Рабочий промежуток времени:</span>
-                        <span className={s.time}>{data.workTimeTitle}</span>
-                    </div>
-                    <div className={s.available_interviews}>
-                        <span className={s.font_size_18}>Доступные собеседования:</span>
-                        {data.availableInterviewTimes.map((t, i) => (
-                            <span
-                                key={`available_time_${i}`}
-                                className={s.time}
-                            >
-                                {t}
-                            </span>
-                        ))}
-                        {mergedInterviewsInfo.map(interview => (
-                            <div
-                                key={`interview_${interview.id}`}
-                                className={s.interview}
-                            >
-                                <span>{interview.name}</span>
-                                <div className={s.interview_times}>
-                                    {interview.bookedTimes.map((t, i) => (
-                                        <span
-                                            key={`booked_time_${interview.id}_${i}`}
-                                            className={s.time}
-                                        >
-                                            {t}
-                                        </span>
-                                    ))}
+
+            {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                role === "coordinator" || role === "admin" ? (
+                    <>
+                        <div className={s.work_time}>
+                            <span className={s.font_size_18}>Время собеседования:</span>
+                            <span className={s.time}>{currentEvents.bookedTimes[0]}</span>
+                        </div>
+                        <div className={s.work_time}>
+                            <span className={s.font_size_18}>Волонтер:</span>
+                            <span className={s.time}>{currentInterview?.name}</span>
+                        </div>
+                        <div className={s.work_time}>
+                            <span className={s.font_size_18}>Роль:</span>
+                            <span className={s.time}>{currentInterview?.role}</span>
+                        </div>
+                        <div className={s.work_time}>
+                            <span className={s.font_size_18}>Контакты:</span>
+                            <span className={s.time}>{currentInterview?.phone}</span>
+                        </div>
+                        <div className={s.work_time}>
+                            <span className={s.font_size_18}>Способ связи:</span>
+                            <span className={s.time}>{currentInterview?.contacts}</span>
+                        </div>
+                        <div className={s.work_time}>
+                            <a href="#">
+                                <span className={s.time}>Анкета волонтера</span>
+                            </a>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className={s.work_time}>
+                            <span className={s.font_size_18}>Рабочий промежуток времени:</span>
+                            <span className={s.time}>{data.workTimeTitle}</span>
+                        </div>
+                        <div className={s.available_interviews}>
+                            <span className={s.font_size_18}>Доступные собеседования:</span>
+                            {data.availableInterviewTimes.map((t, i) => (
+                                <span
+                                    key={`available_time_${i}`}
+                                    className={s.time}
+                                >
+                                    {t}
+                                </span>
+                            ))}
+                            {mergedInterviewsInfo.map(interview => (
+                                <div
+                                    key={`interview_${interview.id}`}
+                                    className={s.interview}
+                                >
+                                    <span>{interview.name}</span>
+                                    <div className={s.interview_times}>
+                                        {interview.bookedTimes.map((t, i) => (
+                                            <span
+                                                key={`booked_time_${interview.id}_${i}`}
+                                                className={s.time}
+                                            >
+                                                {t}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
-                </>
+                            ))}
+                        </div>
+                    </>
+                )
+            }
+            {!isEditing ? (
+                <></>
             ) : (
                 <>
                     <div className={s.work_time}>
