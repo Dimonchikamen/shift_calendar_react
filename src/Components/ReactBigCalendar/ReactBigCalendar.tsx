@@ -32,8 +32,9 @@ import { getStartDayRequest } from "../../Redux/Actions/WorkDayActions/GetStartD
 import { getEndDayRequest } from "../../Redux/Actions/WorkDayActions/GetEndDayActions";
 import { getInterviewTimeRequest } from "../../Redux/Actions/InterviewTimActions/GetInterviewTimeActions";
 import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
-import { getRecruitersRequest } from "../../Redux/Actions/RecruitersActions/GetRecruitersActions";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
+import { filterEvents } from "../../Helpers/FilterEvents";
+import { getRecruitersRequest } from "../../Redux/Actions/RecruitersActions/GetRecruitersActions";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
@@ -42,21 +43,34 @@ moment.locale("ru-ru");
 
 const ReactBigCalendar: FC = () => {
     // const recruiters = useAppSelector(state => state.main.recruiters);
-    const { pending, changePending, state, error, changeError } = useAppSelector(state => state.workDayState);
+    const {
+        rolePending,
+        allEventsPending,
+        dayStartPending,
+        dayEndPending,
+        interviewTimePending,
+        recruitersPending,
+        changePending,
+        state,
+        error,
+        changeError,
+    } = useAppSelector(state => state.workDayState);
     const viewType = state.viewType;
-    const recruiters = state.recruiters;
+    const recruiters = state.currentRecruiters;
     const config = state.config;
     const behaviours = state.behaviours;
     const interviewDuration = config.minuteStep;
-    const [resources, events] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters]);
-    // const viewType = useAppSelector(state => state.main.viewType);
-    // const behaviours = useAppSelector(state => state.main.behaviours);
+    const currentEvent = state.currentEvent;
+    const [resources, scheduleEvents] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters, currentEvent]); //{
+    //     const res = createResourcesAndEvents(recruiters);
+    //     res[1] = filterEvents(res[1], currentEvent);
+    //     return res;
+    // }, [recruiters, currentEvent]);
     const dispatch = useAppDispatch();
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
     const [isAdding, setIsAdding] = useState<boolean>(true);
-
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
     const [selectData, setData] = useState<RequiterInfo | null>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -68,23 +82,22 @@ const ReactBigCalendar: FC = () => {
         // @ts-ignore
         data.setLocaleMoment(moment);
         data.setResources(resources);
-        data.setEvents(events);
+        data.setEvents(scheduleEvents);
         return { data };
     });
 
     useEffect(() => {
+        dispatch(getRecruitersRequest());
         dispatch(getStartDayRequest());
         dispatch(getEndDayRequest());
         dispatch(getInterviewTimeRequest());
         dispatch(getEventsRequest());
-        // dispatch(getRecruitersRequest());
     }, []);
 
-    const forceResize = () => {
-        dispatch(resizeAction());
-    };
-
     useEffect(() => {
+        const forceResize = () => {
+            dispatch(resizeAction());
+        };
         window.addEventListener("resize", forceResize);
         forceResize();
         return () => {
@@ -96,10 +109,10 @@ const ReactBigCalendar: FC = () => {
         setView(() => {
             const data = new SchedulerData(currentDate, viewType, false, false, config, behaviours);
             data.setResources(resources);
-            data.setEvents(events);
+            data.setEvents(scheduleEvents);
             return { data };
         });
-    }, [config, resources, events, viewType, behaviours]);
+    }, [config, resources, scheduleEvents, viewType, behaviours]);
 
     const createData = (schedulerData: SchedulerData, event: ScheduleEvent): RequiterInfo => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -116,7 +129,7 @@ const ReactBigCalendar: FC = () => {
 
     const setSchedulerData = (schedulerData: SchedulerData) => {
         schedulerData.setResources(resources);
-        schedulerData.setEvents(events);
+        schedulerData.setEvents(scheduleEvents);
         setCurrentDate(schedulerData.startDate);
         setView({ data: schedulerData });
     };
@@ -166,7 +179,7 @@ const ReactBigCalendar: FC = () => {
             bgColor: "#D9EDF7",
             interviews: [],
         };
-        events
+        scheduleEvents
             .filter(event => event.resourceId === ev.resourceId)
             .forEach(elem => {
                 if (hasOverlap(elem, ev)) {
@@ -247,14 +260,17 @@ const ReactBigCalendar: FC = () => {
         );
     };
 
-    if (pending) {
+    if (
+        rolePending ||
+        allEventsPending ||
+        dayStartPending ||
+        dayEndPending ||
+        interviewTimePending ||
+        recruitersPending
+    ) {
         return <CircularProgress />;
     } else if (error) {
-        return (
-            <Alert severity="error">
-                Возникла ошибка при получении запроса с сервера. Или нужно поменять стейт isError на false...
-            </Alert>
-        );
+        return <Alert severity="error">Возникла ошибка при получении запроса с сервера.</Alert>;
     } else {
         return (
             <div className={s.table_container}>

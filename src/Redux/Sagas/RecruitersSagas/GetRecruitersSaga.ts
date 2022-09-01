@@ -5,11 +5,11 @@ import { Recruiter } from "../../../Types/Recruiter";
 import { getRecruitersFailure, getRecruitersSuccess } from "../../Actions/RecruitersActions/GetRecruitersActions";
 import { GetRecruitersRequest } from "../../Types/RecruitersTypes";
 
-const getRecruitersFetch = (event: string): Promise<Recruiter[]> => ServerAPI.getRecruiters(event);
+const getRecruitersFetch = (start?: Date, end?: Date): Promise<Recruiter[]> => ServerAPI.getRecruiters(start, end);
 
-function* getRecruiters({ payload }: GetRecruitersRequest) {
+function* getRecruiters({ payload: { start, end } }: GetRecruitersRequest) {
     try {
-        const response: Recruiter[] = yield call(getRecruitersFetch, payload);
+        const response: Recruiter[] = yield call(getRecruitersFetch, start, end);
         yield put(getRecruitersSuccess(response));
     } catch (e) {
         yield put(getRecruitersFailure({ error: (e as Error).message }));

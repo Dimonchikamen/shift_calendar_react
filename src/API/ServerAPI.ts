@@ -126,33 +126,12 @@ export class ServerAPI {
 
     //Запрос на получение рекрутёров за определённый период времени
     //Тип Recruiter лежит в src/Types/Recruiter.ts
-    static async getRecruiters(event: string, start?: Date, end?: Date) {
+    static async getRecruiters(start?: Date, end?: Date) {
         for (let i = 0; i < 1000000000; i++) {
             //dasdadsd;
         }
         const url = "http://localhost:3000/";
-        return await axios.get(url).then(response => {
-            if (event === "Все мероприятия") {
-                return recruitersMock;
-            } else {
-                const res: any = [];
-                recruitersMock.forEach(recruiter => {
-                    const res1: any[] = [];
-                    recruiter.workedTimes.forEach(time => {
-                        time.events.forEach(e => {
-                            if (e.toLowerCase() === event.toLowerCase()) {
-                                res1.push(time);
-                            }
-                        });
-                    });
-                    if (res1.length !== 0) {
-                        const copy = { ...recruiter, workedTimes: res1 };
-                        res.push(copy);
-                    }
-                });
-                return res;
-            }
-        }); //response.data)
+        return await axios.get(url).then(response => recruitersMock); //response.data)
     }
 
     // static async changeRecruiters() {
