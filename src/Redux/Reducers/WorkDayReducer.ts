@@ -7,7 +7,7 @@ import { InterviewTimeTypes } from "../Types/InterviewTimeTypes";
 import { Recruiter } from "../../Types/Recruiter";
 import { EventsTypes } from "../Types/EventsTypes";
 import { RecruitersTypes } from "../Types/RecruitersTypes";
-import { filterRecruiters } from "../../Helpers/FilterEvents";
+import { filterRecruiters } from "../../Helpers/Filters";
 
 export type littleState = {
     role: string;

@@ -4,7 +4,7 @@ import { Recruiter } from "../../../Types/Recruiter";
 import { getRecruitersFailure, getRecruitersSuccess } from "../../Actions/RecruitersActions/GetRecruitersActions";
 import { changeEventFailure, changeEventSuccess } from "../../Actions/EventsActions/ChangeEventActions";
 import { ActionTypes } from "../../ActionTypes";
-import { filterRecruiters } from "../../../Helpers/FilterEvents";
+import { filterRecruiters } from "../../../Helpers/Filters";
 import { sortRecruitersAction } from "../../Actions/RecruitersActions/SortRecruitersAction";
 
 //const filterCurrentRecruiters = async (recruiters: Recruiter[], event: string) => filterRecruiters(recruiters, event);
