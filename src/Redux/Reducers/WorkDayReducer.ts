@@ -7,6 +7,7 @@ import { InterviewTimeTypes } from "../Types/InterviewTimeTypes";
 import { Recruiter } from "../../Types/Recruiter";
 import { EventsTypes } from "../Types/EventsTypes";
 import { RecruitersTypes } from "../Types/RecruitersTypes";
+import { filterRecruiters } from "../../Helpers/Filters";
 
 export type littleState = {
     role: string;
@@ -16,10 +17,16 @@ export type littleState = {
     viewType: ViewTypes;
     behaviours: object;
     recruiters: Recruiter[];
+    currentRecruiters: Recruiter[];
 };
 
 export type STate = {
-    pending: boolean;
+    rolePending: boolean;
+    allEventsPending: boolean;
+    recruitersPending: boolean;
+    dayStartPending: boolean;
+    dayEndPending: boolean;
+    interviewTimePending: boolean;
     changePending: boolean;
     state: littleState;
     error: string | null;
@@ -27,7 +34,12 @@ export type STate = {
 };
 
 const defaultState: STate = {
-    pending: false,
+    rolePending: false,
+    allEventsPending: false,
+    recruitersPending: false,
+    dayStartPending: false,
+    dayEndPending: false,
+    interviewTimePending: false,
     changePending: false,
     state: {
         role: "user",
@@ -60,6 +72,7 @@ const defaultState: STate = {
             isNonWorkingTimeFunc: () => false,
         },
         recruiters: [],
+        currentRecruiters: [],
     },
     error: null,
     changeError: null,
@@ -93,14 +106,16 @@ const WorkDayReducer = (
     state = defaultState,
     action: MainActions | WorkDayTypes | InterviewTimeTypes | EventsTypes | RecruitersTypes
 ): typeof defaultState => {
-    if (
-        action.type === ActionTypes.GET_START_DAY_REQUEST ||
-        action.type === ActionTypes.GET_END_DAY_REQUEST ||
-        action.type === ActionTypes.GET_INTERVIEW_TIME_REQUEST ||
-        action.type === ActionTypes.GET_EVENTS_REQUEST ||
-        action.type === ActionTypes.GET_RECRUITERS_REQUEST
-    ) {
-        return { ...state, pending: true };
+    if (action.type === ActionTypes.GET_START_DAY_REQUEST) {
+        return { ...state, dayStartPending: true };
+    } else if (action.type === ActionTypes.GET_END_DAY_REQUEST) {
+        return { ...state, dayEndPending: true };
+    } else if (action.type === ActionTypes.GET_INTERVIEW_TIME_REQUEST) {
+        return { ...state, interviewTimePending: true };
+    } else if (action.type === ActionTypes.GET_EVENTS_REQUEST) {
+        return { ...state, allEventsPending: true };
+    } else if (action.type === ActionTypes.GET_RECRUITERS_REQUEST) {
+        return { ...state, recruitersPending: true };
     } else if (
         action.type === ActionTypes.CHANGE_START_DAY_REQUEST ||
         action.type === ActionTypes.CHANGE_END_DAY_REQUEST ||
@@ -115,10 +130,12 @@ const WorkDayReducer = (
         const copy = getCopy(state.state, true);
         copy.config.dayStartFrom = action.payload;
         copy.config = resize(copy.config);
+        const dayStartPending = action.type === ActionTypes.GET_START_DAY_SUCCESS ? false : state.dayStartPending;
+        const changePending = action.type === ActionTypes.CHANGE_START_DAY_SUCCESS ? false : state.changePending;
         return {
             ...state,
-            pending: false,
-            changePending: false,
+            dayStartPending,
+            changePending,
             state: copy,
             error: null,
             changeError: null,
@@ -127,22 +144,31 @@ const WorkDayReducer = (
         const copy = getCopy(state.state, true);
         copy.config.dayStopTo = action.payload;
         copy.config = resize(copy.config);
+        const dayEndPending = action.type === ActionTypes.GET_END_DAY_SUCCESS ? false : state.dayEndPending;
+        const changePending = action.type === ActionTypes.CHANGE_END_DAY_SUCCESS ? false : state.changePending;
         return {
             ...state,
-            pending: false,
-            changePending: false,
+            dayEndPending,
+            changePending,
             state: copy,
             error: null,
             changeError: null,
         };
-    } else if (action.type === ActionTypes.CHANGE_INTERVIEW_TIME_SUCCESS) {
+    } else if (
+        action.type === ActionTypes.GET_INTERVIEW_TIME_SUCCESS ||
+        action.type === ActionTypes.CHANGE_INTERVIEW_TIME_SUCCESS
+    ) {
         const copy = getCopy(state.state, true);
         copy.config.minuteStep = action.payload;
         copy.config = resize(copy.config);
+        const interviewTimePending =
+            action.type === ActionTypes.GET_INTERVIEW_TIME_SUCCESS ? false : state.interviewTimePending;
+        const changePending = action.type === ActionTypes.CHANGE_INTERVIEW_TIME_SUCCESS ? false : state.changePending;
         return {
             ...state,
             state: copy,
-            changePending: false,
+            interviewTimePending,
+            changePending,
             changeError: null,
         };
     } else if (action.type === ActionTypes.GET_EVENTS_SUCCESS) {
@@ -150,7 +176,7 @@ const WorkDayReducer = (
         copy.events = action.payload;
         return {
             ...state,
-            pending: false,
+            allEventsPending: false,
             error: null,
         };
     } else if (action.type === ActionTypes.CHANGE_EVENT_SUCCESS) {
@@ -165,11 +191,19 @@ const WorkDayReducer = (
     } else if (action.type === ActionTypes.GET_RECRUITERS_SUCCESS) {
         const copy = getCopy(state.state);
         copy.recruiters = action.payload;
+        copy.currentRecruiters = action.payload;
         return {
             ...state,
             state: copy,
-            pending: false,
+            recruitersPending: false,
             error: null,
+        };
+    } else if (action.type === ActionTypes.FILTER_RECRUITERS) {
+        const copy = getCopy(state.state, false, true, true);
+        copy.currentRecruiters = filterRecruiters(copy.recruiters, action.payload);
+        return {
+            ...state,
+            state: copy,
         };
     } else if (
         action.type === ActionTypes.GET_START_DAY_FAILURE ||
@@ -178,9 +212,19 @@ const WorkDayReducer = (
         action.type === ActionTypes.GET_EVENTS_FAILURE ||
         action.type === ActionTypes.GET_RECRUITERS_FAILURE
     ) {
+        const dayStartPending = action.type === ActionTypes.GET_START_DAY_FAILURE ? false : state.dayStartPending;
+        const dayEndPending = action.type === ActionTypes.GET_END_DAY_FAILURE ? false : state.dayEndPending;
+        const interviewTimePending =
+            action.type === ActionTypes.GET_INTERVIEW_TIME_FAILURE ? false : state.interviewTimePending;
+        const allEventsPending = action.type === ActionTypes.GET_EVENTS_FAILURE ? false : state.allEventsPending;
+        const recruitersPending = action.type === ActionTypes.GET_RECRUITERS_FAILURE ? false : state.recruitersPending;
         return {
             ...state,
-            pending: false,
+            dayStartPending,
+            dayEndPending,
+            interviewTimePending,
+            allEventsPending,
+            recruitersPending,
             error: action.payload.error,
         };
     } else if (
@@ -207,6 +251,8 @@ const WorkDayReducer = (
             ...state,
             state: copy,
         };
+
+        //TODO>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     } else if (action.type === ActionTypes.ADD_RECRUITER_EVENT_SUCCESS) {
         const copy = getCopy(state.state, false, true, true);
         copy.recruiters
@@ -251,41 +297,12 @@ const WorkDayReducer = (
             };
         }
         return state;
+        //TODO>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     } else if (action.type === ActionTypes.CLOSE_ERROR_WINDOW) {
         return { ...state, changeError: null };
     } else {
         return state;
     }
-    // switch (action.type) {
-    //     case ActionTypes.GET_START_DAY_REQUEST:
-    //     case ActionTypes.GET_END_DAY_REQUEST:
-    //     case ActionTypes.CHANGE_START_DAY_REQUEST:
-    //     case ActionTypes.CHANGE_END_DAY_REQUEST:
-    //         return { ...state, pending: true };
-    //     case ActionTypes.GET_START_DAY_SUCCESS:
-    //     case ActionTypes.CHANGE_START_DAY_SUCCESS:
-    //         return {
-    //             ...state,
-    //             pending: false,
-    //             state: { ...state.state, config: { ...state.state.config, dayStartFrom: action.payload } },
-    //             error: null,
-    //         };
-    //     case ActionTypes.GET_END_DAY_SUCCESS:
-    //     case ActionTypes.CHANGE_END_DAY_SUCCESS:
-    //         return {
-    //             ...state,
-    //             pending: false,
-    //             state: { ...state.state, config: { ...state.state.config, dayStopTo: action.payload } },
-    //             error: null,
-    //         };
-    //     case ActionTypes.GET_START_DAY_FAILURE:
-    //     case ActionTypes.GET_END_DAY_FAILURE:
-    //     case ActionTypes.CHANGE_START_DAY_FAILURE:
-    //     case ActionTypes.CHANGE_END_DAY_FAILURE:
-    //         return { ...state, pending: false, error: action.payload.error };
-    //     default:
-    //         return state;
-    // }
 };
 
 export default WorkDayReducer;

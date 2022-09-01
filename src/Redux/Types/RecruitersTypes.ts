@@ -7,7 +7,7 @@ export interface FailurePayload {
 
 export type GetRecruitersRequest = {
     type: ActionTypes.GET_RECRUITERS_REQUEST;
-    payload: string;
+    payload: { start?: Date; end?: Date };
 };
 
 export type GetRecruitersSuccess = {
@@ -20,4 +20,9 @@ export type GetRecruitersFailure = {
     payload: FailurePayload;
 };
 
-export type RecruitersTypes = GetRecruitersRequest | GetRecruitersSuccess | GetRecruitersFailure;
+export type SortRecruiters = {
+    type: ActionTypes.FILTER_RECRUITERS;
+    payload: string;
+};
+
+export type RecruitersTypes = GetRecruitersRequest | GetRecruitersSuccess | GetRecruitersFailure | SortRecruiters;

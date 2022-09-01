@@ -1,7 +1,13 @@
 import { ActionTypes } from "../ActionTypes";
+import { Recruiter } from "../../Types/Recruiter";
 
 export interface FailurePayload {
     error: string;
+}
+
+export interface ChangeEventRequestPayload {
+    recruiters: Recruiter[];
+    event: string;
 }
 
 export type GetEventsRequest = {
@@ -20,7 +26,7 @@ export type GetEventsFailure = {
 
 export type ChangeEventRequest = {
     type: ActionTypes.CHANGE_EVENT_REQUEST;
-    payload: string;
+    payload: ChangeEventRequestPayload;
 };
 
 export type ChangeEventSuccess = {

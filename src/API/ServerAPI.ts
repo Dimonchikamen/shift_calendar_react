@@ -112,41 +112,26 @@ const recruitersMock = [
 ];
 
 export class ServerAPI {
+    // Получение списка всех мероприятий.
     static async getEvents() {
         const url = "http://localhost:3000/";
         return await axios.get(url).then(response => response.data);
     }
 
-    static async changeEvent(event: string) {
-        const url = "http://localhost:3000/";
-        //TODO... поменять на POST
-        return await axios.get(url).then(response => event);
-    }
+    // static async changeEvent(event: string) {
+    //     const url = "http://localhost:3000/";
+    //     //TODO... поменять на POST
+    //     return await axios.get(url).then(response => event);
+    // }
 
-    static async getRecruiters(event: string) {
+    //Запрос на получение рекрутёров за определённый период времени
+    //Тип Recruiter лежит в src/Types/Recruiter.ts
+    static async getRecruiters(start?: Date, end?: Date) {
+        for (let i = 0; i < 1000000000; i++) {
+            //dasdadsd;
+        }
         const url = "http://localhost:3000/";
-        return await axios.get(url).then(response => {
-            if (event === "Все мероприятия") {
-                return recruitersMock;
-            } else {
-                const res: any = [];
-                recruitersMock.forEach(recruiter => {
-                    const res1: any[] = [];
-                    recruiter.workedTimes.forEach(time => {
-                        time.events.forEach(e => {
-                            if (e.toLowerCase() === event.toLowerCase()) {
-                                res1.push(time);
-                            }
-                        });
-                    });
-                    if (res1.length !== 0) {
-                        const copy = { ...recruiter, workedTimes: res1 };
-                        res.push(copy);
-                    }
-                });
-                return res;
-            }
-        }); //response.data)
+        return await axios.get(url).then(response => recruitersMock); //response.data)
     }
 
     // static async changeRecruiters() {
@@ -154,6 +139,7 @@ export class ServerAPI {
     //     return await axios.post(url).then(response => response.data)
     // }
 
+    //Запрос на получение роли пользователя
     static async getRole() {
         const url = "http://localhost:3000/";
         return await axios.get(url).then(response => "admin"); //response.data)
@@ -164,33 +150,39 @@ export class ServerAPI {
     //     return await axios.post(url).then(response => response.data)
     // }
 
+    //Запрос на получение начала рабочего дня (делает Админ)
     static async getDayStart() {
         const url = "http://localhost:3000/";
         return await axios.get(url).then(response => 9); //response.data)
     }
 
+    //Запрос на изменение начала рабочего дня (делает Админ)
     static async changeDayStart(newStart: number) {
         const url = "http://localhost:3000/";
         //TODO.... переделать на POST
         return await axios.get(url).then(response => newStart); //response.data)
     }
 
+    //Запрос на получение окончания рабочего дня (делает Админ)
     static async getDayEnd() {
         const url = "http://localhost:3000/";
         return await axios.get(url).then(response => 19); //response.data)
     }
 
+    //Запрос на изменение окончания рабочего дня (делает Админ)
     static async changeDayEnd(newEnd: number) {
         const url = "http://localhost:3000/";
         //TODO.... переделать на POST
         return await axios.get(url).then(response => newEnd); //response.data)
     }
 
+    //Запрос на получение длительности собеседования (делает Админ)
     static async getInterviewTime() {
         const url = "http://localhost:3000/";
         return await axios.get(url).then(response => 30); //response.data)
     }
 
+    //Запрос на изменение длительности собеседования (делает Админ)
     static async changeInterviewTime(newInterviewTime: number) {
         const url = "http://localhost:3000/";
         //TODO.... переделать на POST

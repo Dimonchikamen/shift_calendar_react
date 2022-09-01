@@ -6,14 +6,14 @@ import { Recruiter } from "../../../Types/Recruiter";
 import { getRecruitersFailure, getRecruitersSuccess } from "../../Actions/RecruitersActions/GetRecruitersActions";
 
 const getEventsFetch = (): Promise<string[]> => ServerAPI.getEvents();
-const getRecruitersFetch = (event: string): Promise<Recruiter[]> => ServerAPI.getRecruiters(event);
+const getRecruitersFetch = (): Promise<Recruiter[]> => ServerAPI.getRecruiters();
 
 function* getEvents() {
     try {
         const response: string[] = yield call(getEventsFetch);
         yield put(getEventsSuccess(response));
-        const res1: Recruiter[] = yield call(getRecruitersFetch, "Все мероприятия");
-        yield put(getRecruitersSuccess(res1));
+        // const res1: Recruiter[] = yield call(getRecruitersFetch);
+        // yield put(getRecruitersSuccess(res1));
     } catch (e) {
         yield put(getEventsFailure({ error: (e as Error).message }));
         yield put(getRecruitersFailure({ error: (e as Error).message }));

@@ -1,9 +1,10 @@
 import { ActionTypes } from "../../ActionTypes";
 import { ChangeEventFailure, ChangeEventRequest, ChangeEventSuccess, FailurePayload } from "../../Types/EventsTypes";
+import { Recruiter } from "../../../Types/Recruiter";
 
-export const changeEventRequest = (newEvent: string): ChangeEventRequest => ({
+export const changeEventRequest = (recruiters: Recruiter[], event: string): ChangeEventRequest => ({
     type: ActionTypes.CHANGE_EVENT_REQUEST,
-    payload: newEvent,
+    payload: { recruiters, event },
 });
 
 export const changeEventSuccess = (payload: string): ChangeEventSuccess => ({

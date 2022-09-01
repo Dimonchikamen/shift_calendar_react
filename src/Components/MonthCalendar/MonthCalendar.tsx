@@ -65,7 +65,18 @@ const MonthCalendar: FC = () => {
     const [removeEventPopupIsOpen, setRemoveEventPopupOpen] = useState<boolean>(false);
     const [dateForAddWorkTime, setDateForAddWorkTime] = useState<Date>(currentDate);
 
-    const { pending, changePending, state, error, changeError } = useAppSelector(state => state.workDayState);
+    const {
+        rolePending,
+        allEventsPending,
+        dayStartPending,
+        dayEndPending,
+        interviewTimePending,
+        recruitersPending,
+        changePending,
+        state,
+        error,
+        changeError,
+    } = useAppSelector(state => state.workDayState);
     const recruiters = state.recruiters;
     //const recruiters = useAppSelector(state => state.main.recruiters);
     const data = useMemo(() => getMonthData(currentDate.getFullYear(), currentDate.getMonth()), [currentDate]);

@@ -10,11 +10,13 @@ import { changeInterviewTimeRequest } from "../../../../Redux/Actions/InterviewT
 import { changeStartDayRequest } from "../../../../Redux/Actions/WorkDayActions/ChangeStartDayActions";
 import { changeEndDayRequest } from "../../../../Redux/Actions/WorkDayActions/ChangeEndDayActions";
 import { changeEventRequest } from "../../../../Redux/Actions/EventsActions/ChangeEventActions";
+import { changeEventAction } from "../../../../Redux/Actions/ChangeEventAction";
 
 const interviewTimeOptions: Time[] = ["10:00", "12:00", "15:00", "20:00", "30:00", "60:00"];
 const hourOptions: Time[] = getOptions(0, 23);
 
 const CalendarHeader: FC = () => {
+    const recruiters = useAppSelector(state => state.workDayState.state.recruiters);
     const min = getTimeFromHours(useAppSelector(state => state.workDayState.state.config.dayStartFrom)!);
     const max = getTimeFromHours(useAppSelector(state => state.workDayState.state.config.dayStopTo)!);
     const interviewTime = getTimeFromHours(useAppSelector(state => state.workDayState.state.config.minuteStep)!);
@@ -24,7 +26,9 @@ const CalendarHeader: FC = () => {
     const dispatch = useAppDispatch();
 
     const changeEvent = (e: SelectChangeEvent) => {
-        dispatch(changeEventRequest(e.target.value));
+        dispatch(changeEventRequest(recruiters, e.target.value));
+        // dispatch(changeEventAction(e.target.value));
+        // dispatch(getRecruitersRequest(e.target.value));
     };
 
     const changeInterviewTime = (e: SelectChangeEvent) => {

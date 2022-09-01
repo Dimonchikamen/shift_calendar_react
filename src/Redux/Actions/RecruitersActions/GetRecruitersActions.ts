@@ -7,9 +7,9 @@ import {
 } from "../../Types/RecruitersTypes";
 import { Recruiter } from "../../../Types/Recruiter";
 
-export const getRecruitersRequest = (event: string): GetRecruitersRequest => ({
+export const getRecruitersRequest = (start?: Date, end?: Date): GetRecruitersRequest => ({
     type: ActionTypes.GET_RECRUITERS_REQUEST,
-    payload: event,
+    payload: { start, end },
 });
 
 export const getRecruitersSuccess = (payload: Recruiter[]): GetRecruitersSuccess => ({
