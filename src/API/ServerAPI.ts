@@ -1,4 +1,7 @@
 import axios from "axios";
+import { Recruiter } from "../Types/Recruiter";
+import moment from "moment";
+import { DATE_FORMAT } from "../Components/ReactBigCalendar/ReactBigCalendar";
 
 const recruitersMock = [
     {
@@ -124,14 +127,55 @@ export class ServerAPI {
     //     return await axios.get(url).then(response => event);
     // }
 
-    //Запрос на получение рекрутёров за определённый период времени
-    //Тип Recruiter лежит в src/Types/Recruiter.ts
+    // Запрос на получение рекрутёров за определённый период времени
+    // Тип Recruiter лежит в src/Types/Recruiter.ts
     static async getRecruiters(start?: Date, end?: Date) {
         for (let i = 0; i < 1000000000; i++) {
             //dasdadsd;
         }
         const url = "http://localhost:3000/";
         return await axios.get(url).then(response => recruitersMock); //response.data)
+    }
+
+    // Запрос на получение одного рекрутёра по его Id
+    static async getRecruiter(id: number) {
+        const url = "http://localhost:3000/";
+        return await axios.get(url).then(response => recruitersMock); //response.data
+    }
+
+    // Запрос на добавление рабочего времени у рекрутёра
+    // в ответ ожидаем id этого рабочего времени, либо всего этого рекрутёра
+    static async addRecruiterWorkTime(start: Date, end: Date, recruiterId: number, event: string) {
+        const url = "http://localhost:3000/";
+        //TODO... переделать на POST
+        return await axios.get(url /*, { recruiterId, start, end }*/).then(
+            response =>
+                ({
+                    id: recruiterId,
+                    name: "Попов Николай",
+                    workedTimes: [
+                        {
+                            id: 1000001,
+                            events: [event],
+                            start: moment(start).format(DATE_FORMAT),
+                            end: moment(end).format(DATE_FORMAT),
+                            interviews: [],
+                        },
+                    ],
+                } as unknown as Recruiter)
+        ); //response.data);
+    }
+
+    // Запрос на редактирование рабочего времени у рекрутёра
+    static async editRecruiterWorkTime(start: Date, end: Date, recruiterId: number, workTimeId: number) {
+        const url = "http://localhost:3000/";
+        return await axios.post(url, { recruiterId, workTimeId, start, end }).then(response => response.data);
+    }
+
+    // Запрос на удаление рабочего времени у рекрутёра
+    static async removeRecruiterWorkTime(recruiterId: number, workTimeId: number) {
+        const url = "http://localhost:3000/";
+        return await axios.post(url, { recruiterId, workTimeId }).then(response => response.data);
     }
 
     // static async changeRecruiters() {
@@ -150,39 +194,39 @@ export class ServerAPI {
     //     return await axios.post(url).then(response => response.data)
     // }
 
-    //Запрос на получение начала рабочего дня (делает Админ)
+    // Запрос на получение начала рабочего дня (делает Админ)
     static async getDayStart() {
         const url = "http://localhost:3000/";
         return await axios.get(url).then(response => 9); //response.data)
     }
 
-    //Запрос на изменение начала рабочего дня (делает Админ)
+    // Запрос на изменение начала рабочего дня (делает Админ)
     static async changeDayStart(newStart: number) {
         const url = "http://localhost:3000/";
         //TODO.... переделать на POST
         return await axios.get(url).then(response => newStart); //response.data)
     }
 
-    //Запрос на получение окончания рабочего дня (делает Админ)
+    // Запрос на получение окончания рабочего дня (делает Админ)
     static async getDayEnd() {
         const url = "http://localhost:3000/";
         return await axios.get(url).then(response => 19); //response.data)
     }
 
-    //Запрос на изменение окончания рабочего дня (делает Админ)
+    // Запрос на изменение окончания рабочего дня (делает Админ)
     static async changeDayEnd(newEnd: number) {
         const url = "http://localhost:3000/";
         //TODO.... переделать на POST
         return await axios.get(url).then(response => newEnd); //response.data)
     }
 
-    //Запрос на получение длительности собеседования (делает Админ)
+    // Запрос на получение длительности собеседования (делает Админ)
     static async getInterviewTime() {
         const url = "http://localhost:3000/";
         return await axios.get(url).then(response => 30); //response.data)
     }
 
-    //Запрос на изменение длительности собеседования (делает Админ)
+    // Запрос на изменение длительности собеседования (делает Админ)
     static async changeInterviewTime(newInterviewTime: number) {
         const url = "http://localhost:3000/";
         //TODO.... переделать на POST
