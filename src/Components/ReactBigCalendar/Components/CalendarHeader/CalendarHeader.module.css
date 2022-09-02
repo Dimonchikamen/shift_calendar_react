@@ -4,6 +4,7 @@
     align-items: center;
     gap: 5%;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .select_event_container {
@@ -32,4 +33,10 @@
     display: flex;
     gap: 10px;
     align-items: center;
+    width: fit-content;
+}
+
+.admin_container{
+    display: flex;
+    gap: 4em;
 }

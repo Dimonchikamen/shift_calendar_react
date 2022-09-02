@@ -55,32 +55,35 @@ const CalendarHeader: FC = () => {
                     onchange={changeEvent}
                 />
             </div>
-            <div className={s.select_work_time_container}>
-                <span>Рабочее время с</span>
-                <SelectItem
-                    value={min}
-                    options={hourOptions}
-                    size="small"
-                    optionDisableFunc={v => getHour(v) >= getHour(max)}
-                    onchange={changeMin}
-                />
-                <span>до</span>
-                <SelectItem
-                    value={max}
-                    options={hourOptions}
-                    size="small"
-                    optionDisableFunc={v => getHour(v) <= getHour(min)}
-                    onchange={changeMax}
-                />
-            </div>
-            <div className={s.select_interview_time_container}>
-                <span>Длительность собеседования</span>
-                <SelectItem
-                    value={interviewTime}
-                    options={interviewTimeOptions}
-                    size="small"
-                    onchange={changeInterviewTime}
-                />
+            <div className={s.admin_container}>
+                <div className={s.select_work_time_container}>
+                    <span>Рабочее время</span>
+                    <span>c</span>
+                    <SelectItem
+                        value={min}
+                        options={hourOptions}
+                        size="small"
+                        optionDisableFunc={v => getHour(v) >= getHour(max)}
+                        onchange={changeMin}
+                    />
+                    <span>до</span>
+                    <SelectItem
+                        value={max}
+                        options={hourOptions}
+                        size="small"
+                        optionDisableFunc={v => getHour(v) <= getHour(min)}
+                        onchange={changeMax}
+                    />
+                </div>
+                <div className={s.select_interview_time_container}>
+                    <span>Длительность собеседования</span>
+                    <SelectItem
+                        value={interviewTime}
+                        options={interviewTimeOptions}
+                        size="small"
+                        onchange={changeInterviewTime}
+                    />
+                </div>
             </div>
         </div>
     );
