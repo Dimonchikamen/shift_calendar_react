@@ -30,6 +30,7 @@ const mergeInterviewsInfo = (interviews: Interview[]) => {
 interface IInformationContainerProps {
     data: RequiterInfo;
     role?: "admin" | "user";
+    view?: "interview" | "worktime";
     isEditing?: boolean;
     eventEditing: ScheduleEvent;
     onEditEvent: (eventEditing: ScheduleEvent, dayStart: string, dayEnd: string) => void;
@@ -38,6 +39,7 @@ interface IInformationContainerProps {
 const InformationContainer: FC<IInformationContainerProps> = ({
     data,
     role = "admin",
+    view,
     isEditing,
     eventEditing,
     onEditEvent,
@@ -52,16 +54,16 @@ const InformationContainer: FC<IInformationContainerProps> = ({
     const [workTimeStart, setDayStart] = useState<Time>(leftTime);
     const [workTimeEnd, setDayEnd] = useState<Time>(rightTime);
     const [isTimeWrong, setIsTimeWrong] = useState(false);
-    //TODO: сделать прием id собеса и просмотр собесов
-    const [currentEvents, setCurrentEvents] = useState(
-        mergedInterviewsInfo[mergedInterviewsInfo.findIndex(ind => ind.id === 323)]
-    );
-    const [currentInterview, setCurrentInterview] = useState(data.interviews.find(a => a.id === currentEvents.id));
+    const [currentInterview, setCurrentInterview] = useState(data.interviews[0]);
 
     useEffect(() => {
         setDayEnd(rightTime);
         setDayStart(leftTime);
     }, [leftTime, rightTime]);
+
+    useEffect(() => {
+        setCurrentInterview(data.interviews[0]);
+    }, [data]);
 
     const editingEvent = (eventEditing: ScheduleEvent) => {
         const index = recruiters.findIndex(r => r.id === Number(eventEditing.resourceId));
@@ -91,27 +93,27 @@ const InformationContainer: FC<IInformationContainerProps> = ({
             {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
-                role === "coordinator" || role === "admin" ? (
+                view === "interview" ? (
                     <>
                         <div className={s.work_time}>
                             <span className={s.font_size_18}>Время собеседования:</span>
-                            <span className={s.time}>{currentEvents.bookedTimes[0]}</span>
+                            <span className={s.time}>{currentInterview.start + " - " + currentInterview.end}</span>
                         </div>
                         <div className={s.work_time}>
                             <span className={s.font_size_18}>Волонтер:</span>
-                            <span className={s.time}>{currentInterview?.name}</span>
+                            <span className={s.time}>{currentInterview.name}</span>
                         </div>
                         <div className={s.work_time}>
                             <span className={s.font_size_18}>Роль:</span>
-                            <span className={s.time}>{currentInterview?.role}</span>
+                            <span className={s.time}>{currentInterview.role}</span>
                         </div>
                         <div className={s.work_time}>
                             <span className={s.font_size_18}>Контакты:</span>
-                            <span className={s.time}>{currentInterview?.phone}</span>
+                            <span className={s.time}>{currentInterview.phone}</span>
                         </div>
                         <div className={s.work_time}>
                             <span className={s.font_size_18}>Способ связи:</span>
-                            <span className={s.time}>{currentInterview?.contacts}</span>
+                            <span className={s.time}>{currentInterview.contacts}</span>
                         </div>
                         <div className={s.work_time}>
                             <a href="#">

@@ -5,6 +5,7 @@ import "@toast-ui/calendar/dist/toastui-calendar.min.css";
 import ReactBigCalendar from "./Components/ReactBigCalendar/ReactBigCalendar";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 import MonthCalendar from "./Components/MonthCalendar/MonthCalendar";
+import ReactBigCalendar2 from "./Components/ReactBigCalendar/ReactBigCalendar2";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -63,6 +64,10 @@ const App: FC = () => {
                             label="Месяц"
                             {...a11yProps(1)}
                         />
+                        <Tab
+                            label="Писец"
+                            {...a11yProps(2)}
+                        />
                     </Tabs>
                 </Box>
                 <TabPanel
@@ -76,6 +81,12 @@ const App: FC = () => {
                     index={1}
                 >
                     <MonthCalendar />
+                </TabPanel>
+                <TabPanel
+                    value={value}
+                    index={2}
+                >
+                    <ReactBigCalendar2 />
                 </TabPanel>
             </Box>
         </div>

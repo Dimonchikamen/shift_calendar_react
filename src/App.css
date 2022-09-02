@@ -54,6 +54,10 @@
     display: none;
 }
 
+.round-all.event-item{
+    text-overflow:clip;
+}
+
 .event-item > span{
     color: #151515;
     font-size: 15px;

@@ -22,6 +22,7 @@ const CalendarHeader: FC = () => {
     const interviewTime = getTimeFromHours(useAppSelector(state => state.workDayState.state.config.minuteStep)!);
     const events = useAppSelector(state => state.workDayState.state.events);
     const event = useAppSelector(state => state.workDayState.state.currentEvent);
+    const role = useAppSelector(state => state.workDayState.state.role);
 
     const dispatch = useAppDispatch();
 
@@ -55,36 +56,40 @@ const CalendarHeader: FC = () => {
                     onchange={changeEvent}
                 />
             </div>
-            <div className={s.admin_container}>
-                <div className={s.select_work_time_container}>
-                    <span>Рабочее время</span>
-                    <span>c</span>
-                    <SelectItem
-                        value={min}
-                        options={hourOptions}
-                        size="small"
-                        optionDisableFunc={v => getHour(v) >= getHour(max)}
-                        onchange={changeMin}
-                    />
-                    <span>до</span>
-                    <SelectItem
-                        value={max}
-                        options={hourOptions}
-                        size="small"
-                        optionDisableFunc={v => getHour(v) <= getHour(min)}
-                        onchange={changeMax}
-                    />
+            {role /*=== "admin"*/ ? (
+                <div className={s.admin_container}>
+                    <div className={s.select_work_time_container}>
+                        <span>Рабочее время</span>
+                        <span>c</span>
+                        <SelectItem
+                            value={min}
+                            options={hourOptions}
+                            size="small"
+                            optionDisableFunc={v => getHour(v) >= getHour(max)}
+                            onchange={changeMin}
+                        />
+                        <span>до</span>
+                        <SelectItem
+                            value={max}
+                            options={hourOptions}
+                            size="small"
+                            optionDisableFunc={v => getHour(v) <= getHour(min)}
+                            onchange={changeMax}
+                        />
+                    </div>
+                    <div className={s.select_interview_time_container}>
+                        <span>Длительность собеседования</span>
+                        <SelectItem
+                            value={interviewTime}
+                            options={interviewTimeOptions}
+                            size="small"
+                            onchange={changeInterviewTime}
+                        />
+                    </div>
                 </div>
-                <div className={s.select_interview_time_container}>
-                    <span>Длительность собеседования</span>
-                    <SelectItem
-                        value={interviewTime}
-                        options={interviewTimeOptions}
-                        size="small"
-                        onchange={changeInterviewTime}
-                    />
-                </div>
-            </div>
+            ) : (
+                <></>
+            )}
         </div>
     );
 };
