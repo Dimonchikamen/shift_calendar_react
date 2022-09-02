@@ -5,6 +5,7 @@ import { Resource } from "react-big-scheduler";
 import moment from "moment";
 import { DATE_FORMAT } from "../Components/ReactBigCalendar/ReactBigCalendar";
 import { compareFullDateTime } from "./Compare";
+import { FullDateTime } from "../Types/FullDateTime";
 
 export const createResourcesAndEvents = (recruiters: Recruiter[]): [resources: Resource[], events: ScheduleEvent[]] => {
     const resources: Resource[] = [];
@@ -28,4 +29,19 @@ export const createResourcesAndEvents = (recruiters: Recruiter[]): [resources: R
     });
     const res = events.sort((a, b) => compareFullDateTime(a.start, b.start));
     return [resources, res];
+};
+
+export const createSchedulerEvent = (start: FullDateTime, end: FullDateTime, resourceId: string): ScheduleEvent => {
+    const eventStart = moment(start).format(DATE_FORMAT);
+    const eventEnd = moment(end).format(DATE_FORMAT);
+    return {
+        id: Math.floor(Math.random() * 1000),
+        start: eventStart,
+        end: eventEnd,
+        resourceId,
+        title: createTitle(eventStart, eventEnd),
+        resizable: false,
+        bgColor: "#D9EDF7",
+        interviews: [],
+    };
 };

@@ -121,12 +121,6 @@ export class ServerAPI {
         return await axios.get(url).then(response => response.data);
     }
 
-    // static async changeEvent(event: string) {
-    //     const url = "http://localhost:3000/";
-    //     //TODO... поменять на POST
-    //     return await axios.get(url).then(response => event);
-    // }
-
     // Запрос на получение рекрутёров за определённый период времени
     // Тип Recruiter лежит в src/Types/Recruiter.ts
     static async getRecruiters(start?: Date, end?: Date) {
@@ -145,7 +139,7 @@ export class ServerAPI {
 
     // Запрос на добавление рабочего времени у рекрутёра
     // в ответ ожидаем id этого рабочего времени, либо всего этого рекрутёра
-    static async addRecruiterWorkTime(start: Date, end: Date, recruiterId: number, event: string) {
+    static async addRecruiterWorkTime(start: Date, end: Date, recruiterId: number, event: string): Promise<Recruiter> {
         const url = "http://localhost:3000/";
         //TODO... переделать на POST
         return await axios.get(url /*, { recruiterId, start, end }*/).then(
@@ -167,21 +161,21 @@ export class ServerAPI {
     }
 
     // Запрос на редактирование рабочего времени у рекрутёра
-    static async editRecruiterWorkTime(start: Date, end: Date, recruiterId: number, workTimeId: number) {
+    static async editRecruiterWorkTime(
+        start: Date,
+        end: Date,
+        recruiterId: number,
+        workTimeId: number
+    ): Promise<Recruiter> {
         const url = "http://localhost:3000/";
         return await axios.post(url, { recruiterId, workTimeId, start, end }).then(response => response.data);
     }
 
     // Запрос на удаление рабочего времени у рекрутёра
-    static async removeRecruiterWorkTime(recruiterId: number, workTimeId: number) {
+    static async removeRecruiterWorkTime(recruiterId: number, workTimeId: number): Promise<Recruiter> {
         const url = "http://localhost:3000/";
         return await axios.post(url, { recruiterId, workTimeId }).then(response => response.data);
     }
-
-    // static async changeRecruiters() {
-    //     const url = 'https://api.github.com/users/letow/repos'
-    //     return await axios.post(url).then(response => response.data)
-    // }
 
     //Запрос на получение роли пользователя
     static async getRole() {
@@ -189,10 +183,15 @@ export class ServerAPI {
         return await axios.get(url).then(response => "admin"); //response.data)
     }
 
-    // static async changeRole() {
-    //     const url = 'https://api.github.com/users/letow/repos'
-    //     return await axios.post(url).then(response => response.data)
-    // }
+    // Запрос на получение начала и конца рабочих дней в определнный период
+    // обратно ожидается массив объектов, внутри которых лежит начало и конец в формате H:mm,
+    // например: { start: "9:00", end: "18:00" }
+    // а также дата, которая указывает для какого дня актуальна эта информация
+    // итого: ожидаю массив подобных объектов: { date: 2022-07-26, start: "9:00", end: "19:00" }
+    static async getWorkTimeDays(start: Date, end: Date) {
+        const url = "http://localhost:3000/";
+        return await axios.get(url).then(res => res.data);
+    }
 
     // Запрос на получение начала рабочего дня (делает Админ)
     static async getDayStart() {

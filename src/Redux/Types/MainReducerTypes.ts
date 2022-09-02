@@ -56,8 +56,8 @@ export type MainActions =
     | ChangeEndDay
     | ChangeInterviewTime
     | ChangeViewType
-    | AddRecruiterEvent
-    | RemoveRecruiterEvent
-    | EditRecruiterEvent
+    // | AddRecruiterEvent
+    // | RemoveRecruiterEvent
+    // | EditRecruiterEvent
     | ResizeAction
     | CloseErrorWindow;

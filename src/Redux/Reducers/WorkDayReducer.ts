@@ -251,53 +251,54 @@ const WorkDayReducer = (
             ...state,
             state: copy,
         };
-
-        //TODO>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    } else if (
+        action.type === ActionTypes.ADD_RECRUITER_EVENT_REQUEST ||
+        action.type === ActionTypes.EDIT_RECRUITER_EVENT_REQUEST ||
+        action.type === ActionTypes.REMOVE_RECRUITER_EVENT_REQUEST
+    ) {
+        return {
+            ...state,
+            changePending: true,
+        };
     } else if (action.type === ActionTypes.ADD_RECRUITER_EVENT_SUCCESS) {
         const copy = getCopy(state.state, false, true, true);
-        copy.recruiters
-            .find(r => r.id === Number(action.payload.resourceId))
-            ?.workedTimes.push({
-                id: action.payload.id,
-                events: copy.events,
-                start: action.payload.start,
-                end: action.payload.end,
-                interviews: [],
-            });
+        const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
+        copy.recruiters[index] = action.payload;
+        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent);
         return {
             ...state,
             state: copy,
+            changePending: false,
+            changeError: null,
         };
     } else if (action.type === ActionTypes.REMOVE_RECRUITER_EVENT_SUCCESS) {
         const copy = getCopy(state.state, false, true, true);
-        const recruiter = copy.recruiters.find(r => r.id === Number(action.payload.resourceId));
-        const index = recruiter?.workedTimes.findIndex(e => e.id === action.payload.id);
-        if (index !== undefined) {
-            recruiter?.workedTimes.splice(index, 1);
-            return {
-                ...state,
-                state: copy,
-            };
-        }
-        return state;
+        const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
+        copy.recruiters[index] = action.payload;
+        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent);
+        return {
+            ...state,
+            state: copy,
+            changePending: false,
+            changeError: null,
+        };
     } else if (action.type === ActionTypes.EDIT_RECRUITER_EVENT_SUCCESS) {
         const copy = getCopy(state.state, false, true, true);
-        const recruiter = copy.recruiters.find(r => r.id === Number(action.payload.resourceId));
-        const index = recruiter?.workedTimes.findIndex(e => e.id === action.payload.id);
-        if (recruiter && index !== undefined) {
-            recruiter.workedTimes[index] = {
-                ...recruiter.workedTimes[index],
-                start: action.payload.start,
-                end: action.payload.end,
-                interviews: [...action.payload.interviews],
-            };
-            return {
-                ...state,
-                state: copy,
-            };
-        }
-        return state;
-        //TODO>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
+        copy.recruiters[index] = action.payload;
+        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent);
+        return {
+            ...state,
+            state: copy,
+            changePending: false,
+            changeError: null,
+        };
+    } else if (
+        action.type === ActionTypes.ADD_RECRUITER_EVENT_FAILURE ||
+        action.type === ActionTypes.EDIT_RECRUITER_EVENT_FAILURE ||
+        action.type === ActionTypes.REMOVE_RECRUITER_EVENT_FAILURE
+    ) {
+        return { ...state, changePending: false, changeError: action.payload.error };
     } else if (action.type === ActionTypes.CLOSE_ERROR_WINDOW) {
         return { ...state, changeError: null };
     } else {

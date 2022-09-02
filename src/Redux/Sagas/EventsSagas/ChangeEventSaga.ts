@@ -10,8 +10,18 @@ import { sortRecruitersAction } from "../../Actions/RecruitersActions/SortRecrui
 //const filterCurrentRecruiters = async (recruiters: Recruiter[], event: string) => filterRecruiters(recruiters, event);
 //const getRecruitersFetch = (event: string) => ServerAPI.getRecruiters(event);
 
+enum Digits {
+    thousand = 1000,
+    million = 1000000,
+    billion = 1000000000,
+}
+
+//TODO.... подумать как можно по другому вызвать фильтрацию
 function* changeEvent({ payload: { recruiters, event } }: ChangeEventRequest) {
     try {
+        for (let i = 0; i < Digits.billion; i++) {
+            //TOD>.
+        }
         yield put(sortRecruitersAction(event));
         yield put(changeEventSuccess(event));
     } catch (e) {

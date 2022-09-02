@@ -11,16 +11,10 @@ import { ScheduleEvent } from "../../Types/ScheduleEvent";
 import InformationContainer from "./Components/InformationContainer/InformationContainer";
 import { RequiterInfo } from "../../Types/RequiterInfo";
 import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
-import { createTitle } from "../../Helpers/CreateTitle";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
 import { changeViewTypeAction } from "../../Redux/Actions/ChangeViewTypeAction";
 import PopUp from "../../UiKit/Popup/AlertDialog/AlertDialog";
-import {
-    addRecruiterEventAction,
-    editRecruiterEventAction,
-    removeRecruiterEventAction,
-} from "../../Redux/Actions/RecruiterEventsActions";
-import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents";
+import { createSchedulerEvent, createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents";
 import { resizeAction } from "../../Redux/Actions/ResizeAction";
 import Popover from "./Components/Popover/Popover";
 import { hasOverlap } from "../../Helpers/HasOverlap";
@@ -33,8 +27,15 @@ import { getEndDayRequest } from "../../Redux/Actions/WorkDayActions/GetEndDayAc
 import { getInterviewTimeRequest } from "../../Redux/Actions/InterviewTimActions/GetInterviewTimeActions";
 import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
-import { filterEvents } from "../../Helpers/Filters";
 import { getRecruitersRequest } from "../../Redux/Actions/RecruitersActions/GetRecruitersActions";
+import { FullDateTime } from "../../Types/FullDateTime";
+import {
+    addRecruiterWorkTimeRequest,
+    editRecruiterWorkTimeRequest,
+    removeRecruiterWorkTimeRequest,
+} from "../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
+import { Time } from "../../Types/Time";
+import { getDate, getHour, getMinutes } from "../../Helpers/DateTimeHelpers";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
@@ -42,7 +43,6 @@ export const DATE_FORMAT = "YYYY-MM-DD H:mm";
 moment.locale("ru-ru");
 
 const ReactBigCalendar: FC = () => {
-    // const recruiters = useAppSelector(state => state.main.recruiters);
     const {
         rolePending,
         allEventsPending,
@@ -62,10 +62,6 @@ const ReactBigCalendar: FC = () => {
     const interviewDuration = config.minuteStep;
     const currentEvent = state.currentEvent;
     const [resources, scheduleEvents] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters, currentEvent]); //{
-    //     const res = createResourcesAndEvents(recruiters);
-    //     res[1] = filterEvents(res[1], currentEvent);
-    //     return res;
-    // }, [recruiters, currentEvent]);
     const dispatch = useAppDispatch();
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -74,7 +70,7 @@ const ReactBigCalendar: FC = () => {
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
     const [selectData, setData] = useState<RequiterInfo | null>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
-    const [currentDate, setCurrentDate] = useState<string>(moment().format(DATE_FORMAT));
+    const [currentDate, setCurrentDate] = useState<FullDateTime>(moment().format(DATE_FORMAT));
     const [viewModel, setView] = useState<{ data: SchedulerData }>(() => {
         moment.locale("ru");
         const data = new SchedulerData(currentDate, viewType, false, false, config, behaviours);
@@ -137,11 +133,15 @@ const ReactBigCalendar: FC = () => {
     const prevClick = (schedulerData: SchedulerData) => {
         schedulerData.prev();
         setSchedulerData(schedulerData);
+        dispatch(getStartDayRequest());
+        dispatch(getEndDayRequest());
     };
 
     const nextClick = (schedulerData: SchedulerData) => {
         schedulerData.next();
         setSchedulerData(schedulerData);
+        dispatch(getStartDayRequest());
+        dispatch(getEndDayRequest());
     };
 
     const selectDate = (schedulerData: SchedulerData, date: string) => {
@@ -165,20 +165,11 @@ const ReactBigCalendar: FC = () => {
         schedulerData: SchedulerData,
         slotId: string,
         slotName: string,
-        start: string,
-        end: string
+        start: FullDateTime,
+        end: FullDateTime
     ) => {
         let canAddEvent = true;
-        const ev = {
-            id: Math.floor(Math.random() * 1000),
-            start: start.substring(0, start.length - 3),
-            end: end.substring(0, end.length - 3),
-            resourceId: slotId,
-            title: createTitle(start.substring(0, start.length - 3), end.substring(0, end.length - 3)),
-            resizable: false,
-            bgColor: "#D9EDF7",
-            interviews: [],
-        };
+        const ev = createSchedulerEvent(start, end, slotId);
         scheduleEvents
             .filter(event => event.resourceId === ev.resourceId)
             .forEach(elem => {
@@ -208,33 +199,57 @@ const ReactBigCalendar: FC = () => {
         setIsEditing(true);
     };
 
-    const editingEvent = (eventEditing: ScheduleEvent, dayStart: string, dayEnd: string) => {
-        const newEvent: ScheduleEvent = JSON.parse(JSON.stringify(eventEditing));
-        const formatTime = (time: string) => {
-            return time.length < 5 ? "0" + time : time;
-        };
-        newEvent.start = newEvent.start.slice(0, 11) + formatTime(dayStart);
-        newEvent.end = newEvent.end.slice(0, 11) + formatTime(dayEnd);
-        newEvent.title = createTitle(dayStart, dayEnd);
-        dispatch(editRecruiterEventAction(newEvent));
-        setSelectedEvent(null);
+    const editingEvent = (eventEditing: ScheduleEvent, newEventStart: Time, newEventEnd: Time) => {
+        // const newEvent: ScheduleEvent = JSON.parse(JSON.stringify(eventEditing));
+        // const formatTime = (time: string) => {
+        //     return time.length < 5 ? "0" + time : time;
+        // };
+        const date = getDate(currentDate);
+        const start = new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate(),
+            getHour(newEventStart),
+            getMinutes(newEventStart)
+        );
+        const end = new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate(),
+            getHour(newEventEnd),
+            getMinutes(newEventEnd)
+        );
+        // newEvent.end = newEvent.end.slice(0, 11) + formatTime(newEventEnd);
+        // newEvent.title = createTitle(newEventStart, newEventEnd);
+        dispatch(editRecruiterWorkTimeRequest(start, end, Number(eventEditing.resourceId), eventEditing.id));
+        //setSelectedEvent(null);
         setIsEditing(false);
     };
 
     const eventSubmit = () => {
         setIsOpen(false);
-        if (isEditing) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            dispatch(editRecruiterEventAction(eventAdding));
-            setIsEditing(false);
-            return;
-        }
         if (eventAdding) {
-            if (isAdding) {
-                dispatch(addRecruiterEventAction(eventAdding));
+            if (isEditing) {
+                dispatch(
+                    editRecruiterWorkTimeRequest(
+                        new Date(eventAdding.start),
+                        new Date(eventAdding.end),
+                        Number(eventAdding.resourceId),
+                        eventAdding.id
+                    )
+                );
+                setIsEditing(false);
+            } else if (isAdding) {
+                dispatch(
+                    addRecruiterWorkTimeRequest(
+                        new Date(eventAdding.start),
+                        new Date(eventAdding.end),
+                        Number(eventAdding.resourceId),
+                        currentEvent
+                    )
+                );
             } else {
-                dispatch(removeRecruiterEventAction(eventAdding));
+                dispatch(removeRecruiterWorkTimeRequest(Number(eventAdding.resourceId), eventAdding.id));
             }
         }
     };
