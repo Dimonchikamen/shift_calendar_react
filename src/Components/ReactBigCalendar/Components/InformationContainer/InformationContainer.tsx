@@ -9,9 +9,9 @@ import SelectItem from "../../../../UiKit/SelectItem/SelectItem";
 import { Time } from "../../../../Types/Time";
 import { useAppSelector } from "../../../../Redux/Hooks";
 import { getOptions } from "../../../../Helpers/GetOptions";
-import { getHour } from "../../../../Helpers/DateTimeHelpers";
+import { getHour, getTime } from "../../../../Helpers/DateTimeHelpers";
 import { createResourcesAndEvents } from "../../../../Helpers/CreateResourcesAndEvents";
-import { hasOverlapDate } from "../../../../Helpers/HasOverlap";
+import { hasOverlapTime } from "../../../../Helpers/HasOverlap";
 
 const mergeInterviewsInfo = (interviews: Interview[]) => {
     const res: { id: number; name: string; bookedTimes: string[] }[] = [];
@@ -50,7 +50,6 @@ const InformationContainer: FC<IInformationContainerProps> = ({
     const options: Time[] = getOptions(dayStart, dayEnd);
     const mergedInterviewsInfo = useMemo(() => mergeInterviewsInfo(data.interviews), [data]);
     const [leftTime, rightTime] = useMemo(() => data.workTimeTitle.split(" - "), [data.workTimeTitle]);
-
     const [workTimeStart, setDayStart] = useState<Time>(leftTime);
     const [workTimeEnd, setDayEnd] = useState<Time>(rightTime);
     const [isTimeWrong, setIsTimeWrong] = useState(false);
@@ -69,13 +68,16 @@ const InformationContainer: FC<IInformationContainerProps> = ({
         const index = recruiters.findIndex(r => r.id === Number(eventEditing.resourceId));
         const currentRecruiter = recruiters[index];
         const [, events] = createResourcesAndEvents([currentRecruiter]);
-        let hasOverlapTime = true;
+        let hasOverlap = false;
         events.forEach(e => {
-            if (hasOverlapDate(e.start, e.end, workTimeStart, workTimeEnd)) {
-                hasOverlapTime = false;
+            if (
+                e.id !== eventEditing.id &&
+                hasOverlapTime(getTime(e.start), getTime(e.end), workTimeStart, workTimeEnd)
+            ) {
+                hasOverlap = true;
             }
         });
-        if (hasOverlapTime || parseInt(workTimeStart) >= parseInt(workTimeEnd)) {
+        if (hasOverlap || parseInt(workTimeStart) >= parseInt(workTimeEnd)) {
             setIsTimeWrong(true);
             return;
         }

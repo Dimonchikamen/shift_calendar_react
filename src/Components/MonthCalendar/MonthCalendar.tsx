@@ -8,8 +8,11 @@ import AddWorkTimePopup from "../../UiKit/Popup/AddWorkTimePopup/AddWorkTimePopu
 import { createTitle } from "../../Helpers/CreateTitle";
 import moment from "moment";
 import { DATE_FORMAT } from "../ReactBigCalendar/ReactBigCalendar";
-import { addRecruiterEventAction, removeRecruiterEventAction } from "../../Redux/Actions/RecruiterEventsActions";
 import RemoveWorkTimePopup from "../../UiKit/Popup/RemoveWorkTimePopup/RemoveWorkTimePopup";
+import {
+    addRecruiterWorkTimeRequest,
+    removeRecruiterWorkTimeRequest,
+} from "../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
 
 const DAYS_IN_WEEK = 7;
 const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -103,38 +106,27 @@ const MonthCalendar: FC = () => {
     };
 
     const add = (startHours: number, endHours: number) => {
-        const eventStart = moment(
-            new Date(
-                dateForAddWorkTime.getFullYear(),
-                dateForAddWorkTime.getMonth(),
-                dateForAddWorkTime.getDate(),
-                startHours
-            )
-        ).format(DATE_FORMAT);
-        const eventEnd = moment(
-            new Date(
-                dateForAddWorkTime.getFullYear(),
-                dateForAddWorkTime.getMonth(),
-                dateForAddWorkTime.getDate(),
-                endHours
-            )
-        ).format(DATE_FORMAT);
-        const res: ScheduleEvent = {
-            id: Math.floor(Math.random() * 1000),
-            start: eventStart,
-            end: eventEnd,
-            resourceId: "3",
-            title: createTitle(eventStart, eventEnd),
-            resizable: false,
-            bgColor: "#D9EDF7",
-            interviews: [],
-        };
-        dispatch(addRecruiterEventAction(res));
+        const eventStart = new Date(
+            dateForAddWorkTime.getFullYear(),
+            dateForAddWorkTime.getMonth(),
+            dateForAddWorkTime.getDate(),
+            startHours
+        );
+        const eventEnd = new Date(
+            dateForAddWorkTime.getFullYear(),
+            dateForAddWorkTime.getMonth(),
+            dateForAddWorkTime.getDate(),
+            endHours
+        );
+        dispatch(
+            addRecruiterWorkTimeRequest(eventStart, eventEnd, Number(selectedEvent!.resourceId), state.currentEvent)
+        );
+        //dispatch(addRecruiterEventAction(res));
         setPopupOpen(false);
     };
 
     const remove = () => {
-        dispatch(removeRecruiterEventAction(selectedEvent!));
+        dispatch(removeRecruiterWorkTimeRequest(Number(selectedEvent!.resourceId), selectedEvent!.id));
         setRemoveEventPopupOpen(false);
         setSelectedEvent(null);
     };
