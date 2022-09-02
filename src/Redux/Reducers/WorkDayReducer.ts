@@ -8,6 +8,7 @@ import { Recruiter } from "../../Types/Recruiter";
 import { EventsTypes } from "../Types/EventsTypes";
 import { RecruitersTypes } from "../Types/RecruitersTypes";
 import { filterRecruiters } from "../../Helpers/Filters";
+import { RoleTypes } from "../Types/RoleTypes";
 
 export type littleState = {
     role: string;
@@ -104,7 +105,7 @@ const resize = (config: SchedulerDataConfig) => {
 
 const WorkDayReducer = (
     state = defaultState,
-    action: MainActions | WorkDayTypes | InterviewTimeTypes | EventsTypes | RecruitersTypes
+    action: MainActions | WorkDayTypes | InterviewTimeTypes | EventsTypes | RecruitersTypes | RoleTypes
 ): typeof defaultState => {
     if (action.type === ActionTypes.GET_START_DAY_REQUEST) {
         return { ...state, dayStartPending: true };
@@ -116,6 +117,8 @@ const WorkDayReducer = (
         return { ...state, allEventsPending: true };
     } else if (action.type === ActionTypes.GET_RECRUITERS_REQUEST) {
         return { ...state, recruitersPending: true };
+    } else if (action.type === ActionTypes.GET_ROLE_REQUEST) {
+        return { ...state, rolePending: true };
     } else if (
         action.type === ActionTypes.CHANGE_START_DAY_REQUEST ||
         action.type === ActionTypes.CHANGE_END_DAY_REQUEST ||
@@ -123,6 +126,10 @@ const WorkDayReducer = (
         action.type === ActionTypes.CHANGE_EVENT_REQUEST
     ) {
         return { ...state, changePending: true };
+    } else if (action.type === ActionTypes.GET_ROLE_SUCCESS) {
+        const copy = getCopy(state.state);
+        copy.role = action.payload;
+        return { ...state, rolePending: false, state: copy };
     } else if (
         action.type === ActionTypes.GET_START_DAY_SUCCESS ||
         action.type === ActionTypes.CHANGE_START_DAY_SUCCESS
@@ -201,10 +208,9 @@ const WorkDayReducer = (
     } else if (action.type === ActionTypes.FILTER_RECRUITERS) {
         const copy = getCopy(state.state, false, true, true);
         copy.currentRecruiters = filterRecruiters(copy.recruiters, action.payload);
-        return {
-            ...state,
-            state: copy,
-        };
+        return { ...state, state: copy };
+    } else if (action.type === ActionTypes.GET_ROLE_FAILURE) {
+        return { ...state, rolePending: false, error: action.payload.error };
     } else if (
         action.type === ActionTypes.GET_START_DAY_FAILURE ||
         action.type === ActionTypes.GET_END_DAY_FAILURE ||

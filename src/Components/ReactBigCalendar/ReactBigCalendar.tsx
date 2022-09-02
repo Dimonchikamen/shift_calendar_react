@@ -36,6 +36,7 @@ import {
 } from "../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
 import { Time } from "../../Types/Time";
 import { getDate, getHour, getMinutes } from "../../Helpers/DateTimeHelpers";
+import { getRoleRequest } from "../../Redux/Actions/GetRoleActions";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
@@ -83,6 +84,7 @@ const ReactBigCalendar: FC = () => {
     });
 
     useEffect(() => {
+        dispatch(getRoleRequest());
         dispatch(getRecruitersRequest());
         dispatch(getStartDayRequest());
         dispatch(getEndDayRequest());
