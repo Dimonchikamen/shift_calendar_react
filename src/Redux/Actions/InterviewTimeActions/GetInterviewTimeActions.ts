@@ -10,7 +10,7 @@ export const getInterviewTimeRequest = (): GetInterviewTimeRequest => ({
     type: ActionTypes.GET_INTERVIEW_TIME_REQUEST,
 });
 
-export const getInterviewTimeSuccess = (payload: number): GetInterviewTimeSuccess => ({
+export const getInterviewTimeSuccess = (payload: number | ""): GetInterviewTimeSuccess => ({
     type: ActionTypes.GET_INTERVIEW_TIME_SUCCESS,
     payload,
 });

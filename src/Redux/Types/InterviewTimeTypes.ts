@@ -10,7 +10,7 @@ export type GetInterviewTimeRequest = {
 
 export type GetInterviewTimeSuccess = {
     type: ActionTypes.GET_INTERVIEW_TIME_SUCCESS;
-    payload: number;
+    payload: number | "";
 };
 
 export type GetInterviewTimeFailure = {

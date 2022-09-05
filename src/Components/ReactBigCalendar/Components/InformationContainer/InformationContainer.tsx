@@ -1,4 +1,4 @@
-import { FC, useMemo, useState, useEffect } from "react";
+import { FC, useMemo, useState, useEffect, memo } from "react";
 import s from "./InformationContainer.module.css";
 import { RequiterInfo } from "../../../../Types/RequiterInfo";
 import { createTitleFromHours } from "../../../../Helpers/CreateTitle";
@@ -213,4 +213,4 @@ const InformationContainer: FC<IInformationContainerProps> = ({
     );
 };
 
-export default InformationContainer;
+export default memo(InformationContainer);

@@ -3,10 +3,10 @@ import { call, put, takeLatest } from "redux-saga/effects";
 import { ActionTypes } from "../../ActionTypes";
 import { getStartDayFailure, getStartDaySuccess } from "../../Actions/WorkDayActions/GetStartDayActions";
 
-const getStart = (): Promise<number> => ServerAPI.getDayStart();
+const getStart = (): Promise<number | ""> => ServerAPI.getDayStart();
 function* getStartDay() {
     try {
-        const response: number = yield call(getStart);
+        const response: number | "" = yield call(getStart);
         yield put(getStartDaySuccess(response));
     } catch (e) {
         yield put(getStartDayFailure({ error: (e as Error).message }));

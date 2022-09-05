@@ -14,6 +14,9 @@ export type littleState = {
     role: string;
     events: string[];
     currentEvent: string;
+    currentInterviewTime: number | "";
+    currentDayStart: number | "";
+    currentDayEnd: number | "";
     config: SchedulerDataConfig;
     viewType: ViewTypes;
     behaviours: object;
@@ -46,6 +49,9 @@ const defaultState: STate = {
         role: "user",
         events: ["Все мероприятия", "Ночь Музеев", "Ночь Музыки"],
         currentEvent: "Все мероприятия",
+        currentInterviewTime: "",
+        currentDayStart: "",
+        currentDatStop: "",
         config: {
             dayCellWidth: 50,
             weekCellWidth: 1100 / 7,
@@ -135,7 +141,8 @@ const WorkDayReducer = (
         action.type === ActionTypes.CHANGE_START_DAY_SUCCESS
     ) {
         const copy = getCopy(state.state, true);
-        copy.config.dayStartFrom = action.payload;
+        copy.currentDayStart = action.payload;
+        copy.config.dayStartFrom = action.payload === "" ? 0 : action.payload;
         copy.config = resize(copy.config);
         const dayStartPending = action.type === ActionTypes.GET_START_DAY_SUCCESS ? false : state.dayStartPending;
         const changePending = action.type === ActionTypes.CHANGE_START_DAY_SUCCESS ? false : state.changePending;
@@ -149,7 +156,8 @@ const WorkDayReducer = (
         };
     } else if (action.type === ActionTypes.GET_END_DAY_SUCCESS || action.type === ActionTypes.CHANGE_END_DAY_SUCCESS) {
         const copy = getCopy(state.state, true);
-        copy.config.dayStopTo = action.payload;
+        copy.currentDayEnd = action.payload;
+        copy.config.dayStopTo = action.payload === "" ? 23 : action.payload;
         copy.config = resize(copy.config);
         const dayEndPending = action.type === ActionTypes.GET_END_DAY_SUCCESS ? false : state.dayEndPending;
         const changePending = action.type === ActionTypes.CHANGE_END_DAY_SUCCESS ? false : state.changePending;
@@ -166,8 +174,7 @@ const WorkDayReducer = (
         action.type === ActionTypes.CHANGE_INTERVIEW_TIME_SUCCESS
     ) {
         const copy = getCopy(state.state, true);
-        copy.config.minuteStep = action.payload;
-        copy.config = resize(copy.config);
+        copy.currentInterviewTime = action.payload;
         const interviewTimePending =
             action.type === ActionTypes.GET_INTERVIEW_TIME_SUCCESS ? false : state.interviewTimePending;
         const changePending = action.type === ActionTypes.CHANGE_INTERVIEW_TIME_SUCCESS ? false : state.changePending;

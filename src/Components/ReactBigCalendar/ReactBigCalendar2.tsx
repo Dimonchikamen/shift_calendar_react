@@ -16,10 +16,10 @@ import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
 import { changeViewTypeAction } from "../../Redux/Actions/ChangeViewTypeAction";
 import PopUp from "../../UiKit/Popup/AlertDialog/AlertDialog";
 import {
-    addRecruiterEventAction,
-    editRecruiterEventAction,
-    removeRecruiterEventAction,
-} from "../../Redux/Actions/RecruiterEventsActions";
+    addRecruiterWorkTimeRequest,
+    editRecruiterWorkTimeRequest,
+    removeRecruiterWorkTimeRequest,
+} from "../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
 import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents";
 import { resizeAction } from "../../Redux/Actions/ResizeAction";
 import Popover from "./Components/Popover/Popover";
@@ -30,7 +30,7 @@ import Backdrop from "@mui/material/Backdrop";
 import Alert from "@mui/material/Alert";
 import { getStartDayRequest } from "../../Redux/Actions/WorkDayActions/GetStartDayActions";
 import { getEndDayRequest } from "../../Redux/Actions/WorkDayActions/GetEndDayActions";
-import { getInterviewTimeRequest } from "../../Redux/Actions/InterviewTimActions/GetInterviewTimeActions";
+import { getInterviewTimeRequest } from "../../Redux/Actions/InterviewTimeActions/GetInterviewTimeActions";
 import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
 import { filterEvents } from "../../Helpers/Filters";
@@ -220,7 +220,7 @@ const ReactBigCalendar: FC = () => {
         newEvent.start = newEvent.start.slice(0, 11) + formatTime(dayStart);
         newEvent.end = newEvent.end.slice(0, 11) + formatTime(dayEnd);
         newEvent.title = createTitle(dayStart, dayEnd);
-        dispatch(editRecruiterEventAction(newEvent));
+        //dispatch(editRecruiterWorkTimeRequest(newEvent));
         setSelectedEvent(null);
         setIsEditing(false);
     };
@@ -236,9 +236,9 @@ const ReactBigCalendar: FC = () => {
         }
         if (eventAdding) {
             if (isAdding) {
-                dispatch(addRecruiterEventAction(eventAdding));
+                //dispatch(addRecruiterWorkTimeRequest(eventAdding));
             } else {
-                dispatch(removeRecruiterEventAction(eventAdding));
+                // dispatch(removeRecruiterEventAction(eventAdding));
             }
         }
     };

@@ -10,7 +10,7 @@ export type GetStartDayRequest = {
 
 export type GetStartDaySuccess = {
     type: ActionTypes.GET_START_DAY_SUCCESS;
-    payload: number;
+    payload: number | "";
 };
 
 export type GetStartDayFailure = {
@@ -24,7 +24,7 @@ export type GetEndDayRequest = {
 
 export type GetEndDaySuccess = {
     type: ActionTypes.GET_END_DAY_SUCCESS;
-    payload: number;
+    payload: number | "";
 };
 
 export type GetEndDayFailure = {
