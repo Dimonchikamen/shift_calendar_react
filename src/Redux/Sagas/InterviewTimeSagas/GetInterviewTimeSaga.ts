@@ -4,13 +4,13 @@ import { ActionTypes } from "../../ActionTypes";
 import {
     getInterviewTimeFailure,
     getInterviewTimeSuccess,
-} from "../../Actions/InterviewTimActions/GetInterviewTimeActions";
+} from "../../Actions/InterviewTimeActions/GetInterviewTimeActions";
 
-const getTime = (): Promise<number> => ServerAPI.getInterviewTime();
+const getTime = (): Promise<number | ""> => ServerAPI.getInterviewTime();
 
 function* getInterviewTime() {
     try {
-        const response: number = yield call(getTime);
+        const response: number | "" = yield call(getTime);
         yield put(getInterviewTimeSuccess(response));
     } catch (e) {
         yield put(getInterviewTimeFailure({ error: (e as Error).message }));

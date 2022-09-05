@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, memo } from "react";
 import SelectItem from "../../../../UiKit/SelectItem/SelectItem";
 import s from "./CalendarHeader.module.css";
 import { SelectChangeEvent } from "@mui/material";
@@ -6,20 +6,22 @@ import { getHour, getTimeFromHours } from "../../../../Helpers/DateTimeHelpers";
 import { useAppDispatch, useAppSelector } from "../../../../Redux/Hooks";
 import { Time } from "../../../../Types/Time";
 import { getOptions } from "../../../../Helpers/GetOptions";
-import { changeInterviewTimeRequest } from "../../../../Redux/Actions/InterviewTimActions/ChangeInterviewTimeActions";
-import { changeStartDayRequest } from "../../../../Redux/Actions/WorkDayActions/ChangeStartDayActions";
+import { changeInterviewTimeRequest } from "../../../../Redux/Actions/InterviewTimeActions/ChangeInterviewTimeActions";
+import {
+    changeStartDayRequest,
+    changeStartDaySuccess,
+} from "../../../../Redux/Actions/WorkDayActions/ChangeStartDayActions";
 import { changeEndDayRequest } from "../../../../Redux/Actions/WorkDayActions/ChangeEndDayActions";
 import { changeEventRequest } from "../../../../Redux/Actions/EventsActions/ChangeEventActions";
-import { changeEventAction } from "../../../../Redux/Actions/ChangeEventAction";
 
-const interviewTimeOptions: Time[] = ["10:00", "12:00", "15:00", "20:00", "30:00", "60:00"];
+const interviewTimeOptions: Time[] = ["15:00", "30:00", "45:00", "60:00"];
 const hourOptions: Time[] = getOptions(0, 23);
 
 const CalendarHeader: FC = () => {
     const recruiters = useAppSelector(state => state.workDayState.state.recruiters);
-    const min = getTimeFromHours(useAppSelector(state => state.workDayState.state.config.dayStartFrom)!);
-    const max = getTimeFromHours(useAppSelector(state => state.workDayState.state.config.dayStopTo)!);
-    const interviewTime = getTimeFromHours(useAppSelector(state => state.workDayState.state.config.minuteStep)!);
+    const min = getTimeFromHours(useAppSelector(state => state.workDayState.state.currentDayStart));
+    const max = getTimeFromHours(useAppSelector(state => state.workDayState.state.currentDayEnd));
+    const interviewTime = getTimeFromHours(useAppSelector(state => state.workDayState.state.currentInterviewTime));
     const events = useAppSelector(state => state.workDayState.state.events);
     const event = useAppSelector(state => state.workDayState.state.currentEvent);
     const role = useAppSelector(state => state.workDayState.state.role);
@@ -28,8 +30,6 @@ const CalendarHeader: FC = () => {
 
     const changeEvent = (e: SelectChangeEvent) => {
         dispatch(changeEventRequest(recruiters, e.target.value));
-        // dispatch(changeEventAction(e.target.value));
-        // dispatch(getRecruitersRequest(e.target.value));
     };
 
     const changeInterviewTime = (e: SelectChangeEvent) => {
@@ -37,11 +37,19 @@ const CalendarHeader: FC = () => {
     };
 
     const changeMin = (e: SelectChangeEvent) => {
-        dispatch(changeStartDayRequest(getHour(e.target.value)));
+        if (max === "") {
+            dispatch(changeStartDaySuccess(getHour(e.target.value)));
+        } else {
+            dispatch(changeStartDayRequest(getHour(e.target.value)));
+        }
     };
 
     const changeMax = (e: SelectChangeEvent) => {
-        dispatch(changeEndDayRequest(getHour(e.target.value)));
+        if (min === "") {
+            dispatch(changeStartDaySuccess(getHour(e.target.value)));
+        } else {
+            dispatch(changeEndDayRequest(getHour(e.target.value)));
+        }
     };
 
     return (
@@ -65,7 +73,7 @@ const CalendarHeader: FC = () => {
                             value={min}
                             options={hourOptions}
                             size="small"
-                            optionDisableFunc={v => getHour(v) >= getHour(max)}
+                            optionDisableFunc={v => getHour(v) >= getHour(max) && max !== ""}
                             onchange={changeMin}
                         />
                         <span>до</span>
@@ -73,7 +81,7 @@ const CalendarHeader: FC = () => {
                             value={max}
                             options={hourOptions}
                             size="small"
-                            optionDisableFunc={v => getHour(v) <= getHour(min)}
+                            optionDisableFunc={v => getHour(v) <= getHour(min) && min !== ""}
                             onchange={changeMax}
                         />
                     </div>
@@ -94,4 +102,4 @@ const CalendarHeader: FC = () => {
     );
 };
 
-export default CalendarHeader;
+export default memo(CalendarHeader);

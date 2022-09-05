@@ -5,7 +5,7 @@ export const getStartDayRequest = (): GetStartDayRequest => ({
     type: ActionTypes.GET_START_DAY_REQUEST,
 });
 
-export const getStartDaySuccess = (payload: number): GetStartDaySuccess => ({
+export const getStartDaySuccess = (payload: number | ""): GetStartDaySuccess => ({
     type: ActionTypes.GET_START_DAY_SUCCESS,
     payload,
 });

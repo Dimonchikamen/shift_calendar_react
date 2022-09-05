@@ -29,6 +29,12 @@ const SelectItem: FC<ISelectItemProps> = ({
                 inputProps={{ "aria-label": "Without label" }}
                 MenuProps={{ PaperProps: { style: { maxHeight: "200px" } } }}
             >
+                <MenuItem
+                    value=""
+                    disabled={true}
+                >
+                    Не выбрано
+                </MenuItem>
                 {options.map((v, i) => (
                     <MenuItem
                         key={i}

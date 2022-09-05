@@ -194,9 +194,9 @@ export class ServerAPI {
     }
 
     // Запрос на получение начала рабочего дня (делает Админ)
-    static async getDayStart() {
+    static async getDayStart(): Promise<number | ""> {
         const url = "http://localhost:3000/";
-        return await axios.get(url).then(response => 9); //response.data)
+        return await axios.get(url).then(response => ""); //response.data)
     }
 
     // Запрос на изменение начала рабочего дня (делает Админ)
@@ -207,9 +207,9 @@ export class ServerAPI {
     }
 
     // Запрос на получение окончания рабочего дня (делает Админ)
-    static async getDayEnd() {
+    static async getDayEnd(): Promise<number | ""> {
         const url = "http://localhost:3000/";
-        return await axios.get(url).then(response => 19); //response.data)
+        return await axios.get(url).then(response => ""); //response.data)
     }
 
     // Запрос на изменение окончания рабочего дня (делает Админ)
@@ -220,9 +220,9 @@ export class ServerAPI {
     }
 
     // Запрос на получение длительности собеседования (делает Админ)
-    static async getInterviewTime() {
+    static async getInterviewTime(): Promise<number | ""> {
         const url = "http://localhost:3000/";
-        return await axios.get(url).then(response => 30); //response.data)
+        return await axios.get(url).then(response => ""); //response.data)
     }
 
     // Запрос на изменение длительности собеседования (делает Админ)

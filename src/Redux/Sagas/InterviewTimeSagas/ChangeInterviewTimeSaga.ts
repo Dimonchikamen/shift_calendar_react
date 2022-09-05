@@ -5,7 +5,7 @@ import { ChangeInterviewTimeRequest } from "../../Types/InterviewTimeTypes";
 import {
     changeInterviewTimeFailure,
     changeInterviewTimeSuccess,
-} from "../../Actions/InterviewTimActions/ChangeInterviewTimeActions";
+} from "../../Actions/InterviewTimeActions/ChangeInterviewTimeActions";
 
 const changeTime = (newTime: number): Promise<number> => ServerAPI.changeInterviewTime(newTime);
 

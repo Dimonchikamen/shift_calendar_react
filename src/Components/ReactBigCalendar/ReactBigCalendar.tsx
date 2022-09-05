@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, memo, useEffect, useMemo, useState } from "react";
 import Scheduler, { Resource, SchedulerData } from "react-big-scheduler";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
@@ -24,7 +24,7 @@ import Backdrop from "@mui/material/Backdrop";
 import Alert from "@mui/material/Alert";
 import { getStartDayRequest } from "../../Redux/Actions/WorkDayActions/GetStartDayActions";
 import { getEndDayRequest } from "../../Redux/Actions/WorkDayActions/GetEndDayActions";
-import { getInterviewTimeRequest } from "../../Redux/Actions/InterviewTimActions/GetInterviewTimeActions";
+import { getInterviewTimeRequest } from "../../Redux/Actions/InterviewTimeActions/GetInterviewTimeActions";
 import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
 import { getRecruitersRequest } from "../../Redux/Actions/RecruitersActions/GetRecruitersActions";
@@ -344,4 +344,4 @@ const ReactBigCalendar: FC = () => {
         );
     }
 };
-export default widthDragDropContext(ReactBigCalendar);
+export default memo(widthDragDropContext(ReactBigCalendar));
