@@ -11,7 +11,6 @@ import { ScheduleEvent } from "../../Types/ScheduleEvent";
 import InformationContainer from "./Components/InformationContainer/InformationContainer";
 import { RequiterInfo } from "../../Types/RequiterInfo";
 import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
-import { createTitle } from "../../Helpers/CreateTitle";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
 import { changeViewTypeAction } from "../../Redux/Actions/ChangeViewTypeAction";
 import PopUp from "../../UiKit/Popup/AlertDialog/AlertDialog";
@@ -68,11 +67,7 @@ const ReactBigCalendar: FC = () => {
     const [resources, scheduleEvents, interviews] = useMemo(
         () => createResourcesAndEvents(recruiters),
         [recruiters, currentEvent]
-    ); //{
-    //     const res = createResourcesAndEvents(recruiters);
-    //     res[1] = filterEvents(res[1], currentEvent);
-    //     return res;
-    // }, [recruiters, currentEvent]);
+    );
     const dispatch = useAppDispatch();
     const [view, setCalendarView] = useState<"worktime" | "interview">("interview");
 
@@ -90,7 +85,7 @@ const ReactBigCalendar: FC = () => {
         // @ts-ignore
         data.setLocaleMoment(moment);
         data.setResources(resources);
-        data.setEvents(view === "interview" ? interviews : scheduleEvents);
+        data.setEvents(view === "interview" ? filterEvents(interviews, currentEvent) : scheduleEvents);
         return { data };
     });
 
@@ -118,7 +113,7 @@ const ReactBigCalendar: FC = () => {
         setView(() => {
             const data = new SchedulerData(currentDate, viewType, false, false, config, behaviours);
             data.setResources(resources);
-            data.setEvents(view === "interview" ? interviews : scheduleEvents);
+            data.setEvents(view === "interview" ? filterEvents(interviews, currentEvent) : scheduleEvents);
             return { data };
         });
     }, [config, resources, scheduleEvents, viewType, behaviours]);
@@ -138,7 +133,7 @@ const ReactBigCalendar: FC = () => {
 
     const setSchedulerData = (schedulerData: SchedulerData) => {
         schedulerData.setResources(resources);
-        schedulerData.setEvents(view === "interview" ? interviews : scheduleEvents);
+        schedulerData.setEvents(view === "interview" ? filterEvents(interviews, currentEvent) : scheduleEvents);
         setCurrentDate(schedulerData.startDate);
         setView({ data: schedulerData });
     };
@@ -213,10 +208,6 @@ const ReactBigCalendar: FC = () => {
     };
 
     const editingEvent = (eventEditing: ScheduleEvent, newEventStart: Time, newEventEnd: Time) => {
-        // const newEvent: ScheduleEvent = JSON.parse(JSON.stringify(eventEditing));
-        // const formatTime = (time: string) => {
-        //     return time.length < 5 ? "0" + time : time;
-        // };
         const date = getDate(currentDate);
         const start = new Date(
             date.getFullYear(),
@@ -232,10 +223,7 @@ const ReactBigCalendar: FC = () => {
             getHour(newEventEnd),
             getMinutes(newEventEnd)
         );
-        // newEvent.end = newEvent.end.slice(0, 11) + formatTime(newEventEnd);
-        // newEvent.title = createTitle(newEventStart, newEventEnd);
         dispatch(editRecruiterWorkTimeRequest(start, end, Number(eventEditing.resourceId), eventEditing.id));
-        //setSelectedEvent(null);
         setIsEditing(false);
     };
 

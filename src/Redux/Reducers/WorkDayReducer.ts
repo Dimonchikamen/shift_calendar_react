@@ -7,8 +7,9 @@ import { InterviewTimeTypes } from "../Types/InterviewTimeTypes";
 import { Recruiter } from "../../Types/Recruiter";
 import { EventsTypes } from "../Types/EventsTypes";
 import { RecruitersTypes } from "../Types/RecruitersTypes";
-import { filterRecruiters } from "../../Helpers/Filters";
+import { filterEvents, filterRecruiters } from "../../Helpers/Filters";
 import { RoleTypes } from "../Types/RoleTypes";
+import { ScheduleEvent } from "../../Types/ScheduleEvent";
 
 export type littleState = {
     role: string;
@@ -22,6 +23,8 @@ export type littleState = {
     behaviours: object;
     recruiters: Recruiter[];
     currentRecruiters: Recruiter[];
+    interviews: ScheduleEvent[];
+    currentInterviews: ScheduleEvent[];
 };
 
 export type STate = {
@@ -47,7 +50,7 @@ const defaultState: STate = {
     changePending: false,
     state: {
         role: "user",
-        events: ["Все мероприятия", "Ночь Музеев", "Ночь Музыки"],
+        events: ["Все мероприятия", "Ночь музеев", "Ночь музыки"],
         currentEvent: "Все мероприятия",
         currentInterviewTime: "",
         currentDayStart: "",
@@ -80,6 +83,8 @@ const defaultState: STate = {
         },
         recruiters: [],
         currentRecruiters: [],
+        interviews: [],
+        currentInterviews: [],
     },
     error: null,
     changeError: null,
@@ -216,7 +221,11 @@ const WorkDayReducer = (
         const copy = getCopy(state.state, false, true, true);
         copy.currentRecruiters = filterRecruiters(copy.recruiters, action.payload);
         return { ...state, state: copy };
-    } else if (action.type === ActionTypes.GET_ROLE_FAILURE) {
+    } /*  else if (action.type === ActionTypes.FILTER_EVENTS) {
+        const copy = getCopy(state.state, false, true, true);
+        copy.currentInterviews = filterEvents(copy.interviews, action.payload);
+        return { ...state, state: copy };
+    } */ else if (action.type === ActionTypes.GET_ROLE_FAILURE) {
         return { ...state, rolePending: false, error: action.payload.error };
     } else if (
         action.type === ActionTypes.GET_START_DAY_FAILURE ||

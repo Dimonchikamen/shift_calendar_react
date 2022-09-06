@@ -6,7 +6,7 @@ import { WorkDayTypes } from "../Types/WorkDayTypes";
 
 const initialState = {
     role: "user",
-    events: ["Ночь Музеев", "Ночь Музыки"],
+    events: ["Ночь музеев", "Ночь музыки"],
     config: {
         dayCellWidth: 50,
         weekCellWidth: 1100 / 7,
@@ -141,6 +141,7 @@ const initialState = {
             workedTimes: [],
         },
     ],
+    interviews: [],
 };
 
 export type STATE = typeof initialState;
