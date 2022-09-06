@@ -1,77 +1,64 @@
 import { ActionTypes } from "../ActionTypes";
 
+export interface GetWorkDayPayload {
+    start: number;
+    end: number;
+}
+
+export interface ChangeWorkDayPayload {
+    start: number;
+    end: number;
+}
+
 export interface FailurePayload {
     error: string;
 }
 
-export type GetStartDayRequest = {
-    type: ActionTypes.GET_START_DAY_REQUEST;
+export type ChangeStartDay = {
+    type: ActionTypes.CHANGE_START_DAY;
+    payload: number;
 };
 
-export type GetStartDaySuccess = {
-    type: ActionTypes.GET_START_DAY_SUCCESS;
-    payload: number | "";
+export type ChangeEndDay = {
+    type: ActionTypes.CHANGE_END_DAY;
+    payload: number;
 };
 
-export type GetStartDayFailure = {
-    type: ActionTypes.GET_START_DAY_FAILURE;
+export type GetWorkDayRequest = {
+    type: ActionTypes.GET_WORK_DAY_REQUEST;
+};
+
+export type GetWorkDaySuccess = {
+    type: ActionTypes.GET_WORK_DAY_SUCCESS;
+    payload: GetWorkDayPayload | "";
+};
+
+export type GetWorkDayFailure = {
+    type: ActionTypes.GET_WORK_DAY_FAILURE;
     payload: FailurePayload;
 };
 
-export type GetEndDayRequest = {
-    type: ActionTypes.GET_END_DAY_REQUEST;
+export type ChangeWorkDayRequest = {
+    type: ActionTypes.CHANGE_WORK_DAY_REQUEST;
+    payload: ChangeWorkDayPayload;
 };
 
-export type GetEndDaySuccess = {
-    type: ActionTypes.GET_END_DAY_SUCCESS;
-    payload: number | "";
+export type ChangeWorkDaySuccess = {
+    type: ActionTypes.CHANGE_WORK_DAY_SUCCESS;
+    payload: ChangeWorkDayPayload;
 };
 
-export type GetEndDayFailure = {
-    type: ActionTypes.GET_END_DAY_FAILURE;
-    payload: FailurePayload;
-};
-
-export type ChangeStartDayRequest = {
-    type: ActionTypes.CHANGE_START_DAY_REQUEST;
-    payload: number;
-};
-
-export type ChangeStartDaySuccess = {
-    type: ActionTypes.CHANGE_START_DAY_SUCCESS;
-    payload: number;
-};
-
-export type ChangeStartDayFailure = {
-    type: ActionTypes.CHANGE_START_DAY_FAILURE;
-    payload: FailurePayload;
-};
-
-export type ChangeEndDayRequest = {
-    type: ActionTypes.CHANGE_END_DAY_REQUEST;
-    payload: number;
-};
-
-export type ChangeEndDaySuccess = {
-    type: ActionTypes.CHANGE_END_DAY_SUCCESS;
-    payload: number;
-};
-
-export type ChangeEndDayFailure = {
-    type: ActionTypes.CHANGE_END_DAY_FAILURE;
+export type ChangeWorkDayFailure = {
+    type: ActionTypes.CHANGE_WORK_DAY_FAILURE;
     payload: FailurePayload;
 };
 
 export type WorkDayTypes =
-    | GetStartDayRequest
-    | GetStartDaySuccess
-    | GetStartDayFailure
-    | GetEndDayRequest
-    | GetEndDaySuccess
-    | GetEndDayFailure
-    | ChangeStartDayRequest
-    | ChangeStartDaySuccess
-    | ChangeStartDayFailure
-    | ChangeEndDayRequest
-    | ChangeEndDaySuccess
-    | ChangeEndDayFailure;
+    | ChangeStartDay
+    | ChangeEndDay
+    | GetWorkDayRequest
+    | GetWorkDaySuccess
+    | GetWorkDayFailure
+    | ChangeWorkDayRequest
+    | ChangeWorkDaySuccess
+    | ChangeWorkDayFailure;

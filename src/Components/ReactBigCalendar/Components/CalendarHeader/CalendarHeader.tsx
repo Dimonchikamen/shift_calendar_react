@@ -7,12 +7,10 @@ import { useAppDispatch, useAppSelector } from "../../../../Redux/Hooks";
 import { Time } from "../../../../Types/Time";
 import { getOptions } from "../../../../Helpers/GetOptions";
 import { changeInterviewTimeRequest } from "../../../../Redux/Actions/InterviewTimeActions/ChangeInterviewTimeActions";
-import {
-    changeStartDayRequest,
-    changeStartDaySuccess,
-} from "../../../../Redux/Actions/WorkDayActions/ChangeStartDayActions";
-import { changeEndDayRequest } from "../../../../Redux/Actions/WorkDayActions/ChangeEndDayActions";
 import { changeEventRequest } from "../../../../Redux/Actions/EventsActions/ChangeEventActions";
+import { changeWorkDayRequest } from "../../../../Redux/Actions/WorkDayActions/WorkDayActions";
+import { changeDayStart } from "../../../../Redux/Actions/WorkDayActions/ChangeDayStartAction";
+import { changeDayEnd } from "../../../../Redux/Actions/WorkDayActions/ChangeDayEndAction";
 
 const interviewTimeOptions: Time[] = ["15:00", "30:00", "45:00", "60:00"];
 const hourOptions: Time[] = getOptions(0, 23);
@@ -25,7 +23,6 @@ const CalendarHeader: FC = () => {
     const events = useAppSelector(state => state.workDayState.state.events);
     const event = useAppSelector(state => state.workDayState.state.currentEvent);
     const role = useAppSelector(state => state.workDayState.state.role);
-
     const dispatch = useAppDispatch();
 
     const changeEvent = (e: SelectChangeEvent) => {
@@ -38,17 +35,17 @@ const CalendarHeader: FC = () => {
 
     const changeMin = (e: SelectChangeEvent) => {
         if (max === "") {
-            dispatch(changeStartDaySuccess(getHour(e.target.value)));
+            dispatch(changeDayStart(getHour(e.target.value)));
         } else {
-            dispatch(changeStartDayRequest(getHour(e.target.value)));
+            dispatch(changeWorkDayRequest(getHour(e.target.value), getHour(max)));
         }
     };
 
     const changeMax = (e: SelectChangeEvent) => {
         if (min === "") {
-            dispatch(changeStartDaySuccess(getHour(e.target.value)));
+            dispatch(changeDayEnd(getHour(e.target.value)));
         } else {
-            dispatch(changeEndDayRequest(getHour(e.target.value)));
+            dispatch(changeWorkDayRequest(getHour(min), getHour(e.target.value)));
         }
     };
 

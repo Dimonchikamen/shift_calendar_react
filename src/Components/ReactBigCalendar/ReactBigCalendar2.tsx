@@ -15,11 +15,6 @@ import { createTitle } from "../../Helpers/CreateTitle";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
 import { changeViewTypeAction } from "../../Redux/Actions/ChangeViewTypeAction";
 import PopUp from "../../UiKit/Popup/AlertDialog/AlertDialog";
-import {
-    addRecruiterWorkTimeRequest,
-    editRecruiterWorkTimeRequest,
-    removeRecruiterWorkTimeRequest,
-} from "../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
 import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents";
 import { resizeAction } from "../../Redux/Actions/ResizeAction";
 import Popover from "./Components/Popover/Popover";
@@ -28,13 +23,11 @@ import PopupError from "../../UiKit/Popup/ErrorDialog/ErrorDialog";
 import { CircularProgress } from "@mui/material";
 import Backdrop from "@mui/material/Backdrop";
 import Alert from "@mui/material/Alert";
-import { getStartDayRequest } from "../../Redux/Actions/WorkDayActions/GetStartDayActions";
-import { getEndDayRequest } from "../../Redux/Actions/WorkDayActions/GetEndDayActions";
 import { getInterviewTimeRequest } from "../../Redux/Actions/InterviewTimeActions/GetInterviewTimeActions";
 import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
-import { filterEvents } from "../../Helpers/Filters";
 import { getRecruitersRequest } from "../../Redux/Actions/RecruitersActions/GetRecruitersActions";
+import { getWorkDayRequest } from "../../Redux/Actions/WorkDayActions/WorkDayActions";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
@@ -92,8 +85,9 @@ const ReactBigCalendar: FC = () => {
 
     useEffect(() => {
         dispatch(getRecruitersRequest());
-        dispatch(getStartDayRequest());
-        dispatch(getEndDayRequest());
+        // dispatch(getStartDayRequest());
+        // dispatch(getEndDayRequest());
+        dispatch(getWorkDayRequest());
         dispatch(getInterviewTimeRequest());
         dispatch(getEventsRequest());
     }, []);

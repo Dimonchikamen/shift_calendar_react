@@ -2,6 +2,7 @@ import axios from "axios";
 import { Recruiter } from "../Types/Recruiter";
 import moment from "moment";
 import { DATE_FORMAT } from "../Components/ReactBigCalendar/ReactBigCalendar";
+import { ChangeWorkDayPayload, GetWorkDayPayload } from "../Redux/Types/WorkDayTypes";
 
 const recruitersMock = [
     {
@@ -193,30 +194,16 @@ export class ServerAPI {
         return await axios.get(url).then(res => res.data);
     }
 
-    // Запрос на получение начала рабочего дня (делает Админ)
-    static async getDayStart(): Promise<number | ""> {
+    static async getWorkDayTime(date: Date): Promise<GetWorkDayPayload | ""> {
         const url = "http://localhost:3000/";
-        return await axios.get(url).then(response => ""); //response.data)
+        //TODO... переделать на POST
+        return await axios.get(url).then(res => "");
     }
 
-    // Запрос на изменение начала рабочего дня (делает Админ)
-    static async changeDayStart(newStart: number) {
+    static async changeWorkDayTime(newStart: number, newEnd: number): Promise<ChangeWorkDayPayload> {
         const url = "http://localhost:3000/";
-        //TODO.... переделать на POST
-        return await axios.get(url).then(response => newStart); //response.data)
-    }
-
-    // Запрос на получение окончания рабочего дня (делает Админ)
-    static async getDayEnd(): Promise<number | ""> {
-        const url = "http://localhost:3000/";
-        return await axios.get(url).then(response => ""); //response.data)
-    }
-
-    // Запрос на изменение окончания рабочего дня (делает Админ)
-    static async changeDayEnd(newEnd: number) {
-        const url = "http://localhost:3000/";
-        //TODO.... переделать на POST
-        return await axios.get(url).then(response => newEnd); //response.data)
+        //TODO... переделать на POST
+        return await axios.get(url).then(res => ({ start: newStart, end: newEnd }));
     }
 
     // Запрос на получение длительности собеседования (делает Админ)
