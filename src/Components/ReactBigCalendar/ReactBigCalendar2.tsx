@@ -22,13 +22,11 @@ import PopupError from "../../UiKit/Popup/ErrorDialog/ErrorDialog";
 import { CircularProgress } from "@mui/material";
 import Backdrop from "@mui/material/Backdrop";
 import Alert from "@mui/material/Alert";
-import { getStartDayRequest } from "../../Redux/Actions/WorkDayActions/GetStartDayActions";
-import { getEndDayRequest } from "../../Redux/Actions/WorkDayActions/GetEndDayActions";
 import { getInterviewTimeRequest } from "../../Redux/Actions/InterviewTimeActions/GetInterviewTimeActions";
 import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
-import { filterEvents } from "../../Helpers/Filters";
 import { getRecruitersRequest } from "../../Redux/Actions/RecruitersActions/GetRecruitersActions";
+import { getWorkDayRequest } from "../../Redux/Actions/WorkDayActions/WorkDayActions";
 import { FullDateTime } from "../../Types/FullDateTime";
 import {
     addRecruiterWorkTimeRequest,
@@ -92,8 +90,9 @@ const ReactBigCalendar: FC = () => {
     useEffect(() => {
         dispatch(getRoleRequest());
         dispatch(getRecruitersRequest());
-        dispatch(getStartDayRequest());
-        dispatch(getEndDayRequest());
+        // dispatch(getStartDayRequest());
+        // dispatch(getEndDayRequest());
+        dispatch(getWorkDayRequest());
         dispatch(getInterviewTimeRequest());
         dispatch(getEventsRequest());
     }, []);
@@ -141,20 +140,19 @@ const ReactBigCalendar: FC = () => {
     const prevClick = (schedulerData: SchedulerData) => {
         schedulerData.prev();
         setSchedulerData(schedulerData);
-        dispatch(getStartDayRequest());
-        dispatch(getEndDayRequest());
+        dispatch(getWorkDayRequest());
     };
 
     const nextClick = (schedulerData: SchedulerData) => {
         schedulerData.next();
         setSchedulerData(schedulerData);
-        dispatch(getStartDayRequest());
-        dispatch(getEndDayRequest());
+        dispatch(getWorkDayRequest());
     };
 
     const selectDate = (schedulerData: SchedulerData, date: string) => {
         schedulerData.setDate(date);
         setSchedulerData(schedulerData);
+        dispatch(getWorkDayRequest());
     };
 
     const viewChange = (schedulerData: SchedulerData, view: any) => {
