@@ -63,6 +63,7 @@ const ReactBigCalendar: FC = () => {
     const currentEvent = state.currentEvent;
     const [resources, scheduleEvents] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters, currentEvent]); //{
     const dispatch = useAppDispatch();
+    const [view, setCalendarView] = useState<"worktime" | "interview">("worktime");
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
@@ -273,6 +274,7 @@ const ReactBigCalendar: FC = () => {
                 title={title}
                 start={start}
                 end={end}
+                view={view}
                 deleteEvent={deleteEvent}
                 editEvent={editEvent}
             />
