@@ -61,6 +61,7 @@ const ReactBigCalendar: FC = () => {
     const behaviours = state.behaviours;
     const interviewDuration = config.minuteStep;
     const currentEvent = state.currentEvent;
+    const role = state.role;
     const [resources, scheduleEvents] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters, currentEvent]); //{
     const dispatch = useAppDispatch();
     const [view, setCalendarView] = useState<"worktime" | "interview">("worktime");
@@ -275,6 +276,7 @@ const ReactBigCalendar: FC = () => {
                 start={start}
                 end={end}
                 view={view}
+                role={role}
                 deleteEvent={deleteEvent}
                 editEvent={editEvent}
             />

@@ -181,7 +181,7 @@ export class ServerAPI {
     //Запрос на получение роли пользователя
     static async getRole() {
         const url = "http://localhost:3000/";
-        return await axios.get(url).then(response => "admin"); //response.data)
+        return await axios.get(url).then(response => "user"); //response.data)
     }
 
     // Запрос на получение начала и конца рабочих дней за определнный период

@@ -11,12 +11,29 @@ interface IPopoverProps {
     title: string;
     start: any;
     end: any;
-    view?: string;
+    view?: "worktime" | "interview";
+    role?: string;
     deleteEvent: (eventItem: ScheduleEvent) => void;
     editEvent: (schedulerData: SchedulerData, eventItem: ScheduleEvent) => void;
 }
 
-const Popover: FC<IPopoverProps> = ({ schedulerData, eventItem, title, start, end, view, deleteEvent, editEvent }) => {
+const Popover: FC<IPopoverProps> = ({
+    schedulerData,
+    eventItem,
+    title,
+    start,
+    end,
+    view = "worktime",
+    role,
+    deleteEvent,
+    editEvent,
+}) => {
+    let eventName = Array.from(new Set(eventItem.interviews.map(int => int.event)));
+    if (!eventName.length) eventName = ["Нет собеседований"];
+    if (view === "interview") {
+        eventName = [eventItem.interviews[0].event];
+    }
+
     return (
         <div className={s.Popover}>
             <span
@@ -25,7 +42,7 @@ const Popover: FC<IPopoverProps> = ({ schedulerData, eventItem, title, start, en
             >
                 {start.format(DATE_FORMAT).slice(-5)} - {end.format(DATE_FORMAT).slice(-5)}
             </span>
-            {view === "worktime" ? (
+            {role === "admin" ? (
                 <div className={s.btnswrapper}>
                     <Button
                         onClick={() => deleteEvent(eventItem)}
@@ -41,7 +58,16 @@ const Popover: FC<IPopoverProps> = ({ schedulerData, eventItem, title, start, en
                     </Button>
                 </div>
             ) : (
-                <span className="header2-text">{eventItem.interviews[0].event}</span>
+                <>
+                    {eventName.map(event => (
+                        <span
+                            className="header2-text"
+                            key={Math.random()}
+                        >
+                            {event}
+                        </span>
+                    ))}
+                </>
             )}
         </div>
     );
