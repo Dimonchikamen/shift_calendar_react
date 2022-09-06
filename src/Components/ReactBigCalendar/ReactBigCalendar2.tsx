@@ -36,6 +36,7 @@ import {
 import { Time } from "../../Types/Time";
 import { getDate, getHour, getMinutes } from "../../Helpers/DateTimeHelpers";
 import { getRoleRequest } from "../../Redux/Actions/GetRoleActions";
+import { filterEvents } from "../../Helpers/Filters";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
