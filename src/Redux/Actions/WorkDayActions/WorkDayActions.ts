@@ -11,8 +11,9 @@ import {
 } from "../../Types/WorkDayTypes";
 import { ActionTypes } from "../../ActionTypes";
 
-export const getWorkDayRequest = (): GetWorkDayRequest => ({
+export const getWorkDayRequest = (date: Date): GetWorkDayRequest => ({
     type: ActionTypes.GET_WORK_DAY_REQUEST,
+    payload: date,
 });
 
 export const getWorkDaySuccess = (payload: GetWorkDayPayload | ""): GetWorkDaySuccess => ({

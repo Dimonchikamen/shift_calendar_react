@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { FC } from "react";
+import React, { FC, memo } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "@toast-ui/calendar/dist/toastui-calendar.min.css";
 import ReactBigCalendar from "./Components/ReactBigCalendar/ReactBigCalendar";
@@ -93,4 +93,4 @@ const App: FC = () => {
     );
 };
 
-export default App;
+export default memo(App);

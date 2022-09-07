@@ -48,8 +48,7 @@ const ReactBigCalendar: FC = () => {
     const {
         rolePending,
         allEventsPending,
-        dayStartPending,
-        dayEndPending,
+        workTimePending,
         interviewTimePending,
         recruitersPending,
         changePending,
@@ -91,9 +90,7 @@ const ReactBigCalendar: FC = () => {
     useEffect(() => {
         dispatch(getRoleRequest());
         dispatch(getRecruitersRequest());
-        // dispatch(getStartDayRequest());
-        // dispatch(getEndDayRequest());
-        dispatch(getWorkDayRequest());
+        dispatch(getWorkDayRequest(new Date(currentDate)));
         dispatch(getInterviewTimeRequest());
         dispatch(getEventsRequest());
     }, []);
@@ -141,19 +138,19 @@ const ReactBigCalendar: FC = () => {
     const prevClick = (schedulerData: SchedulerData) => {
         schedulerData.prev();
         setSchedulerData(schedulerData);
-        dispatch(getWorkDayRequest());
+        dispatch(getWorkDayRequest(new Date(schedulerData.startDate)));
     };
 
     const nextClick = (schedulerData: SchedulerData) => {
         schedulerData.next();
         setSchedulerData(schedulerData);
-        dispatch(getWorkDayRequest());
+        dispatch(getWorkDayRequest(new Date(schedulerData.startDate)));
     };
 
     const selectDate = (schedulerData: SchedulerData, date: string) => {
         schedulerData.setDate(date);
         setSchedulerData(schedulerData);
-        dispatch(getWorkDayRequest());
+        dispatch(getWorkDayRequest(new Date(date)));
     };
 
     const viewChange = (schedulerData: SchedulerData, view: any) => {
@@ -276,14 +273,7 @@ const ReactBigCalendar: FC = () => {
         );
     };
 
-    if (
-        rolePending ||
-        allEventsPending ||
-        dayStartPending ||
-        dayEndPending ||
-        interviewTimePending ||
-        recruitersPending
-    ) {
+    if (rolePending || allEventsPending || workTimePending || interviewTimePending || recruitersPending) {
         return <CircularProgress />;
     } else if (error) {
         return <Alert severity="error">Возникла ошибка при получении запроса с сервера.</Alert>;

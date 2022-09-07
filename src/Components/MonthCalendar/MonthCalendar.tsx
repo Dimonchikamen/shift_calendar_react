@@ -7,7 +7,7 @@ import { ScheduleEvent } from "../../Types/ScheduleEvent";
 import AddWorkTimePopup from "../../UiKit/Popup/AddWorkTimePopup/AddWorkTimePopup";
 import { createTitle } from "../../Helpers/CreateTitle";
 import moment from "moment";
-import { DATE_FORMAT } from "../ReactBigCalendar/ReactBigCalendar";
+import { DATE_TIME_FORMAT } from "../ReactBigCalendar/ReactBigCalendar";
 import RemoveWorkTimePopup from "../../UiKit/Popup/RemoveWorkTimePopup/RemoveWorkTimePopup";
 import {
     addRecruiterWorkTimeRequest,
@@ -71,8 +71,7 @@ const MonthCalendar: FC = () => {
     const {
         rolePending,
         allEventsPending,
-        dayStartPending,
-        dayEndPending,
+        workTimePending,
         interviewTimePending,
         recruitersPending,
         changePending,

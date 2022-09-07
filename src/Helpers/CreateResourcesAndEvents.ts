@@ -3,7 +3,7 @@ import { ScheduleEvent } from "../Types/ScheduleEvent";
 import { createTitle } from "./CreateTitle";
 import { Resource } from "react-big-scheduler";
 import moment from "moment";
-import { DATE_FORMAT } from "../Components/ReactBigCalendar/ReactBigCalendar";
+import { DATE_TIME_FORMAT } from "../Components/ReactBigCalendar/ReactBigCalendar";
 import { compareFullDateTime } from "./Compare";
 import { FullDateTime } from "../Types/FullDateTime";
 
@@ -20,8 +20,8 @@ export const createResourcesAndEvents = (
             workedTime.interviews.forEach(interview => {
                 const intStart = workedTime.start.slice(0, 11) + interview.start;
                 const intEnd = workedTime.end.slice(0, 11) + interview.end;
-                const formattedStart = moment(intStart).format(DATE_FORMAT);
-                const formattedEnd = moment(intEnd).format(DATE_FORMAT);
+                const formattedStart = moment(intStart).format(DATE_TIME_FORMAT);
+                const formattedEnd = moment(intEnd).format(DATE_TIME_FORMAT);
                 ints.push({
                     id: interview.id,
                     start: formattedStart,
@@ -34,8 +34,8 @@ export const createResourcesAndEvents = (
                 });
             });
 
-            const formattedStart = moment(workedTime.start).format(DATE_FORMAT);
-            const formattedEnd = moment(workedTime.end).format(DATE_FORMAT);
+            const formattedStart = moment(workedTime.start).format(DATE_TIME_FORMAT);
+            const formattedEnd = moment(workedTime.end).format(DATE_TIME_FORMAT);
             events.push({
                 id: workedTime.id,
                 start: formattedStart,
@@ -55,8 +55,8 @@ export const createResourcesAndEvents = (
 };
 
 export const createSchedulerEvent = (start: FullDateTime, end: FullDateTime, resourceId: string): ScheduleEvent => {
-    const eventStart = moment(start).format(DATE_FORMAT);
-    const eventEnd = moment(end).format(DATE_FORMAT);
+    const eventStart = moment(start).format(DATE_TIME_FORMAT);
+    const eventEnd = moment(end).format(DATE_TIME_FORMAT);
     return {
         id: Math.floor(Math.random() * 1000),
         start: eventStart,

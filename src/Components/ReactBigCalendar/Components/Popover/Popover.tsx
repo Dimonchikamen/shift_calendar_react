@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { ScheduleEvent } from "../../../../Types/ScheduleEvent";
 import { SchedulerData } from "react-big-scheduler";
-import { DATE_FORMAT } from "../../ReactBigCalendar";
+import { DATE_TIME_FORMAT } from "../../ReactBigCalendar";
 import Button from "antd/lib/button";
 import s from "../Popover/Popover.module.css";
 
@@ -23,7 +23,7 @@ const Popover: FC<IPopoverProps> = ({ schedulerData, eventItem, title, start, en
                 className="header2-text"
                 title={title}
             >
-                {start.format(DATE_FORMAT).slice(-5)} - {end.format(DATE_FORMAT).slice(-5)}
+                {start.format(DATE_TIME_FORMAT).slice(-5)} - {end.format(DATE_TIME_FORMAT).slice(-5)}
             </span>
             {view === "worktime" ? (
                 <div className={s.btnswrapper}>

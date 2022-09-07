@@ -1,53 +1,21 @@
 import { WorkDayTypes } from "../Types/WorkDayTypes";
 import { ActionTypes } from "../ActionTypes";
-import { SchedulerDataConfig, ViewTypes } from "react-big-scheduler";
+import { ViewTypes } from "react-big-scheduler";
 import { MainActions } from "../Types/MainReducerTypes";
 import { getCopy } from "../Helpers/CopyHelper";
 import { InterviewTimeTypes } from "../Types/InterviewTimeTypes";
-import { Recruiter } from "../../Types/Recruiter";
 import { EventsTypes } from "../Types/EventsTypes";
 import { RecruitersTypes } from "../Types/RecruitersTypes";
-import { filterEvents, filterRecruiters } from "../../Helpers/Filters";
+import { filterRecruiters } from "../../Helpers/Filters";
 import { RoleTypes } from "../Types/RoleTypes";
-import { ScheduleEvent } from "../../Types/ScheduleEvent";
+import { resize } from "../Helpers/ResizeHelper";
+import { GlobalState } from "../../Types/GlobalState";
 
-export type littleState = {
-    role: string;
-    events: string[];
-    currentEvent: string;
-    currentInterviewTime: number | "";
-    currentDayStart: number | "";
-    currentDayEnd: number | "";
-    config: SchedulerDataConfig;
-    viewType: ViewTypes;
-    behaviours: object;
-    recruiters: Recruiter[];
-    currentRecruiters: Recruiter[];
-    interviews: ScheduleEvent[];
-    currentInterviews: ScheduleEvent[];
-};
-
-export type STate = {
-    rolePending: boolean;
-    allEventsPending: boolean;
-    recruitersPending: boolean;
-    workTimePending: boolean;
-    dayStartPending: boolean;
-    dayEndPending: boolean;
-    interviewTimePending: boolean;
-    changePending: boolean;
-    state: littleState;
-    error: string | null;
-    changeError: string | null;
-};
-
-const defaultState: STate = {
+const defaultState: GlobalState = {
     rolePending: false,
     allEventsPending: false,
     recruitersPending: false,
     workTimePending: false,
-    dayStartPending: false,
-    dayEndPending: false,
     interviewTimePending: false,
     changePending: false,
     state: {
@@ -92,34 +60,10 @@ const defaultState: STate = {
     changeError: null,
 };
 
-const getDiff = (min: number, max: number) => max - min + 1;
-
-const resize = (config: SchedulerDataConfig) => {
-    const newWidth = window.innerWidth * 0.75;
-    let newResourceTableWidth = config.dayResourceTableWidth;
-    if (window.innerWidth < 1200) {
-        newResourceTableWidth = 200;
-    }
-    const min = config.dayStartFrom;
-    const max = config.dayStopTo;
-    const minuteStep = config.minuteStep;
-    const timeWidth = newWidth - newResourceTableWidth!;
-    const newDayCellWidth = timeWidth / (getDiff(min!, max!) * (60 / minuteStep!));
-    const newWeekCellWidth = timeWidth / 7;
-    return {
-        ...config,
-        dayResourceTableWidth: newResourceTableWidth,
-        weekResourceTableWidth: newResourceTableWidth,
-        schedulerWidth: newWidth,
-        dayCellWidth: newDayCellWidth,
-        weekCellWidth: newWeekCellWidth,
-    };
-};
-
 const WorkDayReducer = (
     state = defaultState,
     action: MainActions | WorkDayTypes | InterviewTimeTypes | EventsTypes | RecruitersTypes | RoleTypes
-): typeof defaultState => {
+): GlobalState => {
     if (action.type === ActionTypes.GET_INTERVIEW_TIME_REQUEST) {
         return { ...state, interviewTimePending: true };
     } else if (action.type === ActionTypes.GET_EVENTS_REQUEST) {

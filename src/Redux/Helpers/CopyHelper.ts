@@ -1,7 +1,7 @@
-import { littleState } from "../Reducers/WorkDayReducer";
+import { CalendarState } from "../../Types/CalendarState";
 
 export const getCopy = (
-    state: littleState,
+    state: CalendarState,
     configIsDepthCopy = false,
     recruitersIsDepthCopy = false,
     workedTimesIsDepthCopy = false

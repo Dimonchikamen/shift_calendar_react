@@ -26,6 +26,7 @@ export type ChangeEndDay = {
 
 export type GetWorkDayRequest = {
     type: ActionTypes.GET_WORK_DAY_REQUEST;
+    payload: Date;
 };
 
 export type GetWorkDaySuccess = {
