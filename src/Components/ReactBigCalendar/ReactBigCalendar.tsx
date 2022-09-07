@@ -117,6 +117,7 @@ const ReactBigCalendar: FC = () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const recruiter = schedulerData.resources.find((r: Resource) => r.id === event.resourceId);
+        // v Где-то здесь начинается жесткая нагрузка на озу при редактировании попытке редактироваь рабочее время
         const availableInterviewTimes = getAvailableTimes(event, event.interviews, currentInterviewTime);
         return {
             name: recruiter.name,
