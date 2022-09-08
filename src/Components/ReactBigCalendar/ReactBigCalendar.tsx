@@ -60,12 +60,13 @@ const ReactBigCalendar: FC = () => {
     const recruiters = state.currentRecruiters;
     const behaviours = state.behaviours;
     const currentEvent = state.currentEvent;
-    const currentInterviewTime = state.currentInterviewTime === "" ? 0 : state.currentInterviewTime;
+    const currentInterviewTime = state.currentInterviewTime === "" ? 30 : state.currentInterviewTime;
     const config = state.config;
     const role = state.role;
-    const [resources, scheduleEvents] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters, currentEvent]); //{
+    const [resources, scheduleEvents] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters, currentEvent]);
     const dispatch = useAppDispatch();
     const [view, setCalendarView] = useState<"worktime" | "interview">("worktime");
+    const [errorCode, setErrorCode] = useState(500);
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
@@ -117,7 +118,6 @@ const ReactBigCalendar: FC = () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const recruiter = schedulerData.resources.find((r: Resource) => r.id === event.resourceId);
-        // v Где-то здесь начинается жесткая нагрузка на озу при редактировании попытке редактироваь рабочее время
         const availableInterviewTimes = getAvailableTimes(event, event.interviews, currentInterviewTime);
         return {
             name: recruiter.name,
@@ -290,7 +290,7 @@ const ReactBigCalendar: FC = () => {
                 <PopupError
                     isOpen={Boolean(changeError)}
                     title={"Что-то пошло не так..."}
-                    errorCode={502}
+                    errorCode={errorCode}
                     onCancel={() => dispatch(closeErrorWindowAction())}
                 />
                 <CalendarHeader />

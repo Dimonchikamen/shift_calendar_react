@@ -62,7 +62,7 @@ const ReactBigCalendar: FC = () => {
     const config = state.config;
     const behaviours = state.behaviours;
     const currentEvent = state.currentEvent;
-    const currentInterviewTime = state.currentInterviewTime === "" ? 0 : state.currentInterviewTime;
+    const currentInterviewTime = state.currentInterviewTime === "" ? 30 : state.currentInterviewTime;
 
     const role = state.role;
     const [resources, scheduleEvents, interviews] = useMemo(

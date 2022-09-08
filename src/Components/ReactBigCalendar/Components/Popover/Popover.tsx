@@ -42,7 +42,7 @@ const Popover: FC<IPopoverProps> = ({
             >
                 {start.format(DATE_TIME_FORMAT).slice(-5)} - {end.format(DATE_TIME_FORMAT).slice(-5)}
             </span>
-            {role === "admin" ? (
+            {view === "worktime" && role === "admin" ? (
                 <div className={s.btnswrapper}>
                     <Button
                         onClick={() => deleteEvent(eventItem)}
