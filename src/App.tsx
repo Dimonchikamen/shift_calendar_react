@@ -65,7 +65,7 @@ const App: FC = () => {
                             {...a11yProps(1)}
                         />
                         <Tab
-                            label="Писец"
+                            label="Собесы"
                             {...a11yProps(2)}
                         />
                     </Tabs>
