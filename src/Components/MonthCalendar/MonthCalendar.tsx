@@ -5,14 +5,15 @@ import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents
 import MonthCalendarPresentation from "./MonthCalendarPresentation";
 import { ScheduleEvent } from "../../Types/ScheduleEvent";
 import AddWorkTimePopup from "../../UiKit/Popup/AddWorkTimePopup/AddWorkTimePopup";
-import { createTitle } from "../../Helpers/CreateTitle";
-import moment from "moment";
-import { DATE_TIME_FORMAT } from "../ReactBigCalendar/ReactBigCalendar";
 import RemoveWorkTimePopup from "../../UiKit/Popup/RemoveWorkTimePopup/RemoveWorkTimePopup";
 import {
     addRecruiterWorkTimeRequest,
     removeRecruiterWorkTimeRequest,
 } from "../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
+import { CircularProgress } from "@mui/material";
+import PopupError from "../../UiKit/Popup/ErrorPopup/ErrorPopup";
+import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
+import WaitPopup from "../../UiKit/Popup/WaitPopup/WaitPopup";
 
 const DAYS_IN_WEEK = 7;
 const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -68,19 +69,9 @@ const MonthCalendar: FC = () => {
     const [removeEventPopupIsOpen, setRemoveEventPopupOpen] = useState<boolean>(false);
     const [dateForAddWorkTime, setDateForAddWorkTime] = useState<Date>(currentDate);
 
-    const {
-        rolePending,
-        allEventsPending,
-        workTimePending,
-        interviewTimePending,
-        recruitersPending,
-        changePending,
-        state,
-        error,
-        changeError,
-    } = useAppSelector(state => state.workDayState);
+    const { allEventsPending, interviewTimePending, recruitersPending, changePending, state, error, changeError } =
+        useAppSelector(state => state.workDayState);
     const recruiters = state.recruiters;
-    //const recruiters = useAppSelector(state => state.main.recruiters);
     const data = useMemo(() => getMonthData(currentDate.getFullYear(), currentDate.getMonth()), [currentDate]);
     const [, events] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters]);
     const dispatch = useAppDispatch();
@@ -120,7 +111,6 @@ const MonthCalendar: FC = () => {
         dispatch(
             addRecruiterWorkTimeRequest(eventStart, eventEnd, Number(selectedEvent!.resourceId), state.currentEvent)
         );
-        //dispatch(addRecruiterEventAction(res));
         setPopupOpen(false);
     };
 
@@ -130,52 +120,62 @@ const MonthCalendar: FC = () => {
         setSelectedEvent(null);
     };
 
-    return (
-        <>
-            <MonthCalendarPresentation
-                currentDate={currentDate}
-                onClickPreviousMonth={back}
-                onClickNextMonth={next}
-            >
-                {data.map(week => {
-                    return week.map(day => {
-                        const dayEvents = events.filter(e => {
-                            const startDate = new Date(e.start);
+    if (recruitersPending) {
+        return <CircularProgress />;
+    } else
+        return (
+            <>
+                <MonthCalendarPresentation
+                    currentDate={currentDate}
+                    onClickPreviousMonth={back}
+                    onClickNextMonth={next}
+                >
+                    {data.map(week => {
+                        return week.map(day => {
+                            const dayEvents = events.filter(e => {
+                                const startDate = new Date(e.start);
+                                return (
+                                    startDate.getDate() === day.date.getDate() &&
+                                    startDate.getMonth() === day.date.getMonth() &&
+                                    startDate.getFullYear() === day.date.getFullYear()
+                                );
+                            });
                             return (
-                                startDate.getDate() === day.date.getDate() &&
-                                startDate.getMonth() === day.date.getMonth() &&
-                                startDate.getFullYear() === day.date.getFullYear()
+                                <Cell
+                                    key={`${day.date.getFullYear()}-${day.date.getMonth()}-${day.date.getDate()}`}
+                                    events={dayEvents}
+                                    dayDate={day.date}
+                                    selectedEvent={selectedEvent}
+                                    disabled={day.disabled}
+                                    onAddEvent={addEventClickHandler}
+                                    onRemoveEvent={removeEventClickHandler}
+                                    onSetSelectedEvent={setSelectedEvent}
+                                />
                             );
                         });
-                        return (
-                            <Cell
-                                key={`${day.date.getFullYear()}-${day.date.getMonth()}-${day.date.getDate()}`}
-                                events={dayEvents}
-                                dayDate={day.date}
-                                selectedEvent={selectedEvent}
-                                disabled={day.disabled}
-                                onAddEvent={addEventClickHandler}
-                                onRemoveEvent={removeEventClickHandler}
-                                onSetSelectedEvent={setSelectedEvent}
-                            />
-                        );
-                    });
-                })}
-            </MonthCalendarPresentation>
-            <AddWorkTimePopup
-                title="Добавление смены"
-                isOpen={popupIsOpen}
-                onSubmit={add}
-                onCancel={() => setPopupOpen(false)}
-            />
-            <RemoveWorkTimePopup
-                title="Удаление смены"
-                isOpen={removeEventPopupIsOpen}
-                onSubmit={remove}
-                onCancel={() => setRemoveEventPopupOpen(false)}
-            />
-        </>
-    );
+                    })}
+                </MonthCalendarPresentation>
+                <WaitPopup isOpen={changePending} />
+                <PopupError
+                    isOpen={Boolean(changeError)}
+                    title={"Что-то пошло не так..."}
+                    errorCode={502}
+                    onCancel={() => dispatch(closeErrorWindowAction())}
+                />
+                <AddWorkTimePopup
+                    title="Добавление смены"
+                    isOpen={popupIsOpen}
+                    onSubmit={add}
+                    onCancel={() => setPopupOpen(false)}
+                />
+                <RemoveWorkTimePopup
+                    title="Удаление смены"
+                    isOpen={removeEventPopupIsOpen}
+                    onSubmit={remove}
+                    onCancel={() => setRemoveEventPopupOpen(false)}
+                />
+            </>
+        );
 };
 
 export default MonthCalendar;

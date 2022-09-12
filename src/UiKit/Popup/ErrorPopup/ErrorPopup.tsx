@@ -12,7 +12,7 @@ interface IProps {
     onCancel: () => void;
 }
 
-const ErrorDialog: FC<IProps> = ({ isOpen, title, errorCode, onCancel }) => {
+const ErrorPopup: FC<IProps> = ({ isOpen, title, errorCode, onCancel }) => {
     return (
         <Popup
             title={title}
@@ -32,4 +32,4 @@ const ErrorDialog: FC<IProps> = ({ isOpen, title, errorCode, onCancel }) => {
         </Popup>
     );
 };
-export default ErrorDialog;
+export default ErrorPopup;

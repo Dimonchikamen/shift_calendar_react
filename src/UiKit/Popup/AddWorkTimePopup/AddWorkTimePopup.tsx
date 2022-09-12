@@ -3,12 +3,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Popup from "../Popup";
-import { useAppSelector } from "../../../Redux/Hooks";
 import s from "../../../Components/ReactBigCalendar/Components/CalendarHeader/CalendarHeader.module.css";
 import SelectItem from "../../SelectItem/SelectItem";
 import { getHour, getTimeFromHours } from "../../../Helpers/DateTimeHelpers";
 import { Time } from "../../../Types/Time";
 import { getOptions } from "../../../Helpers/GetOptions";
+import { SelectChangeEvent } from "@mui/material";
 
 const hourOptions: Time[] = getOptions(0, 23);
 
@@ -20,13 +20,15 @@ interface IAddWorkingTimePopupProps {
 }
 
 const AddWorkTimePopup: FC<IAddWorkingTimePopupProps> = ({ title, isOpen, onSubmit, onCancel }) => {
-    const min = useAppSelector(state => state.workDayState.state.config.dayStartFrom)!;
-    const max = useAppSelector(state => state.workDayState.state.config.dayStopTo)!;
-    const [currentStart, setStart] = useState(getTimeFromHours(min));
-    const [currentEnd, setEnd] = useState(getTimeFromHours(max));
+    const [currentStart, setStart] = useState(0);
+    const [currentEnd, setEnd] = useState(23);
+
+    const changeStartHandler = (e: SelectChangeEvent) => setStart(getHour(e.target.value));
+
+    const changeEndHandler = (e: SelectChangeEvent) => setEnd(getHour(e.target.value));
 
     const submit = () => {
-        onSubmit(getHour(currentStart), getHour(currentEnd));
+        onSubmit(currentStart, currentEnd);
     };
 
     return (
@@ -40,19 +42,19 @@ const AddWorkTimePopup: FC<IAddWorkingTimePopupProps> = ({ title, isOpen, onSubm
                 <div className={s.select_work_time_container}>
                     <span>Рабочее время с</span>
                     <SelectItem
-                        value={currentStart}
+                        value={getTimeFromHours(currentStart)}
                         options={hourOptions}
                         size="small"
-                        optionDisableFunc={v => getHour(v) >= max || getHour(v) < min}
-                        onchange={e => setStart(e.target.value)}
+                        optionDisableFunc={v => getHour(v) >= currentEnd}
+                        onchange={changeStartHandler}
                     />
                     <span>до</span>
                     <SelectItem
-                        value={currentEnd}
+                        value={getTimeFromHours(currentEnd)}
                         options={hourOptions}
                         size="small"
-                        optionDisableFunc={v => getHour(v) <= min || getHour(v) > max}
-                        onchange={e => setEnd(e.target.value)}
+                        optionDisableFunc={v => getHour(v) <= currentStart}
+                        onchange={changeEndHandler}
                     />
                 </div>
             </DialogContent>

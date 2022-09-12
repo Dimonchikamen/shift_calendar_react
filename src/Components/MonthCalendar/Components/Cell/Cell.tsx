@@ -2,7 +2,6 @@ import { FC } from "react";
 import { ScheduleEvent } from "../../../../Types/ScheduleEvent";
 import s from "./Cell.module.css";
 import CellEvent from "../CellEvent/CellEvent";
-import { useAppDispatch } from "../../../../Redux/Hooks";
 
 interface ICellProps {
     events: ScheduleEvent[];
