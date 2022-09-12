@@ -7,11 +7,12 @@ import {
     changeInterviewTimeSuccess,
 } from "../../Actions/InterviewTimeActions/ChangeInterviewTimeActions";
 
-const changeTime = (newTime: number): Promise<number> => ServerAPI.changeInterviewTime(newTime);
+const changeTime = (eventId: number, newTime: number): Promise<number> =>
+    ServerAPI.changeInterviewTime(eventId, newTime);
 
-function* changeInterviewTime({ payload }: ChangeInterviewTimeRequest) {
+function* changeInterviewTime({ payload: { eventId, newTime } }: ChangeInterviewTimeRequest) {
     try {
-        const response: number = yield call(changeTime, payload);
+        const response: number = yield call(changeTime, eventId, newTime);
         yield put(changeInterviewTimeSuccess(response));
     } catch (e) {
         yield put(changeInterviewTimeFailure({ error: (e as Error).message }));

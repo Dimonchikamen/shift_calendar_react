@@ -26,7 +26,7 @@ import { getInterviewTimeRequest } from "../../Redux/Actions/InterviewTimeAction
 import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
 import { getRecruitersRequest } from "../../Redux/Actions/RecruitersActions/GetRecruitersActions";
-import { getWorkDayRequest } from "../../Redux/Actions/WorkDayActions/WorkDayActions";
+import { getWorkTimeRequest } from "../../Redux/Actions/WorkTimeActions/WorkDayActions";
 import { FullDateTime } from "../../Types/FullDateTime";
 import {
     addRecruiterWorkTimeRequest,
@@ -35,7 +35,6 @@ import {
 } from "../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
 import { Time } from "../../Types/Time";
 import { getDate, getHour, getMinutes } from "../../Helpers/DateTimeHelpers";
-import { getRoleRequest } from "../../Redux/Actions/GetRoleActions";
 import { filterEvents } from "../../Helpers/Filters";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
@@ -89,11 +88,10 @@ const ReactBigCalendar: FC = () => {
     });
 
     useEffect(() => {
-        dispatch(getRoleRequest());
-        dispatch(getRecruitersRequest());
-        dispatch(getWorkDayRequest(new Date(currentDate)));
-        dispatch(getInterviewTimeRequest());
         dispatch(getEventsRequest());
+        dispatch(getRecruitersRequest());
+        // dispatch(getWorkDayRequest(new Date(currentDate)));
+        //dispatch(getInterviewTimeRequest());
     }, []);
 
     useEffect(() => {
@@ -139,19 +137,19 @@ const ReactBigCalendar: FC = () => {
     const prevClick = (schedulerData: SchedulerData) => {
         schedulerData.prev();
         setSchedulerData(schedulerData);
-        dispatch(getWorkDayRequest(new Date(schedulerData.startDate)));
+        // dispatch(getWorkDayRequest(new Date(schedulerData.startDate)));
     };
 
     const nextClick = (schedulerData: SchedulerData) => {
         schedulerData.next();
         setSchedulerData(schedulerData);
-        dispatch(getWorkDayRequest(new Date(schedulerData.startDate)));
+        // dispatch(getWorkDayRequest(new Date(schedulerData.startDate)));
     };
 
     const selectDate = (schedulerData: SchedulerData, date: string) => {
         schedulerData.setDate(date);
         setSchedulerData(schedulerData);
-        dispatch(getWorkDayRequest(new Date(date)));
+        //dispatch(getWorkDayRequest(new Date(date)));
     };
 
     const viewChange = (schedulerData: SchedulerData, view: any) => {
@@ -296,7 +294,7 @@ const ReactBigCalendar: FC = () => {
                     errorCode={502}
                     onCancel={() => dispatch(closeErrorWindowAction())}
                 />
-                <CalendarHeader />
+                <CalendarHeader currentDate={new Date(currentDate)} />
                 <div className={s.scheduler_container}>
                     <div>
                         <Scheduler

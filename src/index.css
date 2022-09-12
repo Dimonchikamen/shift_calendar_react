@@ -13,13 +13,16 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-body::-webkit-scrollbar, .MuiPaper-root::-webkit-scrollbar {
+body::-webkit-scrollbar,
+.MuiPaper-root::-webkit-scrollbar {
     width: 9px; /* ширина scrollbar */
 }
-body::-webkit-scrollbar-track, .MuiPaper-root::-webkit-scrollbar-track {
+body::-webkit-scrollbar-track,
+.MuiPaper-root::-webkit-scrollbar-track {
     background: #fff; /* цвет дорожки */
 }
-body::-webkit-scrollbar-thumb, .MuiPaper-root::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-thumb,
+.MuiPaper-root::-webkit-scrollbar-thumb {
     background-color: #b3b3b3; /* цвет плашки */
     border-radius: 20px; /* закругления плашки */
     border: 2px solid #fff; /* padding вокруг плашки */

@@ -1,4 +1,4 @@
-import { WorkDayTypes } from "../Types/WorkDayTypes";
+import { WorkTimeTypes } from "../Types/WorkTimeTypes";
 import { ActionTypes } from "../ActionTypes";
 import { ViewTypes } from "react-big-scheduler";
 import { MainActions } from "../Types/MainReducerTypes";
@@ -62,7 +62,7 @@ const defaultState: GlobalState = {
 
 const WorkDayReducer = (
     state = defaultState,
-    action: MainActions | WorkDayTypes | InterviewTimeTypes | EventsTypes | RecruitersTypes | RoleTypes
+    action: MainActions | WorkTimeTypes | InterviewTimeTypes | EventsTypes | RecruitersTypes | RoleTypes
 ): GlobalState => {
     if (action.type === ActionTypes.GET_INTERVIEW_TIME_REQUEST) {
         return { ...state, interviewTimePending: true };
@@ -70,17 +70,15 @@ const WorkDayReducer = (
         return { ...state, allEventsPending: true };
     } else if (action.type === ActionTypes.GET_RECRUITERS_REQUEST) {
         return { ...state, recruitersPending: true };
-    } else if (action.type === ActionTypes.GET_ROLE_REQUEST) {
-        return { ...state, rolePending: true };
-    } else if (action.type === ActionTypes.GET_WORK_DAY_REQUEST) {
+    } else if (action.type === ActionTypes.GET_WORK_TIME_REQUEST) {
         return { ...state, workTimePending: true };
     } else if (
-        action.type === ActionTypes.CHANGE_WORK_DAY_REQUEST ||
+        action.type === ActionTypes.CHANGE_WORK_TIME_REQUEST ||
         action.type === ActionTypes.CHANGE_INTERVIEW_TIME_REQUEST ||
         action.type === ActionTypes.CHANGE_EVENT_REQUEST
     ) {
         return { ...state, changePending: true };
-    } else if (action.type === ActionTypes.GET_ROLE_SUCCESS) {
+    } else if (action.type === ActionTypes.SET_ROLE) {
         const copy = getCopy(state.state);
         copy.role = action.payload;
         return { ...state, rolePending: false, state: copy };
@@ -97,8 +95,8 @@ const WorkDayReducer = (
         copy.config = resize(copy.config);
         return { ...state, state: copy };
     } else if (
-        action.type === ActionTypes.GET_WORK_DAY_SUCCESS ||
-        action.type === ActionTypes.CHANGE_WORK_DAY_SUCCESS
+        action.type === ActionTypes.GET_WORK_TIME_SUCCESS ||
+        action.type === ActionTypes.CHANGE_WORK_TIME_SUCCESS
     ) {
         const copy = getCopy(state.state, true);
         if (action.payload === "") {
@@ -113,8 +111,8 @@ const WorkDayReducer = (
             copy.config.dayStopTo = action.payload.end;
         }
         copy.config = resize(copy.config);
-        const workTimePending = action.type === ActionTypes.GET_WORK_DAY_SUCCESS ? false : state.workTimePending;
-        const changePending = action.type === ActionTypes.CHANGE_WORK_DAY_SUCCESS ? false : state.changePending;
+        const workTimePending = action.type === ActionTypes.GET_WORK_TIME_SUCCESS ? false : state.workTimePending;
+        const changePending = action.type === ActionTypes.CHANGE_WORK_TIME_SUCCESS ? false : state.changePending;
         return {
             ...state,
             workTimePending,
@@ -174,15 +172,13 @@ const WorkDayReducer = (
         const copy = getCopy(state.state, false, true, true);
         copy.currentInterviews = filterEvents(copy.interviews, action.payload);
         return { ...state, state: copy };
-    } */ else if (action.type === ActionTypes.GET_ROLE_FAILURE) {
-        return { ...state, rolePending: false, error: action.payload.error };
-    } else if (
-        action.type === ActionTypes.GET_WORK_DAY_FAILURE ||
+    } */ else if (
+        action.type === ActionTypes.GET_WORK_TIME_FAILURE ||
         action.type === ActionTypes.GET_INTERVIEW_TIME_FAILURE ||
         action.type === ActionTypes.GET_EVENTS_FAILURE ||
         action.type === ActionTypes.GET_RECRUITERS_FAILURE
     ) {
-        const workTimePending = action.type === ActionTypes.GET_WORK_DAY_FAILURE ? false : state.workTimePending;
+        const workTimePending = action.type === ActionTypes.GET_WORK_TIME_FAILURE ? false : state.workTimePending;
         const interviewTimePending =
             action.type === ActionTypes.GET_INTERVIEW_TIME_FAILURE ? false : state.interviewTimePending;
         const allEventsPending = action.type === ActionTypes.GET_EVENTS_FAILURE ? false : state.allEventsPending;
@@ -196,7 +192,7 @@ const WorkDayReducer = (
             error: action.payload.error,
         };
     } else if (
-        action.type === ActionTypes.CHANGE_WORK_DAY_FAILURE ||
+        action.type === ActionTypes.CHANGE_WORK_TIME_FAILURE ||
         action.type === ActionTypes.CHANGE_INTERVIEW_TIME_FAILURE
     ) {
         return {

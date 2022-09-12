@@ -1,8 +1,8 @@
 import axios from "axios";
 import { Recruiter } from "../Types/Recruiter";
 import moment from "moment";
-import { DATE_FORMAT } from "../Components/ReactBigCalendar/ReactBigCalendar";
-import { ChangeWorkDayPayload, GetWorkDayPayload } from "../Redux/Types/WorkDayTypes";
+import { DATE_FORMAT, DATE_TIME_FORMAT } from "../Components/ReactBigCalendar/ReactBigCalendar";
+import { ChangeWorkTimePayload, GetWorkTimeSuccessPayload } from "../Redux/Types/WorkTimeTypes";
 
 const recruitersMock = [
     {
@@ -116,34 +116,29 @@ const recruitersMock = [
 ];
 
 export class ServerAPI {
-    // Получение списка всех мероприятий.
+    private static startUrl = process.env.REACT_APP_SERVER_HOST;
+
     static async getEvents() {
         const url = "http://localhost:3000/";
         return await axios.get(url).then(response => response.data);
     }
 
-    // Запрос на получение рекрутёров за определённый период времени
-    // Тип Recruiter лежит в src/Types/Recruiter.ts
     static async getRecruiters(start?: Date, end?: Date) {
         for (let i = 0; i < 1000000000; i++) {
             //dasdadsd;
         }
         const url = "http://localhost:3000/";
-        return await axios.get(url).then(response => recruitersMock); //response.data)
+        return await axios.get(url).then(response => recruitersMock);
     }
 
-    // Запрос на получение одного рекрутёра по его Id
     static async getRecruiter(id: number) {
         const url = "http://localhost:3000/";
-        return await axios.get(url).then(response => recruitersMock); //response.data
+        return await axios.get(url).then(response => recruitersMock);
     }
 
-    // Запрос на добавление рабочего времени у рекрутёра
-    // в ответ ожидаем id этого рабочего времени, либо всего этого рекрутёра
     static async addRecruiterWorkTime(start: Date, end: Date, recruiterId: number, event: string): Promise<Recruiter> {
         const url = "http://localhost:3000/";
-        //TODO... переделать на POST
-        return await axios.get(url /*, { recruiterId, start, end }*/).then(
+        return await axios.get(url).then(
             response =>
                 ({
                     id: recruiterId,
@@ -152,16 +147,15 @@ export class ServerAPI {
                         {
                             id: 1000001,
                             events: [event],
-                            start: moment(start).format(DATE_FORMAT),
-                            end: moment(end).format(DATE_FORMAT),
+                            start: moment(start).format(DATE_TIME_FORMAT),
+                            end: moment(end).format(DATE_TIME_FORMAT),
                             interviews: [],
                         },
                     ],
                 } as unknown as Recruiter)
-        ); //response.data);
+        );
     }
 
-    // Запрос на редактирование рабочего времени у рекрутёра
     static async editRecruiterWorkTime(
         start: Date,
         end: Date,
@@ -172,50 +166,33 @@ export class ServerAPI {
         return await axios.post(url, { recruiterId, workTimeId, start, end }).then(response => response.data);
     }
 
-    // Запрос на удаление рабочего времени у рекрутёра
     static async removeRecruiterWorkTime(recruiterId: number, workTimeId: number): Promise<Recruiter> {
         const url = "http://localhost:3000/";
         return await axios.post(url, { recruiterId, workTimeId }).then(response => response.data);
     }
 
-    //Запрос на получение роли пользователя
-    static async getRole() {
-        const url = "http://localhost:3000/";
-        return await axios.get(url).then(response => "user"); //response.data)
-    }
-
-    // Запрос на получение начала и конца рабочих дней за определнный период
-    // обратно ожидается массив объектов, внутри которых лежит начало и конец в формате H:mm,
-    // например: { start: "9:00", end: "18:00" }
-    // а также дата, которая указывает для какого дня актуальна эта информация
-    // итого: ожидаю массив подобных объектов: { date: 2022-07-26, start: "9:00", end: "19:00" }
-    static async getWorkTimeDays(start: Date, end: Date) {
-        const url = "http://localhost:3000/";
+    static async getInterviewTime(eventId: number): Promise<number | ""> {
+        const url = this.startUrl + `/event/${eventId}/get-interview-time`;
         return await axios.get(url).then(res => res.data);
     }
 
-    static async getWorkDayTime(date: Date): Promise<GetWorkDayPayload | ""> {
-        const url = "http://localhost:3000/";
-        //TODO... переделать на POST
-        return await axios.get(url).then(res => "");
+    static async changeInterviewTime(eventId: number, newInterviewTime: number): Promise<number> {
+        const url = this.startUrl + `/event/${eventId}/set-interview-time`;
+        return await axios.post(url, newInterviewTime).then(res => res.data);
     }
 
-    static async changeWorkDayTime(newStart: number, newEnd: number): Promise<ChangeWorkDayPayload> {
-        const url = "http://localhost:3000/";
-        //TODO... переделать на POST
-        return await axios.get(url).then(res => ({ start: newStart, end: newEnd }));
+    static async getWorkTime(date: Date, eventId: number): Promise<GetWorkTimeSuccessPayload | ""> {
+        const url = this.startUrl + `/event/${eventId}/get-day-worktime/${moment(date).format(DATE_FORMAT)}`;
+        return await axios.get(url).then(res => res.data);
     }
 
-    // Запрос на получение длительности собеседования (делает Админ)
-    static async getInterviewTime(): Promise<number | ""> {
-        const url = "http://localhost:3000/";
-        return await axios.get(url).then(response => ""); //response.data)
-    }
-
-    // Запрос на изменение длительности собеседования (делает Админ)
-    static async changeInterviewTime(newInterviewTime: number) {
-        const url = "http://localhost:3000/";
-        //TODO.... переделать на POST
-        return await axios.get(url).then(response => newInterviewTime); //response.data)
+    static async changeWorkTime(
+        eventId: number,
+        date: Date,
+        newStart: number,
+        newEnd: number
+    ): Promise<ChangeWorkTimePayload> {
+        const url = this.startUrl + `/event/${eventId}/set-day-worktime/${moment(date).format(DATE_FORMAT)}`;
+        return await axios.post(url, { beginTime: newStart, endTime: newEnd }).then(res => res.data);
     }
 }

@@ -1,23 +1,23 @@
 import { ServerAPI } from "../../../API/ServerAPI";
-import { ChangeWorkDayPayload, ChangeWorkDayRequest } from "../../Types/WorkDayTypes";
+import { ChangeWorkTimePayload, ChangeWorkTimeRequest } from "../../Types/WorkTimeTypes";
 import { call, put, takeLatest } from "redux-saga/effects";
 import { ActionTypes } from "../../ActionTypes";
-import { changeWorkDayFailure, changeWorkDaySuccess } from "../../Actions/WorkDayActions/WorkDayActions";
+import { changeWorkTimeFailure, changeWorkTimeSuccess } from "../../Actions/WorkTimeActions/WorkDayActions";
 
-const changeWorkDayFetch = (start: number, end: number): Promise<ChangeWorkDayPayload> =>
-    ServerAPI.changeWorkDayTime(start, end);
+const changeWorkDayFetch = (eventId: number, date: Date, start: number, end: number): Promise<ChangeWorkTimePayload> =>
+    ServerAPI.changeWorkTime(eventId, date, start, end);
 
-function* changeWorkDay({ payload: { start, end } }: ChangeWorkDayRequest) {
+function* changeWorkDay({ payload: { eventId, date, start, end } }: ChangeWorkTimeRequest) {
     try {
-        const response: ChangeWorkDayPayload = yield call(changeWorkDayFetch, start, end);
-        yield put(changeWorkDaySuccess(response));
+        const response: ChangeWorkTimePayload = yield call(changeWorkDayFetch, eventId, date, start, end);
+        yield put(changeWorkTimeSuccess(response));
     } catch (e) {
-        yield put(changeWorkDayFailure({ error: (e as Error).message }));
+        yield put(changeWorkTimeFailure({ error: (e as Error).message }));
     }
 }
 
 function* changeWorkDaySaga() {
-    yield takeLatest(ActionTypes.CHANGE_WORK_DAY_REQUEST, changeWorkDay);
+    yield takeLatest(ActionTypes.CHANGE_WORK_TIME_REQUEST, changeWorkDay);
 }
 
 export default changeWorkDaySaga;

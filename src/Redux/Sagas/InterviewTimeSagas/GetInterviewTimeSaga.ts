@@ -5,12 +5,13 @@ import {
     getInterviewTimeFailure,
     getInterviewTimeSuccess,
 } from "../../Actions/InterviewTimeActions/GetInterviewTimeActions";
+import { GetInterviewTimeRequest } from "../../Types/InterviewTimeTypes";
 
-const getTime = (): Promise<number | ""> => ServerAPI.getInterviewTime();
+const getTime = (eventId: number): Promise<number | ""> => ServerAPI.getInterviewTime(eventId);
 
-function* getInterviewTime() {
+function* getInterviewTime({ payload }: GetInterviewTimeRequest) {
     try {
-        const response: number | "" = yield call(getTime);
+        const response: number | "" = yield call(getTime, payload);
         yield put(getInterviewTimeSuccess(response));
     } catch (e) {
         yield put(getInterviewTimeFailure({ error: (e as Error).message }));

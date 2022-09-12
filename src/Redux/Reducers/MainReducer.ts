@@ -2,7 +2,7 @@ import { ViewTypes } from "react-big-scheduler";
 import { MainActions } from "../Types/MainReducerTypes";
 import { ActionTypes } from "../ActionTypes";
 import { getCopy } from "../Helpers/CopyHelper";
-import { WorkDayTypes } from "../Types/WorkDayTypes";
+import { WorkTimeTypes } from "../Types/WorkTimeTypes";
 
 const initialState = {
     role: "user",

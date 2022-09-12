@@ -1,11 +1,17 @@
 import { ActionTypes } from "../ActionTypes";
 
+export interface ChangeInterviewTimeRequestPayload {
+    eventId: number;
+    newTime: number;
+}
+
 export interface FailurePayload {
     error: string | null;
 }
 
 export type GetInterviewTimeRequest = {
     type: ActionTypes.GET_INTERVIEW_TIME_REQUEST;
+    payload: number;
 };
 
 export type GetInterviewTimeSuccess = {
@@ -20,7 +26,7 @@ export type GetInterviewTimeFailure = {
 
 export type ChangeInterviewTimeRequest = {
     type: ActionTypes.CHANGE_INTERVIEW_TIME_REQUEST;
-    payload: number;
+    payload: ChangeInterviewTimeRequestPayload;
 };
 
 export type ChangeInterviewTimeSuccess = {

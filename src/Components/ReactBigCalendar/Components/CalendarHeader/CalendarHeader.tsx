@@ -8,14 +8,18 @@ import { Time } from "../../../../Types/Time";
 import { getOptions } from "../../../../Helpers/GetOptions";
 import { changeInterviewTimeRequest } from "../../../../Redux/Actions/InterviewTimeActions/ChangeInterviewTimeActions";
 import { changeEventRequest } from "../../../../Redux/Actions/EventsActions/ChangeEventActions";
-import { changeWorkDayRequest } from "../../../../Redux/Actions/WorkDayActions/WorkDayActions";
-import { changeDayStart } from "../../../../Redux/Actions/WorkDayActions/ChangeDayStartAction";
-import { changeDayEnd } from "../../../../Redux/Actions/WorkDayActions/ChangeDayEndAction";
+import { changeWorkTimeRequest } from "../../../../Redux/Actions/WorkTimeActions/WorkDayActions";
+import { changeDayStart } from "../../../../Redux/Actions/WorkTimeActions/ChangeDayStartAction";
+import { changeDayEnd } from "../../../../Redux/Actions/WorkTimeActions/ChangeDayEndAction";
 
 const interviewTimeOptions: Time[] = ["15:00", "30:00", "45:00", "60:00"];
 const hourOptions: Time[] = getOptions(0, 23);
 
-const CalendarHeader: FC = () => {
+interface ICalendarHeader {
+    currentDate: Date;
+}
+
+const CalendarHeader: FC<ICalendarHeader> = ({ currentDate }) => {
     const recruiters = useAppSelector(state => state.workDayState.state.recruiters);
     const min = getTimeFromHours(useAppSelector(state => state.workDayState.state.currentDayStart));
     const max = getTimeFromHours(useAppSelector(state => state.workDayState.state.currentDayEnd));
@@ -30,14 +34,14 @@ const CalendarHeader: FC = () => {
     };
 
     const changeInterviewTime = (e: SelectChangeEvent) => {
-        dispatch(changeInterviewTimeRequest(getHour(e.target.value)));
+        dispatch(changeInterviewTimeRequest(1, getHour(e.target.value)));
     };
 
     const changeMin = (e: SelectChangeEvent) => {
         if (max === "") {
             dispatch(changeDayStart(getHour(e.target.value)));
         } else {
-            dispatch(changeWorkDayRequest(getHour(e.target.value), getHour(max)));
+            dispatch(changeWorkTimeRequest(1, currentDate, getHour(e.target.value), getHour(max)));
         }
     };
 
@@ -45,7 +49,7 @@ const CalendarHeader: FC = () => {
         if (min === "") {
             dispatch(changeDayEnd(getHour(e.target.value)));
         } else {
-            dispatch(changeWorkDayRequest(getHour(min), getHour(e.target.value)));
+            dispatch(changeWorkTimeRequest(1, currentDate, getHour(min), getHour(e.target.value)));
         }
     };
 

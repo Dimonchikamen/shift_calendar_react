@@ -1,22 +1,23 @@
-import { GetWorkDayPayload, GetWorkDayRequest } from "../../Types/WorkDayTypes";
+import { GetWorkTimeSuccessPayload, GetWorkTimeRequest } from "../../Types/WorkTimeTypes";
 import { ServerAPI } from "../../../API/ServerAPI";
 import { call, put, takeLatest } from "redux-saga/effects";
-import { getWorkDayFailure, getWorkDaySuccess } from "../../Actions/WorkDayActions/WorkDayActions";
+import { getWorkTimeFailure, getWorkTimeSuccess } from "../../Actions/WorkTimeActions/WorkDayActions";
 import { ActionTypes } from "../../ActionTypes";
 
-const getWorkDayFetch = (date: Date): Promise<GetWorkDayPayload | ""> => ServerAPI.getWorkDayTime(date);
+const getWorkDayFetch = (date: Date, eventId: number): Promise<GetWorkTimeSuccessPayload | ""> =>
+    ServerAPI.getWorkTime(date, eventId);
 
-function* getWorkDay({ payload }: GetWorkDayRequest) {
+function* getWorkDay({ payload: { date, eventId } }: GetWorkTimeRequest) {
     try {
-        const response: GetWorkDayPayload | "" = yield call(getWorkDayFetch, payload);
-        yield put(getWorkDaySuccess(response));
+        const response: GetWorkTimeSuccessPayload | "" = yield call(getWorkDayFetch, date, eventId);
+        yield put(getWorkTimeSuccess(response));
     } catch (e) {
-        yield put(getWorkDayFailure({ error: (e as Error).message }));
+        yield put(getWorkTimeFailure({ error: (e as Error).message }));
     }
 }
 
 function* getWorkDaySaga() {
-    yield takeLatest(ActionTypes.GET_WORK_DAY_REQUEST, getWorkDay);
+    yield takeLatest(ActionTypes.GET_WORK_TIME_REQUEST, getWorkDay);
 }
 
 export default getWorkDaySaga;

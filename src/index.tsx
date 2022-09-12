@@ -5,11 +5,12 @@ import App from "./App";
 import { Provider } from "react-redux";
 import store from "./Redux/Store";
 
-const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+const rootElement = document.getElementById("root") as HTMLElement;
+const root = ReactDOM.createRoot(rootElement);
 root.render(
     <React.StrictMode>
         <Provider store={store}>
-            <App />
+            <App role={rootElement.dataset.role!} />
         </Provider>
     </React.StrictMode>
 );

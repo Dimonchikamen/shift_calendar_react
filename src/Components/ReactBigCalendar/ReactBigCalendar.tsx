@@ -34,8 +34,7 @@ import {
 } from "../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
 import { Time } from "../../Types/Time";
 import { getDate, getHour, getMinutes } from "../../Helpers/DateTimeHelpers";
-import { getRoleRequest } from "../../Redux/Actions/GetRoleActions";
-import { getWorkDayRequest } from "../../Redux/Actions/WorkDayActions/WorkDayActions";
+import { getWorkTimeRequest } from "../../Redux/Actions/WorkTimeActions/WorkDayActions";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
@@ -46,7 +45,6 @@ moment.locale("ru-ru");
 
 const ReactBigCalendar: FC = () => {
     const {
-        rolePending,
         allEventsPending,
         workTimePending,
         interviewTimePending,
@@ -66,7 +64,6 @@ const ReactBigCalendar: FC = () => {
     const [resources, scheduleEvents] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters, currentEvent]); //{
     const dispatch = useAppDispatch();
     const [view, setCalendarView] = useState<"worktime" | "interview">("worktime");
-
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
     const [isAdding, setIsAdding] = useState<boolean>(true);
@@ -86,10 +83,9 @@ const ReactBigCalendar: FC = () => {
     });
 
     useEffect(() => {
-        dispatch(getRoleRequest());
         dispatch(getRecruitersRequest());
-        dispatch(getWorkDayRequest(new Date(currentDate)));
-        dispatch(getInterviewTimeRequest());
+        dispatch(getWorkTimeRequest(new Date(currentDate), 1));
+        dispatch(getInterviewTimeRequest(1));
         dispatch(getEventsRequest());
     }, []);
 
@@ -136,19 +132,19 @@ const ReactBigCalendar: FC = () => {
     const prevClick = (schedulerData: SchedulerData) => {
         schedulerData.prev();
         setSchedulerData(schedulerData);
-        dispatch(getWorkDayRequest(new Date(schedulerData.startDate)));
+        dispatch(getWorkTimeRequest(new Date(schedulerData.startDate), 1));
     };
 
     const nextClick = (schedulerData: SchedulerData) => {
         schedulerData.next();
         setSchedulerData(schedulerData);
-        dispatch(getWorkDayRequest(new Date(schedulerData.startDate)));
+        dispatch(getWorkTimeRequest(new Date(schedulerData.startDate), 1));
     };
 
     const selectDate = (schedulerData: SchedulerData, date: string) => {
         schedulerData.setDate(date);
         setSchedulerData(schedulerData);
-        dispatch(getWorkDayRequest(new Date(date)));
+        dispatch(getWorkTimeRequest(new Date(date), 1));
     };
 
     const viewChange = (schedulerData: SchedulerData, view: any) => {
@@ -271,7 +267,7 @@ const ReactBigCalendar: FC = () => {
         );
     };
 
-    if (rolePending || allEventsPending || workTimePending || interviewTimePending || recruitersPending) {
+    if (allEventsPending || workTimePending || interviewTimePending || recruitersPending) {
         return <CircularProgress />;
     } else if (error) {
         return <Alert severity="error">Возникла ошибка при получении запроса с сервера.</Alert>;
@@ -292,7 +288,7 @@ const ReactBigCalendar: FC = () => {
                     errorCode={502}
                     onCancel={() => dispatch(closeErrorWindowAction())}
                 />
-                <CalendarHeader />
+                <CalendarHeader currentDate={new Date(currentDate)} />
                 <div className={s.scheduler_container}>
                     <div>
                         <Scheduler
@@ -329,4 +325,4 @@ const ReactBigCalendar: FC = () => {
         );
     }
 };
-export default memo(widthDragDropContext(ReactBigCalendar));
+export default widthDragDropContext(memo(ReactBigCalendar));

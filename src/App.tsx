@@ -1,11 +1,13 @@
 import "./App.css";
-import React, { FC, memo } from "react";
+import React, { FC, memo, useEffect } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "@toast-ui/calendar/dist/toastui-calendar.min.css";
 import ReactBigCalendar from "./Components/ReactBigCalendar/ReactBigCalendar";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 import MonthCalendar from "./Components/MonthCalendar/MonthCalendar";
 import ReactBigCalendar2 from "./Components/ReactBigCalendar/ReactBigCalendar2";
+import { useAppDispatch } from "./Redux/Hooks";
+import { setRoleAction } from "./Redux/Actions/SetRoleAction";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -40,8 +42,17 @@ function a11yProps(index: number) {
     };
 }
 
-const App: FC = () => {
+interface IAppProps {
+    role: string;
+}
+
+const App: FC<IAppProps> = ({ role }) => {
     const [value, setValue] = React.useState(0);
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        dispatch(setRoleAction(role));
+    });
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);

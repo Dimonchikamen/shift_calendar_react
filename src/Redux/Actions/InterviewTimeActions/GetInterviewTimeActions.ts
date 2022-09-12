@@ -6,8 +6,9 @@ import {
 } from "../../Types/InterviewTimeTypes";
 import { ActionTypes } from "../../ActionTypes";
 
-export const getInterviewTimeRequest = (): GetInterviewTimeRequest => ({
+export const getInterviewTimeRequest = (eventId: number): GetInterviewTimeRequest => ({
     type: ActionTypes.GET_INTERVIEW_TIME_REQUEST,
+    payload: eventId,
 });
 
 export const getInterviewTimeSuccess = (payload: number | ""): GetInterviewTimeSuccess => ({

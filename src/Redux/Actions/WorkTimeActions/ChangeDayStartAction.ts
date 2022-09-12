@@ -1,5 +1,5 @@
 import { ActionTypes } from "../../ActionTypes";
-import { ChangeStartDay } from "../../Types/WorkDayTypes";
+import { ChangeStartDay } from "../../Types/WorkTimeTypes";
 
 export const changeDayStart = (newStart: number): ChangeStartDay => ({
     type: ActionTypes.CHANGE_START_DAY,
