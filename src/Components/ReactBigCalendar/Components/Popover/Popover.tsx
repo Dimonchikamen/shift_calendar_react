@@ -4,6 +4,9 @@ import { SchedulerData } from "react-big-scheduler";
 import { DATE_TIME_FORMAT } from "../../ReactBigCalendar";
 import Button from "antd/lib/button";
 import s from "../Popover/Popover.module.css";
+import { Recruiter } from "../../../../Types/Recruiter";
+import { useAppDispatch } from "../../../../Redux/Hooks";
+import { changeEventRequest } from "../../../../Redux/Actions/EventsActions/ChangeEventActions";
 
 interface IPopoverProps {
     schedulerData: SchedulerData;
@@ -11,6 +14,7 @@ interface IPopoverProps {
     title: string;
     start: any;
     end: any;
+    recruiters?: Recruiter[];
     view?: "worktime" | "interview";
     role?: string;
     deleteEvent: (eventItem: ScheduleEvent) => void;
@@ -20,6 +24,7 @@ interface IPopoverProps {
 const Popover: FC<IPopoverProps> = ({
     schedulerData,
     eventItem,
+    recruiters,
     title,
     start,
     end,
@@ -28,10 +33,47 @@ const Popover: FC<IPopoverProps> = ({
     deleteEvent,
     editEvent,
 }) => {
+    const dispatch = useAppDispatch();
+
     let eventName = Array.from(new Set(eventItem.interviews.map(int => int.event)));
     if (!eventName.length) eventName = ["Нет собеседований"];
     if (view === "interview") {
         eventName = [eventItem.interviews[0].event];
+    }
+
+    const changeEvent = (eventName: string) => {
+        dispatch(changeEventRequest(recruiters!, eventName));
+    };
+
+    const getEventForThisEvent = () => {
+        return recruiters
+            ?.filter(obj => obj.id.toString() === eventItem.resourceId)[0]
+            .workedTimes.filter(
+                o =>
+                    o.start.slice(0, 10) === eventItem.start.slice(0, 10) &&
+                    o.start.slice(-4) === eventItem.start.slice(-4) &&
+                    o.end.slice(0, 10) === eventItem.end.slice(0, 10) &&
+                    o.end.slice(-4) === eventItem.end.slice(-4)
+            )[0].events[0];
+    };
+
+    if (eventItem.bgColor === "#EEE") {
+        const thisEvent = getEventForThisEvent();
+        return (
+            <div className={s.Popover}>
+                <div>
+                    Это рабочее время для другого мероприятия.
+                    <br />
+                    Переключить мероприятие на <strong>{thisEvent}</strong>?
+                </div>
+                <Button
+                    onClick={() => changeEvent(thisEvent!)}
+                    className={s.Button}
+                >
+                    Переключить
+                </Button>
+            </div>
+        );
     }
 
     return (

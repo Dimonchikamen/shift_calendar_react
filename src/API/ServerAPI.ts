@@ -36,7 +36,7 @@ const recruitersMock = [
             },
             {
                 id: 171,
-                events: ["Ночь музыки", "Ночь музеев"],
+                events: ["Ночь музыки"],
                 start: "2022-08-31 12:00",
                 end: "2022-08-31 13:30",
                 interviews: [
@@ -53,7 +53,7 @@ const recruitersMock = [
                     {
                         id: 11122,
                         name: "Ольшанский Кирилл",
-                        event: "Ночь музеев",
+                        event: "Ночь музыки",
                         role: "Тимлидер",
                         phone: "+7999999999",
                         contacts: ["Telegram"],
@@ -70,7 +70,7 @@ const recruitersMock = [
         workedTimes: [
             {
                 id: 32,
-                events: ["Ночь музеев", "Ночь музыки"],
+                events: ["Ночь музеев"],
                 start: "2022-08-31 12:00",
                 end: "2022-08-31 16:00",
                 interviews: [

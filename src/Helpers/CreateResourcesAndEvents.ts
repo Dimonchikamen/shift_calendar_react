@@ -9,7 +9,7 @@ import { FullDateTime } from "../Types/FullDateTime";
 
 export const createResourcesAndEvents = (
     recruiters: Recruiter[],
-    role?: string
+    currentEvent?: string
 ): [resources: Resource[], events: ScheduleEvent[], interviews: ScheduleEvent[]] => {
     const resources: Resource[] = [];
     const events: ScheduleEvent[] = [];
@@ -36,6 +36,8 @@ export const createResourcesAndEvents = (
 
             const formattedStart = moment(workedTime.start).format(DATE_TIME_FORMAT);
             const formattedEnd = moment(workedTime.end).format(DATE_TIME_FORMAT);
+            const eventColor =
+                currentEvent === workedTime.events[0] || currentEvent === "Все мероприятия" ? "#D9EDF7" : "#EEE";
             events.push({
                 id: workedTime.id,
                 start: formattedStart,
@@ -43,7 +45,7 @@ export const createResourcesAndEvents = (
                 resourceId: String(r.id),
                 title: createTitle(formattedStart, formattedEnd),
                 resizable: false,
-                bgColor: "#D9EDF7",
+                bgColor: eventColor,
                 interviews: workedTime.interviews,
             });
         });
