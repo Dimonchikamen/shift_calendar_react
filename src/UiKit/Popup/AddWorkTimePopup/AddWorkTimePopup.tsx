@@ -43,7 +43,7 @@ const AddWorkTimePopup: FC<IAddWorkingTimePopupProps> = ({ title, isOpen, onSubm
                         value={currentStart}
                         options={hourOptions}
                         size="small"
-                        optionDisableFunc={v => getHour(v) >= max || getHour(v) < min}
+                        //optionDisableFunc={v => getHour(v) >= max || getHour(v) < min}
                         onchange={e => setStart(e.target.value)}
                     />
                     <span>до</span>
@@ -51,7 +51,7 @@ const AddWorkTimePopup: FC<IAddWorkingTimePopupProps> = ({ title, isOpen, onSubm
                         value={currentEnd}
                         options={hourOptions}
                         size="small"
-                        optionDisableFunc={v => getHour(v) <= min || getHour(v) > max}
+                        //optionDisableFunc={v => getHour(v) <= min || getHour(v) > max}
                         onchange={e => setEnd(e.target.value)}
                     />
                 </div>
