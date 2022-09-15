@@ -63,7 +63,7 @@ const initialState = {
                 },
                 {
                     id: 171,
-                    events: ["Ночь музыки", "Ночь музеев"],
+                    events: ["Ночь музыки"],
                     start: "2022-08-26 12:00",
                     end: "2022-08-26 13:30",
                     interviews: [
@@ -80,7 +80,7 @@ const initialState = {
                         {
                             id: 11122,
                             name: "Ольшанский Кирилл",
-                            event: "Ночь музеев",
+                            event: "Ночь музыки",
                             role: "Тимлидер",
                             phone: "+7999999999",
                             contacts: ["Telegram"],
@@ -97,7 +97,7 @@ const initialState = {
             workedTimes: [
                 {
                     id: 32,
-                    events: ["Ночь музеев", "Ночь музыки"],
+                    events: ["Ночь музеев"],
                     start: "2022-08-26 12:00",
                     end: "2022-08-26 16:00",
                     interviews: [

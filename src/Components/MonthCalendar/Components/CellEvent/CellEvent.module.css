@@ -1,10 +1,11 @@
 .event {
-    background-color: #D9EDF7;
+    background-color: #d9edf7;
     display: flex;
     align-items: center;
     border-radius: 4px;
     cursor: pointer;
-    padding: 3px 5px 3px 10%;
+    padding: 3px 23px;
+    position: relative;
 }
 
 .event_title {
@@ -12,7 +13,7 @@
 }
 
 .selected {
-    background-color: #26A1DF;
+    background-color: #26a1df;
     color: white;
     cursor: auto;
 }
@@ -21,7 +22,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20%;
+    position: absolute;
+    right: 5%;
     height: 100%;
     min-width: 17px;
     min-height: 17px;

@@ -22,9 +22,9 @@ export const filterRecruiters = (recruiters: Recruiter[], event: string): Recrui
         const res1: any[] = [];
         recruiter.workedTimes.forEach(time => {
             time.events.forEach(e => {
-                if (e.toLowerCase() === event.toLowerCase()) {
-                    res1.push(time);
-                }
+                //if (e.toLowerCase() === event.toLowerCase()) {
+                res1.push(time);
+                //}
             });
         });
         if (res1.length !== 0) {

@@ -59,12 +59,17 @@ const ReactBigCalendar: FC = () => {
     const recruiters = state.currentRecruiters;
     const behaviours = state.behaviours;
     const currentEvent = state.currentEvent;
-    const currentInterviewTime = state.currentInterviewTime === "" ? 0 : state.currentInterviewTime;
+    const currentInterviewTime = state.currentInterviewTime === "" ? 30 : state.currentInterviewTime;
     const config = state.config;
     const role = state.role;
-    const [resources, scheduleEvents] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters, currentEvent]); //{
+    const [resources, scheduleEvents] = useMemo(
+        () => createResourcesAndEvents(recruiters, currentEvent),
+        [recruiters, currentEvent]
+    );
     const dispatch = useAppDispatch();
     const [view, setCalendarView] = useState<"worktime" | "interview">("worktime");
+    const [errorCode, setErrorCode] = useState(500);
+
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
     const [isAdding, setIsAdding] = useState<boolean>(true);
@@ -153,6 +158,7 @@ const ReactBigCalendar: FC = () => {
     };
 
     const eventItemClick = (schedulerData: SchedulerData, event: ScheduleEvent) => {
+        if (event.bgColor === "#EEE") return;
         setData(createData(schedulerData, event));
         event.bgColor = "#1890ff";
         if (selectedEvent) selectedEvent.bgColor = "#D9EDF7";
@@ -262,6 +268,7 @@ const ReactBigCalendar: FC = () => {
                 end={end}
                 view={view}
                 role={role}
+                recruiters={recruiters}
                 deleteEvent={deleteEvent}
                 editEvent={editEvent}
             />

@@ -39,11 +39,12 @@ import WaitPopup from "../../UiKit/Popup/WaitPopup/WaitPopup";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
 
-export const DATE_FORMAT = "YYYY-MM-DD H:mm";
+export const DATE_TIME_FORMAT = "YYYY-MM-DD H:mm";
+export const DATE_FORMAT = "YYYY-MM-DD";
+
 moment.locale("ru-ru");
 
 const ReactBigCalendar: FC = () => {
-    // const recruiters = useAppSelector(state => state.main.recruiters);
     const {
         rolePending,
         allEventsPending,
@@ -59,8 +60,9 @@ const ReactBigCalendar: FC = () => {
     const recruiters = state.currentRecruiters;
     const config = state.config;
     const behaviours = state.behaviours;
-    const interviewDuration = config.minuteStep;
     const currentEvent = state.currentEvent;
+    const currentInterviewTime = state.currentInterviewTime === "" ? 30 : state.currentInterviewTime;
+
     const role = state.role;
     const [resources, scheduleEvents, interviews] = useMemo(
         () => createResourcesAndEvents(recruiters),
@@ -68,6 +70,7 @@ const ReactBigCalendar: FC = () => {
     );
     const dispatch = useAppDispatch();
     const [view, setCalendarView] = useState<"worktime" | "interview">("interview");
+    const [errorCode, setErrorCode] = useState(500);
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
@@ -75,7 +78,7 @@ const ReactBigCalendar: FC = () => {
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
     const [selectData, setData] = useState<RequiterInfo | null>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
-    const [currentDate, setCurrentDate] = useState<FullDateTime>(moment().format(DATE_FORMAT));
+    const [currentDate, setCurrentDate] = useState<FullDateTime>(moment().format(DATE_TIME_FORMAT));
     const [viewModel, setView] = useState<{ data: SchedulerData }>(() => {
         moment.locale("ru");
         const data = new SchedulerData(currentDate, viewType, false, false, config, behaviours);
@@ -118,7 +121,7 @@ const ReactBigCalendar: FC = () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const recruiter = schedulerData.resources.find((r: Resource) => r.id === event.resourceId);
-        const availableInterviewTimes = getAvailableTimes(event, event.interviews, interviewDuration!);
+        const availableInterviewTimes = getAvailableTimes(event, event.interviews, currentInterviewTime);
         return {
             name: recruiter.name,
             workTimeTitle: event.title,
@@ -255,8 +258,7 @@ const ReactBigCalendar: FC = () => {
         eventItem: ScheduleEvent,
         title: string,
         start: moment.Moment,
-        end: moment.Moment,
-        statusColor: string
+        end: moment.Moment
     ) => {
         return (
             <Popover
