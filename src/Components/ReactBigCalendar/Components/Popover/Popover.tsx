@@ -45,20 +45,14 @@ const Popover: FC<IPopoverProps> = ({
         dispatch(changeEventRequest(recruiters!, eventName));
     };
 
-    const getEventForThisEvent = () => {
+    const getEventForThisWorktime = () => {
         return recruiters
             ?.filter(obj => obj.id.toString() === eventItem.resourceId)[0]
-            .workedTimes.filter(
-                o =>
-                    o.start.slice(0, 10) === eventItem.start.slice(0, 10) &&
-                    o.start.slice(-4) === eventItem.start.slice(-4) &&
-                    o.end.slice(0, 10) === eventItem.end.slice(0, 10) &&
-                    o.end.slice(-4) === eventItem.end.slice(-4)
-            )[0].events[0];
+            .workedTimes.filter(o => o.id === eventItem.id)[0].events[0];
     };
 
     if (eventItem.bgColor === "#EEE") {
-        const thisEvent = getEventForThisEvent();
+        const thisEvent = getEventForThisWorktime();
         return (
             <div className={s.Popover}>
                 <div>
