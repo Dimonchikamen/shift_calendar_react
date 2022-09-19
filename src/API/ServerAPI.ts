@@ -111,7 +111,40 @@ const recruitersMock = [
     {
         id: 9,
         name: "Пустой человек",
-        workedTimes: [],
+        workedTimes: [
+            {
+                id: 412,
+                events: ["Ночь музыки"],
+                start: "2022-09-19 15:00",
+                end: "2022-09-19 17:30",
+                interviews: [],
+            },
+            {
+                id: 4412,
+                events: ["Ночь музеев"],
+                start: "2022-09-20 11:00",
+                end: "2022-09-20 13:00",
+                interviews: [
+                    {
+                        id: 4212,
+                        name: "Большой Человек",
+                        event: "Ночь музеев",
+                        role: "Тимлидер",
+                        phone: "+7999999999",
+                        contacts: ["Telegram"],
+                        start: "12:00",
+                        end: "12:30",
+                    },
+                ],
+            },
+            {
+                id: 41332,
+                events: ["Ночь музыки"],
+                start: "2022-09-29 13:00",
+                end: "2022-09-29 15:30",
+                interviews: [],
+            },
+        ],
     },
 ];
 

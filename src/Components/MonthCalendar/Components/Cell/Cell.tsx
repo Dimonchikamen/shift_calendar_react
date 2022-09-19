@@ -10,6 +10,7 @@ interface ICellProps {
     disabled: boolean;
     onAddEvent: (date: Date) => void;
     onRemoveEvent: (event: ScheduleEvent, date: Date) => void;
+    onEditEvent: (date: Date) => void;
     onSetSelectedEvent: (event: ScheduleEvent) => void;
 }
 
@@ -20,10 +21,14 @@ const Cell: FC<ICellProps> = ({
     disabled,
     onAddEvent,
     onRemoveEvent,
+    onEditEvent,
     onSetSelectedEvent,
 }) => {
     const addEventHandler = () => {
         onAddEvent(dayDate);
+    };
+    const editEventHandler = () => {
+        onEditEvent(dayDate);
     };
 
     const removeEventHandler = (event: ScheduleEvent) => {
@@ -40,6 +45,7 @@ const Cell: FC<ICellProps> = ({
                         selected={e.id === selectedEvent?.id}
                         onClick={onSetSelectedEvent}
                         onClickRemoveEvent={removeEventHandler}
+                        onClickEditEvent={editEventHandler}
                     />
                 ))}
             </div>
