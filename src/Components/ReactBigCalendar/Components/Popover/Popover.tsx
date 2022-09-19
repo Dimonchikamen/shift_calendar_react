@@ -7,6 +7,7 @@ import s from "../Popover/Popover.module.css";
 import { Recruiter } from "../../../../Types/Recruiter";
 import { useAppDispatch } from "../../../../Redux/Hooks";
 import { changeEventRequest } from "../../../../Redux/Actions/EventsActions/ChangeEventActions";
+import { editRecruiterWorkTimeRequest } from "../../../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
 
 interface IPopoverProps {
     schedulerData: SchedulerData;
@@ -42,7 +43,19 @@ const Popover: FC<IPopoverProps> = ({
     }
 
     const changeEvent = (eventName: string) => {
-        dispatch(changeEventRequest(recruiters!, eventName));
+        const newEvent = JSON.parse(
+            JSON.stringify(
+                recruiters
+                    ?.filter(obj => obj.id.toString() === eventItem.resourceId)[0]
+                    .workedTimes.filter(o => o.id === eventItem.id)[0]
+            )
+        );
+        newEvent.events = [eventName];
+        newEvent.interviews.forEach((ob: any) => (ob.event = [eventName]));
+        const recruiterId = Number(eventItem.resourceId);
+        const worktimeId = newEvent.id;
+        //dispatch(changeEventRequest(recruiters!, eventName));
+        //dispatch(editRecruiterWorkTimeRequest(recruiterId, worktimeId));
     };
 
     const getEventForThisWorktime = () => {
