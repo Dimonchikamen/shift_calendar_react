@@ -2,6 +2,7 @@ import { ActionTypes } from "../ActionTypes";
 import { CloseErrorWindow } from "../Types/MainReducerTypes";
 import { RecruitersTypes } from "../Types/RecruitersTypes";
 import { GlobalState } from "../../Types/GlobalState";
+import { compareFullDateTime } from "../../Helpers/Compare";
 
 const defaultState: GlobalState = {
     recruitersPending: false,
@@ -39,43 +40,32 @@ const WorkDayReducer = (state = defaultState, action: CloseErrorWindow | Recruit
             changePending: true,
         };
     } else if (action.type === ActionTypes.ADD_RECRUITER_WORK_TIME_SUCCESS) {
-        const copy = JSON.parse(JSON.stringify(state));
-        // добавляем ворктайм
-        copy.workTimes.push(action.payload);
-        // сортируем
-        copy.workTimes.sort((a: any, b: any) => {
-            if (a.start > b.start) return 1;
-            if (a.start < b.start) return -1;
-            return 0;
-        });
+        const workTimes = JSON.parse(JSON.stringify(state.workTimes));
+        workTimes.push(action.payload);
+        workTimes.sort((a: any, b: any) => compareFullDateTime(a, b));
         return {
-            ...copy,
+            ...state,
+            workTimes: workTimes,
             changePending: false,
             changeError: null,
         };
     } else if (action.type === ActionTypes.EDIT_RECRUITER_WORK_TIME_SUCCESS) {
-        const copy = JSON.parse(JSON.stringify(state));
-        // убираем вокртайм по id
-        copy.workTimes = copy.workTimes.filter((item: any) => item.id !== action.payload.id);
-        // вставляем новый вместо старого
-        copy.workTimes.push(action.payload);
-        // сортируем
-        copy.workTimes.sort((a: any, b: any) => {
-            if (a.start > b.start) return 1;
-            if (a.start < b.start) return -1;
-            return 0;
-        });
+        const workTimes = JSON.parse(JSON.stringify(state.workTimes)).filter(
+            (item: any) => item.id !== action.payload.id
+        );
+        workTimes.push(action.payload);
+        workTimes.sort((a: any, b: any) => compareFullDateTime(a, b));
         return {
-            ...copy,
+            ...state,
+            workTimes: workTimes,
             changePending: false,
             changeError: null,
         };
     } else if (action.type === ActionTypes.REMOVE_RECRUITER_WORK_TIME_SUCCESS) {
-        const copy = JSON.parse(JSON.stringify(state));
-        // тут убираем по id
-        copy.workTimes = copy.workTimes.filter((item: any) => item.id !== action.payload);
+        const workTimes = JSON.parse(JSON.stringify(state.workTimes)).filter((item: any) => item.id !== action.payload);
         return {
-            ...copy,
+            ...state,
+            workTimes: workTimes,
             changePending: false,
             changeError: null,
         };
