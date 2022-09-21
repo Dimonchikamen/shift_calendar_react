@@ -8,7 +8,7 @@ import {
 } from "../../Actions/RecruitersActions/RecruiterWorkTimesActions";
 import { WorkTime } from "../../../Types/WorkTime";
 
-const addRecruiterWorkTimeFetch = (start: Date, end: Date): Promise<WorkTime[]> =>
+const addRecruiterWorkTimeFetch = (start: Date, end: Date): Promise<WorkTime> =>
     ServerAPI.addRecruiterWorkTime(start, end);
 
 function* addRecruiterWorkTime({ payload: { start, end /*, recruiterId, event*/ } }: AddRecruiterWorkTimeRequest) {

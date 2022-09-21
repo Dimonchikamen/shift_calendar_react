@@ -6,9 +6,8 @@ import {
     removeRecruiterWorkTimeSuccess,
 } from "../../Actions/RecruitersActions/RecruiterWorkTimesActions";
 import { ActionTypes } from "../../ActionTypes";
-import { WorkTime } from "../../../Types/WorkTime";
 
-const removeRecruiterWorkTimeFetch = (workTimeId: number): Promise<WorkTime[]> =>
+const removeRecruiterWorkTimeFetch = (workTimeId: number): Promise<number> =>
     ServerAPI.removeRecruiterWorkTime(workTimeId);
 
 function* removeRecruiterWorkTime({ payload: { workTimeId } }: RemoveRecruiterWorkTimeRequest) {

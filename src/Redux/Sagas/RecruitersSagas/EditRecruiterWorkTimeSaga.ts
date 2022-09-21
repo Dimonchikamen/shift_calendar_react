@@ -8,7 +8,7 @@ import {
 import { ActionTypes } from "../../ActionTypes";
 import { WorkTime } from "../../../Types/WorkTime";
 
-const editRecruiterWorkTimeFetch = (start: Date, end: Date, workTimeId: number): Promise<WorkTime[]> =>
+const editRecruiterWorkTimeFetch = (start: Date, end: Date, workTimeId: number): Promise<WorkTime> =>
     ServerAPI.editRecruiterWorkTime(start, end, workTimeId);
 
 function* editRecruiterWorkTime({ payload: { start, end, workTimeId } }: EditRecruiterWorkTimeRequest) {
