@@ -42,7 +42,7 @@ const WorkDayReducer = (state = defaultState, action: CloseErrorWindow | Recruit
     } else if (action.type === ActionTypes.ADD_RECRUITER_WORK_TIME_SUCCESS) {
         const workTimes = JSON.parse(JSON.stringify(state.workTimes));
         workTimes.push(action.payload);
-        workTimes.sort((a: any, b: any) => compareFullDateTime(a, b));
+        workTimes.sort(compareFullDateTime);
         return {
             ...state,
             workTimes: workTimes,
@@ -54,7 +54,7 @@ const WorkDayReducer = (state = defaultState, action: CloseErrorWindow | Recruit
             (item: any) => item.id !== action.payload.id
         );
         workTimes.push(action.payload);
-        workTimes.sort((a: any, b: any) => compareFullDateTime(a, b));
+        workTimes.sort(compareFullDateTime);
         return {
             ...state,
             workTimes: workTimes,
