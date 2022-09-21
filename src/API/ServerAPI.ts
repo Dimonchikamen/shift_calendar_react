@@ -11,14 +11,14 @@ export class ServerAPI {
         return await axios.get(url).then(response => response.data);
     }
 
-    static async addRecruiterWorkTime(start: Date, end: Date): Promise<WorkTime[]> {
+    static async addRecruiterWorkTime(start: Date, end: Date): Promise<WorkTime> {
         const url = this.startUrl + `/event/set-recruiter-range`;
         return await axios
             .post(url, { start: moment(start).format(DATE_TIME_FORMAT), end: moment(end).format(DATE_TIME_FORMAT) })
             .then(response => response.data);
     }
 
-    static async editRecruiterWorkTime(start: Date, end: Date, workTimeId: number): Promise<WorkTime[]> {
+    static async editRecruiterWorkTime(start: Date, end: Date, workTimeId: number): Promise<WorkTime> {
         const url = this.startUrl + `/event/edit-recruiter-range`;
         return await axios
             .post(url, {
@@ -29,7 +29,7 @@ export class ServerAPI {
             .then(response => response.data);
     }
 
-    static async removeRecruiterWorkTime(workTimeId: number): Promise<WorkTime[]> {
+    static async removeRecruiterWorkTime(workTimeId: number): Promise<number> {
         const url = this.startUrl + `/event/remove-recruiter-range`;
         return await axios.post(url, { workTimeId }).then(response => response.data);
     }
