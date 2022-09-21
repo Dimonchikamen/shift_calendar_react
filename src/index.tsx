@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(rootElement);
 root.render(
     <React.StrictMode>
         <Provider store={store}>
-            <App role={rootElement.dataset.role!} />
+            <App />
         </Provider>
     </React.StrictMode>
 );

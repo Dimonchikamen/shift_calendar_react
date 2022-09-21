@@ -1,23 +1,23 @@
 import { ActionTypes } from "../../ActionTypes";
 import {
-    GetRecruitersRequest,
+    GetRecruiterWorkTimesRequest,
     FailurePayload,
-    GetRecruitersSuccess,
-    GetRecruitersFailure,
+    GetRecruiterWorkTimesSuccess,
+    GetRecruiterWorkTimesFailure,
 } from "../../Types/RecruitersTypes";
-import { Recruiter } from "../../../Types/Recruiter";
+import { WorkTime } from "../../../Types/WorkTime";
 
-export const getRecruitersRequest = (start?: Date, end?: Date): GetRecruitersRequest => ({
-    type: ActionTypes.GET_RECRUITERS_REQUEST,
-    payload: { start, end },
+export const getRecruiterWorkTimesRequest = (year: number, month: number): GetRecruiterWorkTimesRequest => ({
+    type: ActionTypes.GET_RECRUITER_WORK_TIMES_REQUEST,
+    payload: { year, month },
 });
 
-export const getRecruitersSuccess = (payload: Recruiter[]): GetRecruitersSuccess => ({
-    type: ActionTypes.GET_RECRUITERS_SUCCESS,
+export const getRecruiterWorkTimesSuccess = (payload: WorkTime[]): GetRecruiterWorkTimesSuccess => ({
+    type: ActionTypes.GET_RECRUITER_WORK_TIMES_SUCCESS,
     payload,
 });
 
-export const getRecruitersFailure = (payload: FailurePayload): GetRecruitersFailure => ({
-    type: ActionTypes.GET_RECRUITERS_FAILURE,
+export const getRecruiterWorkTimesFailure = (payload: FailurePayload): GetRecruiterWorkTimesFailure => ({
+    type: ActionTypes.GET_RECRUITER_WORK_TIMES_FAILURE,
     payload,
 });

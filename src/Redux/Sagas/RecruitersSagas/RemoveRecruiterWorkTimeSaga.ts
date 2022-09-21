@@ -1,4 +1,3 @@
-import { Recruiter } from "../../../Types/Recruiter";
 import { ServerAPI } from "../../../API/ServerAPI";
 import { RemoveRecruiterWorkTimeRequest } from "../../Types/RecruitersTypes";
 import { call, put, takeLatest } from "redux-saga/effects";
@@ -7,13 +6,14 @@ import {
     removeRecruiterWorkTimeSuccess,
 } from "../../Actions/RecruitersActions/RecruiterWorkTimesActions";
 import { ActionTypes } from "../../ActionTypes";
+import { WorkTime } from "../../../Types/WorkTime";
 
-const removeRecruiterWorkTimeFetch = (recruiterId: number, workTimeId: number): Promise<Recruiter> =>
-    ServerAPI.removeRecruiterWorkTime(recruiterId, workTimeId);
+const removeRecruiterWorkTimeFetch = (workTimeId: number): Promise<WorkTime[]> =>
+    ServerAPI.removeRecruiterWorkTime(workTimeId);
 
-function* removeRecruiterWorkTime({ payload: { recruiterId, workTimeId } }: RemoveRecruiterWorkTimeRequest) {
+function* removeRecruiterWorkTime({ payload: { workTimeId } }: RemoveRecruiterWorkTimeRequest) {
     try {
-        const response: Recruiter = yield call(removeRecruiterWorkTimeFetch, recruiterId, workTimeId);
+        const response: number = yield call(removeRecruiterWorkTimeFetch, workTimeId);
         yield put(removeRecruiterWorkTimeSuccess(response));
     } catch (e) {
         yield put(removeRecruiterWorkTimeFailure({ error: (e as Error).message }));
@@ -21,7 +21,7 @@ function* removeRecruiterWorkTime({ payload: { recruiterId, workTimeId } }: Remo
 }
 
 function* removeRecruiterWorkTimeSaga() {
-    yield takeLatest(ActionTypes.REMOVE_RECRUITER_EVENT_REQUEST, removeRecruiterWorkTime);
+    yield takeLatest(ActionTypes.REMOVE_RECRUITER_WORK_TIME_REQUEST, removeRecruiterWorkTime);
 }
 
 export default removeRecruiterWorkTimeSaga;

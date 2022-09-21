@@ -24,8 +24,8 @@ const RemoveWorkTimePopup: FC<IRemoveWorkTimePopup> = ({ title, isOpen, onSubmit
                 <DialogContentText>Вы уверены, что хотите убрать рабочее время?</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onSubmit}>Да</Button>
                 <Button onClick={onCancel}>Нет</Button>
+                <Button onClick={onSubmit}>Да</Button>
             </DialogActions>
         </Popup>
     );

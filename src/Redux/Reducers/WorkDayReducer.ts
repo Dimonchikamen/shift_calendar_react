@@ -1,265 +1,88 @@
-import { WorkTimeTypes } from "../Types/WorkTimeTypes";
 import { ActionTypes } from "../ActionTypes";
-import { ViewTypes } from "react-big-scheduler";
-import { MainActions } from "../Types/MainReducerTypes";
-import { getCopy } from "../Helpers/CopyHelper";
-import { InterviewTimeTypes } from "../Types/InterviewTimeTypes";
-import { EventsTypes } from "../Types/EventsTypes";
+import { CloseErrorWindow } from "../Types/MainReducerTypes";
 import { RecruitersTypes } from "../Types/RecruitersTypes";
-import { filterRecruiters } from "../../Helpers/Filters";
-import { RoleTypes } from "../Types/RoleTypes";
-import { resize } from "../Helpers/ResizeHelper";
 import { GlobalState } from "../../Types/GlobalState";
 
 const defaultState: GlobalState = {
-    rolePending: false,
-    allEventsPending: false,
     recruitersPending: false,
-    workTimePending: false,
-    interviewTimePending: false,
     changePending: false,
-    state: {
-        role: "user",
-        events: ["Все мероприятия", "Ночь музеев", "Ночь музыки"],
-        currentEvent: "Все мероприятия",
-        currentInterviewTime: "",
-        currentDayStart: "",
-        currentDayEnd: "",
-        config: {
-            dayCellWidth: 50,
-            weekCellWidth: 1100 / 7,
-            dayResourceTableWidth: 300,
-            weekResourceTableWidth: 300,
-            schedulerWidth: 1100,
-            startResizable: true,
-            endResizable: true,
-            movable: false,
-            resourceName: "Рекрутеры:",
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            //@ts-ignore
-            eventItemPopoverDateFormat: "D/MM",
-            nonAgendaDayCellHeaderFormat: "H:mm",
-            dayStartFrom: 9,
-            dayStopTo: 19,
-            minuteStep: 30,
-            views: [
-                { viewName: "День", viewType: ViewTypes.Day, showAgenda: false, isEventPerspective: false },
-                { viewName: "Неделя", viewType: ViewTypes.Week, showAgenda: false, isEventPerspective: false },
-            ],
-        },
-        viewType: ViewTypes.Day,
-        behaviours: {
-            isNonWorkingTimeFunc: () => false,
-        },
-        recruiters: [],
-        currentRecruiters: [],
-        interviews: [],
-        currentInterviews: [],
-    },
+    workTimes: [],
     error: null,
     changeError: null,
 };
 
-const WorkDayReducer = (
-    state = defaultState,
-    action: MainActions | WorkTimeTypes | InterviewTimeTypes | EventsTypes | RecruitersTypes | RoleTypes
-): GlobalState => {
-    if (action.type === ActionTypes.GET_INTERVIEW_TIME_REQUEST) {
-        return { ...state, interviewTimePending: true };
-    } else if (action.type === ActionTypes.GET_EVENTS_REQUEST) {
-        return { ...state, allEventsPending: true };
-    } else if (action.type === ActionTypes.GET_RECRUITERS_REQUEST) {
+const WorkDayReducer = (state = defaultState, action: CloseErrorWindow | RecruitersTypes): GlobalState => {
+    if (action.type === ActionTypes.GET_RECRUITER_WORK_TIMES_REQUEST) {
         return { ...state, recruitersPending: true };
-    } else if (action.type === ActionTypes.GET_WORK_TIME_REQUEST) {
-        return { ...state, workTimePending: true };
-    } else if (
-        action.type === ActionTypes.CHANGE_WORK_TIME_REQUEST ||
-        action.type === ActionTypes.CHANGE_INTERVIEW_TIME_REQUEST ||
-        action.type === ActionTypes.CHANGE_EVENT_REQUEST
-    ) {
-        return { ...state, changePending: true };
-    } else if (action.type === ActionTypes.SET_ROLE) {
-        const copy = getCopy(state.state);
-        copy.role = action.payload;
-        return { ...state, rolePending: false, state: copy };
-    } else if (action.type === ActionTypes.CHANGE_START_DAY) {
-        const copy = getCopy(state.state, true);
-        copy.currentDayStart = action.payload;
-        copy.config.dayStartFrom = action.payload;
-        copy.config = resize(copy.config);
-        return { ...state, state: copy };
-    } else if (action.type === ActionTypes.CHANGE_END_DAY) {
-        const copy = getCopy(state.state, true);
-        copy.currentDayEnd = action.payload;
-        copy.config.dayStopTo = action.payload;
-        copy.config = resize(copy.config);
-        return { ...state, state: copy };
-    } else if (
-        action.type === ActionTypes.GET_WORK_TIME_SUCCESS ||
-        action.type === ActionTypes.CHANGE_WORK_TIME_SUCCESS
-    ) {
-        const copy = getCopy(state.state, true);
-        if (action.payload === "") {
-            copy.currentDayStart = action.payload;
-            copy.config.dayStartFrom = 0;
-            copy.currentDayEnd = action.payload;
-            copy.config.dayStopTo = 23;
-        } else {
-            copy.currentDayStart = action.payload.start;
-            copy.currentDayEnd = action.payload.end;
-            copy.config.dayStartFrom = action.payload.start;
-            copy.config.dayStopTo = action.payload.end;
-        }
-        copy.config = resize(copy.config);
-        const workTimePending = action.type === ActionTypes.GET_WORK_TIME_SUCCESS ? false : state.workTimePending;
-        const changePending = action.type === ActionTypes.CHANGE_WORK_TIME_SUCCESS ? false : state.changePending;
+    } else if (action.type === ActionTypes.GET_RECRUITER_WORK_TIMES_SUCCESS) {
         return {
             ...state,
-            workTimePending,
-            changePending,
-            state: copy,
-            error: null,
-            changeError: null,
-        };
-    } else if (
-        action.type === ActionTypes.GET_INTERVIEW_TIME_SUCCESS ||
-        action.type === ActionTypes.CHANGE_INTERVIEW_TIME_SUCCESS
-    ) {
-        const copy = getCopy(state.state, true);
-        copy.currentInterviewTime = action.payload;
-        const interviewTimePending =
-            action.type === ActionTypes.GET_INTERVIEW_TIME_SUCCESS ? false : state.interviewTimePending;
-        const changePending = action.type === ActionTypes.CHANGE_INTERVIEW_TIME_SUCCESS ? false : state.changePending;
-        return {
-            ...state,
-            state: copy,
-            interviewTimePending,
-            changePending,
-            changeError: null,
-        };
-    } else if (action.type === ActionTypes.GET_EVENTS_SUCCESS) {
-        const copy = getCopy(state.state);
-        copy.events = action.payload;
-        return {
-            ...state,
-            allEventsPending: false,
-            error: null,
-        };
-    } else if (action.type === ActionTypes.CHANGE_EVENT_SUCCESS) {
-        const copy = getCopy(state.state);
-        copy.currentEvent = action.payload;
-        return {
-            ...state,
-            state: copy,
-            changePending: false,
-            changeError: null,
-        };
-    } else if (action.type === ActionTypes.GET_RECRUITERS_SUCCESS) {
-        const copy = getCopy(state.state);
-        copy.recruiters = action.payload;
-        copy.currentRecruiters = action.payload;
-        return {
-            ...state,
-            state: copy,
+            workTimes: action.payload,
             recruitersPending: false,
             error: null,
+            changeError: null,
         };
-    } else if (action.type === ActionTypes.FILTER_RECRUITERS) {
-        const copy = getCopy(state.state, false, true, true);
-        copy.currentRecruiters = filterRecruiters(copy.recruiters, action.payload);
-        return { ...state, state: copy };
-    } /*  else if (action.type === ActionTypes.FILTER_EVENTS) {
-        const copy = getCopy(state.state, false, true, true);
-        copy.currentInterviews = filterEvents(copy.interviews, action.payload);
-        return { ...state, state: copy };
-    } */ else if (
-        action.type === ActionTypes.GET_WORK_TIME_FAILURE ||
-        action.type === ActionTypes.GET_INTERVIEW_TIME_FAILURE ||
-        action.type === ActionTypes.GET_EVENTS_FAILURE ||
-        action.type === ActionTypes.GET_RECRUITERS_FAILURE
-    ) {
-        const workTimePending = action.type === ActionTypes.GET_WORK_TIME_FAILURE ? false : state.workTimePending;
-        const interviewTimePending =
-            action.type === ActionTypes.GET_INTERVIEW_TIME_FAILURE ? false : state.interviewTimePending;
-        const allEventsPending = action.type === ActionTypes.GET_EVENTS_FAILURE ? false : state.allEventsPending;
-        const recruitersPending = action.type === ActionTypes.GET_RECRUITERS_FAILURE ? false : state.recruitersPending;
+    } else if (action.type === ActionTypes.GET_RECRUITER_WORK_TIMES_FAILURE) {
         return {
             ...state,
-            workTimePending,
-            interviewTimePending,
-            allEventsPending,
-            recruitersPending,
+            recruitersPending: false,
             error: action.payload.error,
-        };
-    } else if (
-        action.type === ActionTypes.CHANGE_WORK_TIME_FAILURE ||
-        action.type === ActionTypes.CHANGE_INTERVIEW_TIME_FAILURE
-    ) {
-        return {
-            ...state,
-            changePending: false,
             changeError: action.payload.error,
         };
-    } else if (action.type === ActionTypes.CHANGE_VIEW_TYPE) {
-        const copy = getCopy(state.state);
-        copy.viewType = action.payload;
-        return {
-            ...state,
-            state: copy,
-        };
-    } else if (action.type === ActionTypes.RESIZE) {
-        const copy = getCopy(state.state, true);
-        copy.config = resize(copy.config);
-        return {
-            ...state,
-            state: copy,
-        };
     } else if (
-        action.type === ActionTypes.ADD_RECRUITER_EVENT_REQUEST ||
-        action.type === ActionTypes.EDIT_RECRUITER_EVENT_REQUEST ||
-        action.type === ActionTypes.REMOVE_RECRUITER_EVENT_REQUEST
+        action.type === ActionTypes.ADD_RECRUITER_WORK_TIME_REQUEST ||
+        action.type === ActionTypes.EDIT_RECRUITER_WORK_TIME_REQUEST ||
+        action.type === ActionTypes.REMOVE_RECRUITER_WORK_TIME_REQUEST
     ) {
         return {
             ...state,
             changePending: true,
         };
-    } else if (action.type === ActionTypes.ADD_RECRUITER_EVENT_SUCCESS) {
-        const copy = getCopy(state.state, false, true, true);
-        const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
-        copy.recruiters[index] = action.payload;
-        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent);
+    } else if (action.type === ActionTypes.ADD_RECRUITER_WORK_TIME_SUCCESS) {
+        const copy = JSON.parse(JSON.stringify(state));
+        // добавляем ворктайм
+        copy.workTimes.push(action.payload);
+        // сортируем
+        copy.workTimes.sort((a: any, b: any) => {
+            if (a.start > b.start) return 1;
+            if (a.start < b.start) return -1;
+            return 0;
+        });
         return {
-            ...state,
-            state: copy,
+            ...copy,
             changePending: false,
             changeError: null,
         };
-    } else if (action.type === ActionTypes.REMOVE_RECRUITER_EVENT_SUCCESS) {
-        const copy = getCopy(state.state, false, true, true);
-        const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
-        copy.recruiters[index] = action.payload;
-        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent);
+    } else if (action.type === ActionTypes.EDIT_RECRUITER_WORK_TIME_SUCCESS) {
+        const copy = JSON.parse(JSON.stringify(state));
+        // убираем вокртайм по id
+        copy.workTimes = copy.workTimes.filter((item: any) => item.id !== action.payload.id);
+        // вставляем новый вместо старого
+        copy.workTimes.push(action.payload);
+        // сортируем
+        copy.workTimes.sort((a: any, b: any) => {
+            if (a.start > b.start) return 1;
+            if (a.start < b.start) return -1;
+            return 0;
+        });
         return {
-            ...state,
-            state: copy,
+            ...copy,
             changePending: false,
             changeError: null,
         };
-    } else if (action.type === ActionTypes.EDIT_RECRUITER_EVENT_SUCCESS) {
-        const copy = getCopy(state.state, false, true, true);
-        const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
-        copy.recruiters[index] = action.payload;
-        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent);
+    } else if (action.type === ActionTypes.REMOVE_RECRUITER_WORK_TIME_SUCCESS) {
+        const copy = JSON.parse(JSON.stringify(state));
+        // тут убираем по id
+        copy.workTimes = copy.workTimes.filter((item: any) => item.id !== action.payload);
         return {
-            ...state,
-            state: copy,
+            ...copy,
             changePending: false,
             changeError: null,
         };
     } else if (
-        action.type === ActionTypes.ADD_RECRUITER_EVENT_FAILURE ||
-        action.type === ActionTypes.EDIT_RECRUITER_EVENT_FAILURE ||
-        action.type === ActionTypes.REMOVE_RECRUITER_EVENT_FAILURE
+        action.type === ActionTypes.ADD_RECRUITER_WORK_TIME_FAILURE ||
+        action.type === ActionTypes.EDIT_RECRUITER_WORK_TIME_FAILURE ||
+        action.type === ActionTypes.REMOVE_RECRUITER_WORK_TIME_FAILURE
     ) {
         return { ...state, changePending: false, changeError: action.payload.error };
     } else if (action.type === ActionTypes.CLOSE_ERROR_WINDOW) {

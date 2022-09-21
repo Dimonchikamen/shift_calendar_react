@@ -1,26 +1,27 @@
 import { ServerAPI } from "../../../API/ServerAPI";
 import { call, put, takeLatest } from "redux-saga/effects";
 import { ActionTypes } from "../../ActionTypes";
-import { Recruiter } from "../../../Types/Recruiter";
 import {
     getRecruiterWorkTimesFailure,
     getRecruiterWorkTimesSuccess,
 } from "../../Actions/RecruitersActions/GetRecruitersActions";
 import { GetRecruiterWorkTimesRequest } from "../../Types/RecruitersTypes";
+import { WorkTime } from "../../../Types/WorkTime";
 
-const getRecruitersFetch = (start?: Date, end?: Date): Promise<Recruiter[]> => ServerAPI.getRecruiters(start, end);
+const getRecruitersFetch = (year: number, month: number): Promise<WorkTime[]> =>
+    ServerAPI.getRecruiterWorkTimes(year, month);
 
-function* getRecruiters({ payload: { start, end } }: GetRecruiterWorkTimesRequest) {
+function* getRecruiterWorkTimes({ payload: { year, month } }: GetRecruiterWorkTimesRequest) {
     try {
-        const response: Recruiter[] = yield call(getRecruitersFetch, start, end);
+        const response: WorkTime[] = yield call(getRecruitersFetch, year, month);
         yield put(getRecruiterWorkTimesSuccess(response));
     } catch (e) {
         yield put(getRecruiterWorkTimesFailure({ error: (e as Error).message }));
     }
 }
 
-function* getRecruitersSaga() {
-    yield takeLatest(ActionTypes.GET_RECRUITER_WORK_TIMES_REQUEST, getRecruiters);
+function* getRecruiterWorkTimesSaga() {
+    yield takeLatest(ActionTypes.GET_RECRUITER_WORK_TIMES_REQUEST, getRecruiterWorkTimes);
 }
 
-export default getRecruitersSaga;
+export default getRecruiterWorkTimesSaga;

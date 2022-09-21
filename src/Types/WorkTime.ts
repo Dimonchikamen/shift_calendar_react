@@ -1,8 +1,7 @@
 import { FullDateTime } from "./FullDateTime";
 
-export type ScheduleEvent = {
+export type WorkTime = {
     id: number;
     start: FullDateTime;
     end: FullDateTime;
-    title: string;
 };

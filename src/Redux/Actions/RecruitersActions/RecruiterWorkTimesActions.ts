@@ -2,7 +2,6 @@ import {
     AddRecruiterWorkTimeFailure,
     AddRecruiterWorkTimeRequest,
     AddRecruiterWorkTimeSuccess,
-    EditRecruiterRequestPayload,
     EditRecruiterWorkTimeFailure,
     EditRecruiterWorkTimeRequest,
     EditRecruiterWorkTimeSuccess,
@@ -12,62 +11,53 @@ import {
     RemoveRecruiterWorkTimeSuccess,
 } from "../../Types/RecruitersTypes";
 import { ActionTypes } from "../../ActionTypes";
-import { Recruiter } from "../../../Types/Recruiter";
+import { WorkTime } from "../../../Types/WorkTime";
 
-export const addRecruiterWorkTimeRequest = (
-    start: Date,
-    end: Date,
-    recruiterId: number,
-    event: string
-): AddRecruiterWorkTimeRequest => ({
-    type: ActionTypes.ADD_RECRUITER_EVENT_REQUEST,
-    payload: { start, end, recruiterId, event },
+export const addRecruiterWorkTimeRequest = (start: Date, end: Date): AddRecruiterWorkTimeRequest => ({
+    type: ActionTypes.ADD_RECRUITER_WORK_TIME_REQUEST,
+    payload: { start, end },
 });
 
-export const addRecruiterWorkTimeSuccess = (payload: Recruiter): AddRecruiterWorkTimeSuccess => ({
-    type: ActionTypes.ADD_RECRUITER_EVENT_SUCCESS,
+export const addRecruiterWorkTimeSuccess = (payload: WorkTime): AddRecruiterWorkTimeSuccess => ({
+    type: ActionTypes.ADD_RECRUITER_WORK_TIME_SUCCESS,
     payload,
 });
 
 export const addRecruiterWorkTimeFailure = (payload: FailurePayload): AddRecruiterWorkTimeFailure => ({
-    type: ActionTypes.ADD_RECRUITER_EVENT_FAILURE,
+    type: ActionTypes.ADD_RECRUITER_WORK_TIME_FAILURE,
     payload,
 });
 
 export const editRecruiterWorkTimeRequest = (
     start: Date,
     end: Date,
-    recruiterId: number,
     workTimeId: number
 ): EditRecruiterWorkTimeRequest => ({
-    type: ActionTypes.EDIT_RECRUITER_EVENT_REQUEST,
-    payload: { start, end, recruiterId, workTimeId },
+    type: ActionTypes.EDIT_RECRUITER_WORK_TIME_REQUEST,
+    payload: { start, end, workTimeId },
 });
 
-export const editRecruiterWorkTimeSuccess = (payload: Recruiter): EditRecruiterWorkTimeSuccess => ({
-    type: ActionTypes.EDIT_RECRUITER_EVENT_SUCCESS,
+export const editRecruiterWorkTimeSuccess = (payload: WorkTime): EditRecruiterWorkTimeSuccess => ({
+    type: ActionTypes.EDIT_RECRUITER_WORK_TIME_SUCCESS,
     payload,
 });
 
 export const editRecruiterWorkTimeFailure = (payload: FailurePayload): EditRecruiterWorkTimeFailure => ({
-    type: ActionTypes.EDIT_RECRUITER_EVENT_FAILURE,
+    type: ActionTypes.EDIT_RECRUITER_WORK_TIME_FAILURE,
     payload,
 });
 
-export const removeRecruiterWorkTimeRequest = (
-    recruiterId: number,
-    workTimeId: number
-): RemoveRecruiterWorkTimeRequest => ({
-    type: ActionTypes.REMOVE_RECRUITER_EVENT_REQUEST,
-    payload: { recruiterId, workTimeId },
+export const removeRecruiterWorkTimeRequest = (workTimeId: number): RemoveRecruiterWorkTimeRequest => ({
+    type: ActionTypes.REMOVE_RECRUITER_WORK_TIME_REQUEST,
+    payload: { workTimeId },
 });
 
-export const removeRecruiterWorkTimeSuccess = (payload: Recruiter): RemoveRecruiterWorkTimeSuccess => ({
-    type: ActionTypes.REMOVE_RECRUITER_EVENT_SUCCESS,
+export const removeRecruiterWorkTimeSuccess = (payload: number): RemoveRecruiterWorkTimeSuccess => ({
+    type: ActionTypes.REMOVE_RECRUITER_WORK_TIME_SUCCESS,
     payload,
 });
 
 export const removeRecruiterWorkTimeFailure = (payload: FailurePayload): RemoveRecruiterWorkTimeFailure => ({
-    type: ActionTypes.REMOVE_RECRUITER_EVENT_FAILURE,
+    type: ActionTypes.REMOVE_RECRUITER_WORK_TIME_FAILURE,
     payload,
 });

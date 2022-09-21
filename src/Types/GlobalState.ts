@@ -1,13 +1,9 @@
-import { CalendarState } from "./CalendarState";
+import { WorkTime } from "./WorkTime";
 
 export type GlobalState = {
-    rolePending: boolean;
-    allEventsPending: boolean;
     recruitersPending: boolean;
-    workTimePending: boolean;
-    interviewTimePending: boolean;
     changePending: boolean;
-    state: CalendarState;
+    workTimes: WorkTime[];
     error: string | null;
     changeError: string | null;
 };

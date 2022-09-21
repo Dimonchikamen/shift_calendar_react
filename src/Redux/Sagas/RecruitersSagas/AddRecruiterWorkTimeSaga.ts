@@ -1,4 +1,3 @@
-import { Recruiter } from "../../../Types/Recruiter";
 import { ServerAPI } from "../../../API/ServerAPI";
 import { AddRecruiterWorkTimeRequest } from "../../Types/RecruitersTypes";
 import { call, put, takeLatest } from "redux-saga/effects";
@@ -7,13 +6,14 @@ import {
     addRecruiterWorkTimeFailure,
     addRecruiterWorkTimeSuccess,
 } from "../../Actions/RecruitersActions/RecruiterWorkTimesActions";
+import { WorkTime } from "../../../Types/WorkTime";
 
-const addRecruiterWorkTimeFetch = (start: Date, end: Date, recruiterId: number, event: string): Promise<Recruiter> =>
-    ServerAPI.addRecruiterWorkTime(start, end, recruiterId, event);
+const addRecruiterWorkTimeFetch = (start: Date, end: Date): Promise<WorkTime[]> =>
+    ServerAPI.addRecruiterWorkTime(start, end);
 
-function* addRecruiterWorkTime({ payload: { start, end, recruiterId, event } }: AddRecruiterWorkTimeRequest) {
+function* addRecruiterWorkTime({ payload: { start, end /*, recruiterId, event*/ } }: AddRecruiterWorkTimeRequest) {
     try {
-        const response: Recruiter = yield call(addRecruiterWorkTimeFetch, start, end, recruiterId, event);
+        const response: WorkTime = yield call(addRecruiterWorkTimeFetch, start, end);
         yield put(addRecruiterWorkTimeSuccess(response));
     } catch (e) {
         yield put(addRecruiterWorkTimeFailure({ error: (e as Error).message }));
@@ -21,7 +21,7 @@ function* addRecruiterWorkTime({ payload: { start, end, recruiterId, event } }: 
 }
 
 function* addRecruiterWorkTimeSaga() {
-    yield takeLatest(ActionTypes.ADD_RECRUITER_EVENT_REQUEST, addRecruiterWorkTime);
+    yield takeLatest(ActionTypes.ADD_RECRUITER_WORK_TIME_REQUEST, addRecruiterWorkTime);
 }
 
 export default addRecruiterWorkTimeSaga;

@@ -3,7 +3,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Popup from "../Popup";
-import s from "../../../Components/ReactBigCalendar/Components/CalendarHeader/CalendarHeader.module.css";
+import s from "../Popup.module.css";
 import SelectItem from "../../SelectItem/SelectItem";
 import { getHour, getTimeFromHours } from "../../../Helpers/DateTimeHelpers";
 import { Time } from "../../../Types/Time";

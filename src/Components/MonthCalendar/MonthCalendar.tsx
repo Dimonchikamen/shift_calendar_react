@@ -1,7 +1,6 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import Cell from "./Components/Cell/Cell";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
-import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents";
 import MonthCalendarPresentation from "./MonthCalendarPresentation";
 import { ScheduleEvent } from "../../Types/ScheduleEvent";
 import AddWorkTimePopup from "../../UiKit/Popup/AddWorkTimePopup/AddWorkTimePopup";
@@ -15,8 +14,9 @@ import { CircularProgress } from "@mui/material";
 import PopupError from "../../UiKit/Popup/ErrorPopup/ErrorPopup";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
 import WaitPopup from "../../UiKit/Popup/WaitPopup/WaitPopup";
-import { getRecruitersRequest } from "../../Redux/Actions/RecruitersActions/GetRecruitersActions";
+import { getRecruiterWorkTimesRequest } from "../../Redux/Actions/RecruitersActions/GetRecruitersActions";
 import EditWorkTimePopup from "../../UiKit/Popup/EditWorkTimePopup/EditWorkTimePopup";
+import { createEventsFromWorkTimes } from "../../Helpers/CreateEventsFromWorkTimes";
 
 const DAYS_IN_WEEK = 7;
 const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -73,21 +73,26 @@ const MonthCalendar: FC = () => {
     const [editPopupIsOpen, setEditPopupOpen] = useState<boolean>(false);
     const [dateForAddWorkTime, setDateForAddWorkTime] = useState<Date>(currentDate);
 
-    const { allEventsPending, interviewTimePending, recruitersPending, changePending, state, error, changeError } =
-        useAppSelector(state => state.workDayState);
-    const recruiters = state.recruiters;
+    const { recruitersPending, changePending, workTimes, error, changeError } = useAppSelector(
+        state => state.workDayState
+    );
+    const events = useMemo(() => createEventsFromWorkTimes(workTimes), [workTimes]);
     const data = useMemo(() => getMonthData(currentDate.getFullYear(), currentDate.getMonth()), [currentDate]);
-    const [, events] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters]);
     const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        dispatch(getRecruiterWorkTimesRequest(currentDate.getFullYear(), currentDate.getMonth()));
+    }, []);
 
     const next = () => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
-        dispatch(getRecruitersRequest());
+        dispatch(getRecruiterWorkTimesRequest(currentDate.getFullYear(), currentDate.getMonth()));
     };
 
     const back = () => {
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
-        dispatch(getRecruitersRequest());
+        const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
+        setCurrentDate(newDate);
+        dispatch(getRecruiterWorkTimesRequest(newDate.getFullYear(), newDate.getMonth()));
     };
 
     const addEventClickHandler = (date: Date) => {
@@ -118,14 +123,12 @@ const MonthCalendar: FC = () => {
             dateForAddWorkTime.getDate(),
             endHours
         );
-        dispatch(
-            addRecruiterWorkTimeRequest(eventStart, eventEnd, Number(selectedEvent!.resourceId), state.currentEvent)
-        );
+        dispatch(addRecruiterWorkTimeRequest(eventStart, eventEnd));
         setPopupOpen(false);
     };
 
     const remove = () => {
-        dispatch(removeRecruiterWorkTimeRequest(Number(selectedEvent!.resourceId), selectedEvent!.id));
+        dispatch(removeRecruiterWorkTimeRequest(selectedEvent!.id));
         setRemoveEventPopupOpen(false);
         setSelectedEvent(null);
     };
@@ -143,9 +146,7 @@ const MonthCalendar: FC = () => {
             dateForAddWorkTime.getDate(),
             endHours
         );
-        dispatch(
-            editRecruiterWorkTimeRequest(eventStart, eventEnd, Number(selectedEvent!.resourceId), selectedEvent!.id)
-        );
+        dispatch(editRecruiterWorkTimeRequest(eventStart, eventEnd, selectedEvent!.id));
     };
 
     if (recruitersPending) {
@@ -188,7 +189,7 @@ const MonthCalendar: FC = () => {
                 <PopupError
                     isOpen={Boolean(changeError)}
                     title={"Что-то пошло не так..."}
-                    errorCode={502}
+                    errorCode={error}
                     onCancel={() => dispatch(closeErrorWindowAction())}
                 />
                 <AddWorkTimePopup

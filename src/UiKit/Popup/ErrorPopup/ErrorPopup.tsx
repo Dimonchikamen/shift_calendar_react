@@ -8,7 +8,7 @@ import Popup from "../Popup";
 interface IProps {
     isOpen: boolean;
     title: string;
-    errorCode: number;
+    errorCode: string | null;
     onCancel: () => void;
 }
 
@@ -24,7 +24,7 @@ const ErrorPopup: FC<IProps> = ({ isOpen, title, errorCode, onCancel }) => {
                 <DialogContentText id="error-dialog-description">
                     Проверьте подключение к интернету или повторите попытку позже.
                 </DialogContentText>
-                <DialogContentText>Код ошибки: {errorCode}</DialogContentText>
+                <DialogContentText>Ошибка: {errorCode}</DialogContentText>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onCancel}>ОК</Button>
