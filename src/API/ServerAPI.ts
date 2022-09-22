@@ -5,7 +5,7 @@ import { DATE_TIME_FORMAT } from "../Const";
 
 export class ServerAPI {
     static async getRecruiterWorkTimes(year: number, month: number): Promise<WorkTime[]> {
-        const url = `/events/get-recruiter-ranges?year=${year}&month=${month}`;
+        const url = `/events/get-recruiter-ranges?year=${year}&month=${month + 1}`;
         return await axios.get(url).then(response => response.data);
     }
 
