@@ -12,32 +12,32 @@ export class ServerAPI {
 
     static async addRecruiterWorkTime(start: Date, end: Date): Promise<WorkTime> {
         const url = `/events/set-recruiter-range`;
-        return await fetch(url, {
-            method: "POST",
-            body: JSON.stringify({
+        return await post({
+            url: url,
+            data: JSON.stringify({
                 start: moment(start).format(DATE_TIME_FORMAT),
                 end: moment(end).format(DATE_TIME_FORMAT),
             }),
-        }).then(response => response.json());
+        }).done(response => response.data);
     }
 
     static async editRecruiterWorkTime(start: Date, end: Date, workTimeId: number): Promise<WorkTime> {
         const url = `/events/set-recruiter-range`;
-        return await fetch(url, {
-            method: "POST",
-            body: JSON.stringify({
+        return await post({
+            url: url,
+            data: JSON.stringify({
                 workTimeId,
                 start: moment(start).format(DATE_TIME_FORMAT),
                 end: moment(end).format(DATE_TIME_FORMAT),
             }),
-        }).then(response => response.json());
+        }).done(response => response.data);
     }
 
     static async removeRecruiterWorkTime(workTimeId: number): Promise<number> {
         const url = `/events/remove-recruiter-range`;
-        return await fetch(url, {
-            method: "POST",
-            body: JSON.stringify({ workTimeId }),
-        }).then(response => response.json());
+        return await post({
+            url: url,
+            data: JSON.stringify({ workTimeId }),
+        }).done(response => response.data);
     }
 }
