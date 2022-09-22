@@ -1,6 +1,7 @@
 import axios from "axios";
 import { WorkTime } from "../Types/WorkTime";
 import moment from "moment";
+import { post } from "jquery";
 import { DATE_TIME_FORMAT } from "../Const";
 
 export class ServerAPI {
@@ -11,32 +12,32 @@ export class ServerAPI {
 
     static async addRecruiterWorkTime(start: Date, end: Date): Promise<WorkTime> {
         const url = `/events/set-recruiter-range`;
-        return await axios({
+        return await fetch(url, {
             method: "POST",
-            url: url,
-            data: { start: moment(start).format(DATE_TIME_FORMAT), end: moment(end).format(DATE_TIME_FORMAT) },
-        }).then(response => response.data);
+            body: JSON.stringify({
+                start: moment(start).format(DATE_TIME_FORMAT),
+                end: moment(end).format(DATE_TIME_FORMAT),
+            }),
+        }).then(response => response.json());
     }
 
     static async editRecruiterWorkTime(start: Date, end: Date, workTimeId: number): Promise<WorkTime> {
         const url = `/events/set-recruiter-range`;
-        return await axios({
+        return await fetch(url, {
             method: "POST",
-            url: url,
-            data: {
+            body: JSON.stringify({
                 workTimeId,
                 start: moment(start).format(DATE_TIME_FORMAT),
                 end: moment(end).format(DATE_TIME_FORMAT),
-            },
-        }).then(response => response.data);
+            }),
+        }).then(response => response.json());
     }
 
     static async removeRecruiterWorkTime(workTimeId: number): Promise<number> {
         const url = `/events/remove-recruiter-range`;
-        return await axios({
+        return await fetch(url, {
             method: "POST",
-            url: url,
-            data: { workTimeId },
-        }).then(response => response.data);
+            body: JSON.stringify({ workTimeId }),
+        }).then(response => response.json());
     }
 }
