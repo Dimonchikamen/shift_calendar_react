@@ -12,27 +12,49 @@ export class ServerAPI {
     static async addRecruiterWorkTime(start: Date, end: Date): Promise<WorkTime> {
         const url = `/events/set-recruiter-range`;
         return await axios
-            .post(url, null, {
-                params: { start: moment(start).format(DATE_TIME_FORMAT), end: moment(end).format(DATE_TIME_FORMAT) },
-            })
+            .post(
+                url,
+                { start: moment(start).format(DATE_TIME_FORMAT), end: moment(end).format(DATE_TIME_FORMAT) },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
             .then(response => response.data);
     }
 
     static async editRecruiterWorkTime(start: Date, end: Date, workTimeId: number): Promise<WorkTime> {
         const url = `/events/set-recruiter-range`;
         return await axios
-            .post(url, null, {
-                params: {
+            .post(
+                url,
+                {
                     workTimeId,
                     start: moment(start).format(DATE_TIME_FORMAT),
                     end: moment(end).format(DATE_TIME_FORMAT),
                 },
-            })
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
             .then(response => response.data);
     }
 
     static async removeRecruiterWorkTime(workTimeId: number): Promise<number> {
         const url = `/events/remove-recruiter-range`;
-        return await axios.post(url, null, { params: { workTimeId } }).then(response => response.data);
+        return await axios
+            .post(
+                url,
+                { workTimeId },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
+            .then(response => response.data);
     }
 }
