@@ -14,10 +14,10 @@ export class ServerAPI {
         const url = `/events/set-recruiter-range`;
         return await post({
             url: url,
-            data: JSON.stringify({
+            data: {
                 start: moment(start).format(DATE_TIME_FORMAT),
                 end: moment(end).format(DATE_TIME_FORMAT),
-            }),
+            },
         }).done(response => response.data);
     }
 
@@ -25,11 +25,11 @@ export class ServerAPI {
         const url = `/events/set-recruiter-range`;
         return await post({
             url: url,
-            data: JSON.stringify({
+            data: {
                 workTimeId,
                 start: moment(start).format(DATE_TIME_FORMAT),
                 end: moment(end).format(DATE_TIME_FORMAT),
-            }),
+            },
         }).done(response => response.data);
     }
 
@@ -37,7 +37,7 @@ export class ServerAPI {
         const url = `/events/remove-recruiter-range`;
         return await post({
             url: url,
-            data: JSON.stringify({ workTimeId }),
+            data: { workTimeId },
         }).done(response => response.data);
     }
 }
