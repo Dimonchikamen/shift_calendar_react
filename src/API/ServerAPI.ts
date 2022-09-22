@@ -12,23 +12,27 @@ export class ServerAPI {
     static async addRecruiterWorkTime(start: Date, end: Date): Promise<WorkTime> {
         const url = `/events/set-recruiter-range`;
         return await axios
-            .post(url, { start: moment(start).format(DATE_TIME_FORMAT), end: moment(end).format(DATE_TIME_FORMAT) })
+            .post(url, null, {
+                params: { start: moment(start).format(DATE_TIME_FORMAT), end: moment(end).format(DATE_TIME_FORMAT) },
+            })
             .then(response => response.data);
     }
 
     static async editRecruiterWorkTime(start: Date, end: Date, workTimeId: number): Promise<WorkTime> {
-        const url = `/events/edit-recruiter-range`;
+        const url = `/events/set-recruiter-range`;
         return await axios
-            .post(url, {
-                workTimeId,
-                start: moment(start).format(DATE_TIME_FORMAT),
-                end: moment(end).format(DATE_TIME_FORMAT),
+            .post(url, null, {
+                params: {
+                    workTimeId,
+                    start: moment(start).format(DATE_TIME_FORMAT),
+                    end: moment(end).format(DATE_TIME_FORMAT),
+                },
             })
             .then(response => response.data);
     }
 
     static async removeRecruiterWorkTime(workTimeId: number): Promise<number> {
         const url = `/events/remove-recruiter-range`;
-        return await axios.post(url, { workTimeId }).then(response => response.data);
+        return await axios.post(url, null, { params: { workTimeId } }).then(response => response.data);
     }
 }
