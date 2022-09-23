@@ -1,6 +1,5 @@
 import { FC } from "react";
 import s from "./CellEvent.module.css";
-import vector from "../../../../Svg/Cross.svg";
 import EditIcon from "@mui/icons-material/Edit";
 import { ScheduleEvent } from "../../../../Types/ScheduleEvent";
 
@@ -27,7 +26,7 @@ const CellEvent: FC<ICellEventProps> = ({ event, selected, onClick, onClickRemov
 
     const canChange = () => {
         const today = new Date().toISOString().slice(0, 10);
-        return event.start.slice(0, 10) > today; //&& !event.interviews.length;
+        return event.start.slice(0, 10) > today;
     };
 
     return (
@@ -42,13 +41,7 @@ const CellEvent: FC<ICellEventProps> = ({ event, selected, onClick, onClickRemov
                         className={s.remove_event_container}
                         onClick={removeHandler}
                     >
-                        {selected && (
-                            <img
-                                className={s.remove_event}
-                                src={vector}
-                                alt="delete"
-                            />
-                        )}
+                        {selected && <span className={`${s.cross}`}></span>}
                     </div>
                     <div
                         className={s.edit_event_container}
