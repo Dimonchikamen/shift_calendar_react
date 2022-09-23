@@ -147,6 +147,7 @@ const MonthCalendar: FC = () => {
             endHours
         );
         dispatch(editRecruiterWorkTimeRequest(eventStart, eventEnd, selectedEvent!.id));
+        setEditPopupOpen(false);
     };
 
     if (recruitersPending) {
