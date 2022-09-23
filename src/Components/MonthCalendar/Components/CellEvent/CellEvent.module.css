@@ -4,8 +4,9 @@
     align-items: center;
     border-radius: 4px;
     cursor: pointer;
-    padding: 3px 23px;
+    padding: 5px 23px;
     position: relative;
+    line-height: 1;
 }
 
 .event_title {
@@ -25,7 +26,6 @@
     justify-content: center;
     position: absolute;
     right: 5%;
-    height: 100%;
     min-width: 17px;
     min-height: 17px;
     cursor: pointer;
@@ -36,11 +36,29 @@
     left: 5%;
 }
 
-.remove_event {
-    height: 17px;
-    width: 17px;
-}
-
 .edit_event {
     width: 20px !important;
+}
+
+.cross {
+    width: 16px;
+}
+
+.cross::after,
+.cross::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 17px;
+    height: 1.5px;
+    background-color: #fff;
+}
+
+.cross::after {
+    transform: rotate(45deg);
+}
+
+.cross::before {
+    transform: rotate(-45deg);
 }

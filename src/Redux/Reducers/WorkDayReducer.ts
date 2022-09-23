@@ -64,7 +64,7 @@ const WorkDayReducer = (state = defaultState, action: CloseErrorWindow | Recruit
         };
     } else if (action.type === ActionTypes.REMOVE_RECRUITER_WORK_TIME_SUCCESS) {
         const workTimes: WorkTime[] = JSON.parse(JSON.stringify(state.workTimes)).filter(
-            (item: WorkTime) => item.id !== action.payload
+            (item: WorkTime) => item.id !== Number(action.payload)
         );
         return {
             ...state,
