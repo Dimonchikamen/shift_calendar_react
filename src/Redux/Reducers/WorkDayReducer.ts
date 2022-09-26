@@ -3,6 +3,7 @@ import { CloseErrorWindow } from "../Types/MainReducerTypes";
 import { RecruitersTypes } from "../Types/RecruitersTypes";
 import { GlobalState } from "../../Types/GlobalState";
 import { compareFullDateTime } from "../../Helpers/Compare";
+import { WorkTime } from "../../Types/WorkTime";
 
 const defaultState: GlobalState = {
     recruitersPending: false,
@@ -40,34 +41,34 @@ const WorkDayReducer = (state = defaultState, action: CloseErrorWindow | Recruit
             changePending: true,
         };
     } else if (action.type === ActionTypes.ADD_RECRUITER_WORK_TIME_SUCCESS) {
-        const workTimes = JSON.parse(JSON.stringify(state.workTimes));
+        const workTimes: WorkTime[] = JSON.parse(JSON.stringify(state.workTimes));
         workTimes.push(action.payload);
-        workTimes.sort(compareFullDateTime);
+        workTimes.sort((a: WorkTime, b: WorkTime) => compareFullDateTime(a.start, b.start));
         return {
             ...state,
-            workTimes: workTimes,
+            workTimes,
             changePending: false,
             changeError: null,
         };
     } else if (action.type === ActionTypes.EDIT_RECRUITER_WORK_TIME_SUCCESS) {
-        const workTimes = JSON.parse(JSON.stringify(state.workTimes)).filter(
-            (item: any) => item.id !== action.payload.id
+        const workTimes: WorkTime[] = JSON.parse(JSON.stringify(state.workTimes)).filter(
+            (item: WorkTime) => item.id !== action.payload.id
         );
         workTimes.push(action.payload);
-        workTimes.sort(compareFullDateTime);
+        workTimes.sort((a: WorkTime, b: WorkTime) => compareFullDateTime(a.start, b.start));
         return {
             ...state,
-            workTimes: workTimes,
+            workTimes,
             changePending: false,
             changeError: null,
         };
     } else if (action.type === ActionTypes.REMOVE_RECRUITER_WORK_TIME_SUCCESS) {
-        const workTimes = JSON.parse(JSON.stringify(state.workTimes)).filter(
-            (item: any) => item.id !== Number(action.payload)
+        const workTimes: WorkTime[] = JSON.parse(JSON.stringify(state.workTimes)).filter(
+            (item: WorkTime) => item.id !== Number(action.payload)
         );
         return {
             ...state,
-            workTimes: workTimes,
+            workTimes,
             changePending: false,
             changeError: null,
         };
