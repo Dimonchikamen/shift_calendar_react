@@ -1,12 +1,12 @@
 import { FC } from "react";
 import { ScheduleEvent } from "../../../../Types/ScheduleEvent";
 import { SchedulerData } from "react-big-scheduler";
-import { DATE_TIME_FORMAT } from "../../ReactBigCalendar";
 import Button from "antd/lib/button";
 import s from "../Popover/Popover.module.css";
 import { Recruiter } from "../../../../Types/Recruiter";
 import { useAppDispatch } from "../../../../Redux/Hooks";
 import { changeEventRequest } from "../../../../Redux/Actions/EventsActions/ChangeEventActions";
+import { DATE_TIME_FORMAT } from "../../../../Constants";
 
 interface IPopoverProps {
     schedulerData: SchedulerData;

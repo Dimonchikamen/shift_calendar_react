@@ -1,7 +1,5 @@
 import { FC, memo, useEffect, useMemo, useState } from "react";
 import Scheduler, { Resource, SchedulerData } from "react-big-scheduler";
-import { DragDropContext } from "react-dnd";
-import HTML5Backend from "react-dnd-html5-backend";
 import "react-big-scheduler/lib/css/style.css";
 import moment from "moment";
 import "moment/locale/ru";
@@ -35,11 +33,7 @@ import { Time } from "../../Types/Time";
 import { getDate, getHour, getMinutes } from "../../Helpers/DateTimeHelpers";
 import { getWorkTimeRequest } from "../../Redux/Actions/WorkTimeActions/WorkDayActions";
 import WaitPopup from "../../UiKit/Popup/WaitPopup/WaitPopup";
-
-export const widthDragDropContext = DragDropContext(HTML5Backend);
-
-export const DATE_TIME_FORMAT = "YYYY-MM-DD H:mm";
-export const DATE_FORMAT = "YYYY-MM-DD";
+import { DATE_TIME_FORMAT, widthDragDropContext } from "../../Constants";
 
 moment.locale("ru-ru");
 

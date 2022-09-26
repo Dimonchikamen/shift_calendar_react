@@ -1,8 +1,8 @@
 import axios from "axios";
 import { Recruiter } from "../Types/Recruiter";
 import moment from "moment";
-import { DATE_FORMAT, DATE_TIME_FORMAT } from "../Components/ReactBigCalendar/ReactBigCalendar";
 import { ChangeWorkTimePayload, GetWorkTimeSuccessPayload } from "../Redux/Types/WorkTimeTypes";
+import { DATE_FORMAT, DATE_TIME_FORMAT } from "../Constants";
 
 const recruitersMock = [
     {
@@ -151,15 +151,17 @@ const recruitersMock = [
 export class ServerAPI {
     private static startUrl = process.env.REACT_APP_SERVER_HOST;
 
+    static async getInformation() {
+        const url = "/events/get-information";
+        return await axios.get(url).then(res => res.data);
+    }
+
     static async getEvents() {
         const url = "http://localhost:3000/";
         return await axios.get(url).then(response => response.data);
     }
 
     static async getRecruiters(start?: Date, end?: Date) {
-        for (let i = 0; i < 1000000000; i++) {
-            //dasdadsd;
-        }
         const url = "http://localhost:3000/";
         return await axios.get(url).then(response => recruitersMock);
     }

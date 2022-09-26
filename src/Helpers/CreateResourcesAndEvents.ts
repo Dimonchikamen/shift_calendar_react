@@ -3,9 +3,9 @@ import { ScheduleEvent } from "../Types/ScheduleEvent";
 import { createTitle } from "./CreateTitle";
 import { Resource } from "react-big-scheduler";
 import moment from "moment";
-import { DATE_TIME_FORMAT } from "../Components/ReactBigCalendar/ReactBigCalendar";
 import { compareFullDateTime } from "./Compare";
 import { FullDateTime } from "../Types/FullDateTime";
+import { DATE_TIME_FORMAT } from "../Constants";
 
 export const createResourcesAndEvents = (
     recruiters: Recruiter[],
