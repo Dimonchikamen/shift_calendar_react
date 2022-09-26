@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import { ScheduleEvent } from "../../../../Types/ScheduleEvent";
 import s from "./Cell.module.css";
 import CellEvent from "../CellEvent/CellEvent";
@@ -22,6 +22,10 @@ const Cell: FC<ICellProps> = ({
     onRemoveEvent,
     onSetSelectedEvent,
 }) => {
+    const canAddWorkTime = useMemo(() => {
+        const d = new Date();
+        return dayDate > new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    }, [dayDate]);
     const addEventHandler = () => {
         onAddEvent(dayDate);
     };
@@ -49,7 +53,7 @@ const Cell: FC<ICellProps> = ({
                 </div>
                 <div className={s.add_event_button_container}>
                     <div
-                        className={`${s.add_event_button} ${disabled ? s.display_none : ""}`}
+                        className={`${s.add_event_button} ${canAddWorkTime ? "" : s.display_none}`}
                         onClick={addEventHandler}
                     >
                         <span>+</span>

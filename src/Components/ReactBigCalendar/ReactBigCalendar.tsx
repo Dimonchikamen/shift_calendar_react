@@ -20,7 +20,6 @@ import Popover from "./Components/Popover/Popover";
 import { hasOverlap } from "../../Helpers/HasOverlap";
 import PopupError from "../../UiKit/Popup/ErrorPopup/ErrorPopup";
 import { CircularProgress } from "@mui/material";
-import Backdrop from "@mui/material/Backdrop";
 import Alert from "@mui/material/Alert";
 import { getInterviewTimeRequest } from "../../Redux/Actions/InterviewTimeActions/GetInterviewTimeActions";
 import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
