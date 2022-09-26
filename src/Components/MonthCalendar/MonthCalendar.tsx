@@ -53,11 +53,18 @@ const getMonthData = (year: number, month: number) => {
                 if (column < monthStartsOn) {
                     result[row][column] = { date: new Date(year, month, 1 - (monthStartsOn - column)), disabled: true };
                 } else {
-                    result[row][column] = { date: new Date(year, month, day++), disabled: false };
+                    const current = new Date(year, month, day);
+                    result[row][column] = {
+                        date: new Date(year, month, day++),
+                        disabled: current <= new Date(),
+                    };
                 }
             } else {
                 const current = new Date(year, month, day++);
-                result[row][column] = { date: current, disabled: current.getMonth() !== date.getMonth() };
+                result[row][column] = {
+                    date: current,
+                    disabled: current.getMonth() !== date.getMonth() || current <= new Date(),
+                };
             }
         }
     }
@@ -125,6 +132,7 @@ const MonthCalendar: FC = () => {
         );
         dispatch(addRecruiterWorkTimeRequest(eventStart, eventEnd));
         setPopupOpen(false);
+        //setSelectedEvent(null); // probably necessary
     };
 
     const remove = () => {
@@ -208,6 +216,7 @@ const MonthCalendar: FC = () => {
                 <EditWorkTimePopup
                     title="Редактирование смены"
                     isOpen={editPopupIsOpen}
+                    selectedEvent={selectedEvent}
                     onSubmit={edit}
                     onCancel={() => setEditPopupOpen(false)}
                 />
