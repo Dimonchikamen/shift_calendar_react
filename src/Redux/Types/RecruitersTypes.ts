@@ -1,5 +1,6 @@
 import { ActionTypes } from "../ActionTypes";
 import { WorkTime } from "../../Types/WorkTime";
+import { WorkTimeResponse } from "../../Types/WorkTimeResponse";
 
 export interface GetRecruiterWorkTimesRequestPayload {
     year: number;
@@ -47,7 +48,7 @@ export type AddRecruiterWorkTimeRequest = {
 
 export type AddRecruiterWorkTimeSuccess = {
     type: ActionTypes.ADD_RECRUITER_WORK_TIME_SUCCESS;
-    payload: WorkTime;
+    payload: WorkTimeResponse;
 };
 
 export type AddRecruiterWorkTimeFailure = {
@@ -62,7 +63,7 @@ export type EditRecruiterWorkTimeRequest = {
 
 export type EditRecruiterWorkTimeSuccess = {
     type: ActionTypes.EDIT_RECRUITER_WORK_TIME_SUCCESS;
-    payload: WorkTime;
+    payload: WorkTimeResponse;
 };
 
 export type EditRecruiterWorkTimeFailure = {

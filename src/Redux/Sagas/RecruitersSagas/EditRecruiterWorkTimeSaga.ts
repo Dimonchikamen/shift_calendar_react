@@ -6,14 +6,14 @@ import {
     editRecruiterWorkTimeSuccess,
 } from "../../Actions/RecruitersActions/RecruiterWorkTimesActions";
 import { ActionTypes } from "../../ActionTypes";
-import { WorkTime } from "../../../Types/WorkTime";
+import { WorkTimeResponse } from "../../../Types/WorkTimeResponse";
 
-const editRecruiterWorkTimeFetch = (start: Date, end: Date, workTimeId: number): Promise<WorkTime> =>
+const editRecruiterWorkTimeFetch = (start: Date, end: Date, workTimeId: number): Promise<WorkTimeResponse> =>
     ServerAPI.editRecruiterWorkTime(start, end, workTimeId);
 
 function* editRecruiterWorkTime({ payload: { start, end, workTimeId } }: EditRecruiterWorkTimeRequest) {
     try {
-        const response: WorkTime = yield call(editRecruiterWorkTimeFetch, start, end, workTimeId);
+        const response: WorkTimeResponse = yield call(editRecruiterWorkTimeFetch, start, end, workTimeId);
         yield put(editRecruiterWorkTimeSuccess(response));
     } catch (e) {
         yield put(editRecruiterWorkTimeFailure({ error: (e as Error).message }));

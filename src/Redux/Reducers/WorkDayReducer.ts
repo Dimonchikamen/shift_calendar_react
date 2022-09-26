@@ -4,6 +4,7 @@ import { RecruitersTypes } from "../Types/RecruitersTypes";
 import { GlobalState } from "../../Types/GlobalState";
 import { compareFullDateTime } from "../../Helpers/Compare";
 import { WorkTime } from "../../Types/WorkTime";
+import { convertToWorkTime } from "../../Helpers/ConvertToWorkTime";
 
 const defaultState: GlobalState = {
     recruitersPending: false,
@@ -42,7 +43,8 @@ const WorkDayReducer = (state = defaultState, action: CloseErrorWindow | Recruit
         };
     } else if (action.type === ActionTypes.ADD_RECRUITER_WORK_TIME_SUCCESS) {
         const workTimes: WorkTime[] = JSON.parse(JSON.stringify(state.workTimes));
-        workTimes.push(action.payload);
+        const workTime = convertToWorkTime(action.payload);
+        workTimes.push(workTime);
         workTimes.sort((a: WorkTime, b: WorkTime) => compareFullDateTime(a.start, b.start));
         return {
             ...state,
@@ -51,11 +53,10 @@ const WorkDayReducer = (state = defaultState, action: CloseErrorWindow | Recruit
             changeError: null,
         };
     } else if (action.type === ActionTypes.EDIT_RECRUITER_WORK_TIME_SUCCESS) {
-        const workTimes: WorkTime[] = JSON.parse(JSON.stringify(state.workTimes)).filter(
-            (item: WorkTime) => item.id !== action.payload.id
-        );
-        workTimes.push(action.payload);
-        workTimes.sort((a: WorkTime, b: WorkTime) => compareFullDateTime(a.start, b.start));
+        const workTimes: WorkTime[] = JSON.parse(JSON.stringify(state.workTimes));
+        const workTime = convertToWorkTime(action.payload);
+        const index = workTimes.findIndex(w => w.id === workTime.id);
+        workTimes[index] = workTime;
         return {
             ...state,
             workTimes,

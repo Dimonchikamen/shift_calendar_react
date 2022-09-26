@@ -85,8 +85,9 @@ const MonthCalendar: FC = () => {
     }, []);
 
     const next = () => {
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
-        dispatch(getRecruiterWorkTimesRequest(currentDate.getFullYear(), currentDate.getMonth()));
+        const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
+        setCurrentDate(newDate);
+        dispatch(getRecruiterWorkTimesRequest(newDate.getFullYear(), newDate.getMonth()));
     };
 
     const back = () => {
@@ -133,7 +134,7 @@ const MonthCalendar: FC = () => {
         setSelectedEvent(null);
     };
 
-    const edit = (startHours: any, endHours: any) => {
+    const edit = (startHours: number, endHours: number) => {
         const eventStart = new Date(
             dateForAddWorkTime.getFullYear(),
             dateForAddWorkTime.getMonth(),

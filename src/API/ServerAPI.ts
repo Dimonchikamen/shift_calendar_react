@@ -2,6 +2,7 @@ import axios from "axios";
 import { WorkTime } from "../Types/WorkTime";
 import moment from "moment";
 import { DATE_TIME_FORMAT } from "../Const";
+import { WorkTimeResponse } from "../Types/WorkTimeResponse";
 
 export class ServerAPI {
     static async getRecruiterWorkTimes(year: number, month: number): Promise<WorkTime[]> {
@@ -9,7 +10,7 @@ export class ServerAPI {
         return await axios.get(url).then(response => response.data);
     }
 
-    static async addRecruiterWorkTime(start: Date, end: Date): Promise<WorkTime> {
+    static async addRecruiterWorkTime(start: Date, end: Date): Promise<WorkTimeResponse> {
         const url = "/events/set-recruiter-range";
         const params = new FormData();
         params.append("start", moment(start).format(DATE_TIME_FORMAT));
@@ -17,7 +18,7 @@ export class ServerAPI {
         return await axios.post(url, params).then(response => response.data);
     }
 
-    static async editRecruiterWorkTime(start: Date, end: Date, workTimeId: number): Promise<WorkTime> {
+    static async editRecruiterWorkTime(start: Date, end: Date, workTimeId: number): Promise<WorkTimeResponse> {
         const url = `/events/set-recruiter-range`;
         const params = new FormData();
         params.append("workTimeId", workTimeId.toString());

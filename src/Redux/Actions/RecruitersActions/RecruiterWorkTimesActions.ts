@@ -11,14 +11,14 @@ import {
     RemoveRecruiterWorkTimeSuccess,
 } from "../../Types/RecruitersTypes";
 import { ActionTypes } from "../../ActionTypes";
-import { WorkTime } from "../../../Types/WorkTime";
+import { WorkTimeResponse } from "../../../Types/WorkTimeResponse";
 
 export const addRecruiterWorkTimeRequest = (start: Date, end: Date): AddRecruiterWorkTimeRequest => ({
     type: ActionTypes.ADD_RECRUITER_WORK_TIME_REQUEST,
     payload: { start, end },
 });
 
-export const addRecruiterWorkTimeSuccess = (payload: WorkTime): AddRecruiterWorkTimeSuccess => ({
+export const addRecruiterWorkTimeSuccess = (payload: WorkTimeResponse): AddRecruiterWorkTimeSuccess => ({
     type: ActionTypes.ADD_RECRUITER_WORK_TIME_SUCCESS,
     payload,
 });
@@ -37,7 +37,7 @@ export const editRecruiterWorkTimeRequest = (
     payload: { start, end, workTimeId },
 });
 
-export const editRecruiterWorkTimeSuccess = (payload: WorkTime): EditRecruiterWorkTimeSuccess => ({
+export const editRecruiterWorkTimeSuccess = (payload: WorkTimeResponse): EditRecruiterWorkTimeSuccess => ({
     type: ActionTypes.EDIT_RECRUITER_WORK_TIME_SUCCESS,
     payload,
 });
