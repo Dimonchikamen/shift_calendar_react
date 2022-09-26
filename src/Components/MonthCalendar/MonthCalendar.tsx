@@ -8,12 +8,15 @@ import AddWorkTimePopup from "../../UiKit/Popup/AddWorkTimePopup/AddWorkTimePopu
 import RemoveWorkTimePopup from "../../UiKit/Popup/RemoveWorkTimePopup/RemoveWorkTimePopup";
 import {
     addRecruiterWorkTimeRequest,
+    editRecruiterWorkTimeRequest,
     removeRecruiterWorkTimeRequest,
 } from "../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
 import { CircularProgress } from "@mui/material";
 import PopupError from "../../UiKit/Popup/ErrorPopup/ErrorPopup";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
 import WaitPopup from "../../UiKit/Popup/WaitPopup/WaitPopup";
+import { getRecruitersRequest } from "../../Redux/Actions/RecruitersActions/GetRecruitersActions";
+import EditWorkTimePopup from "../../UiKit/Popup/EditWorkTimePopup/EditWorkTimePopup";
 
 const DAYS_IN_WEEK = 7;
 const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -67,6 +70,7 @@ const MonthCalendar: FC = () => {
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
     const [popupIsOpen, setPopupOpen] = useState<boolean>(false);
     const [removeEventPopupIsOpen, setRemoveEventPopupOpen] = useState<boolean>(false);
+    const [editPopupIsOpen, setEditPopupOpen] = useState<boolean>(false);
     const [dateForAddWorkTime, setDateForAddWorkTime] = useState<Date>(currentDate);
 
     const { allEventsPending, interviewTimePending, recruitersPending, changePending, state, error, changeError } =
@@ -78,15 +82,21 @@ const MonthCalendar: FC = () => {
 
     const next = () => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
+        dispatch(getRecruitersRequest());
     };
 
     const back = () => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
+        dispatch(getRecruitersRequest());
     };
 
     const addEventClickHandler = (date: Date) => {
         setDateForAddWorkTime(date);
         setPopupOpen(true);
+    };
+    const editEventClickHandler = (date: Date) => {
+        setDateForAddWorkTime(date);
+        setEditPopupOpen(true);
     };
 
     const removeEventClickHandler = () => {
@@ -120,6 +130,24 @@ const MonthCalendar: FC = () => {
         setSelectedEvent(null);
     };
 
+    const edit = (startHours: any, endHours: any) => {
+        const eventStart = new Date(
+            dateForAddWorkTime.getFullYear(),
+            dateForAddWorkTime.getMonth(),
+            dateForAddWorkTime.getDate(),
+            startHours
+        );
+        const eventEnd = new Date(
+            dateForAddWorkTime.getFullYear(),
+            dateForAddWorkTime.getMonth(),
+            dateForAddWorkTime.getDate(),
+            endHours
+        );
+        dispatch(
+            editRecruiterWorkTimeRequest(eventStart, eventEnd, Number(selectedEvent!.resourceId), selectedEvent!.id)
+        );
+    };
+
     if (recruitersPending) {
         return <CircularProgress />;
     } else
@@ -149,6 +177,7 @@ const MonthCalendar: FC = () => {
                                     disabled={day.disabled}
                                     onAddEvent={addEventClickHandler}
                                     onRemoveEvent={removeEventClickHandler}
+                                    onEditEvent={editEventClickHandler}
                                     onSetSelectedEvent={setSelectedEvent}
                                 />
                             );
@@ -173,6 +202,12 @@ const MonthCalendar: FC = () => {
                     isOpen={removeEventPopupIsOpen}
                     onSubmit={remove}
                     onCancel={() => setRemoveEventPopupOpen(false)}
+                />
+                <EditWorkTimePopup
+                    title="Редактирование смены"
+                    isOpen={editPopupIsOpen}
+                    onSubmit={edit}
+                    onCancel={() => setEditPopupOpen(false)}
                 />
             </>
         );

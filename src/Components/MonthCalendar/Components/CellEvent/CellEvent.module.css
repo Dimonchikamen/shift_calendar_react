@@ -18,7 +18,8 @@
     cursor: auto;
 }
 
-.remove_event_container {
+.remove_event_container,
+.edit_event_container {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -30,6 +31,11 @@
     cursor: pointer;
 }
 
+.edit_event_container {
+    right: auto;
+    left: 5%;
+}
+
 .remove_event {
     height: 17px;
     width: 17px;
@@ -37,4 +43,8 @@
 
 .display_none {
     display: none;
+}
+
+.edit_event {
+    width: 20px !important;
 }
