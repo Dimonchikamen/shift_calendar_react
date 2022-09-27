@@ -17,6 +17,7 @@ import WaitPopup from "../../UiKit/Popup/WaitPopup/WaitPopup";
 import { getRecruiterWorkTimesRequest } from "../../Redux/Actions/RecruitersActions/GetRecruitersActions";
 import EditWorkTimePopup from "../../UiKit/Popup/EditWorkTimePopup/EditWorkTimePopup";
 import { createEventsFromWorkTimes } from "../../Helpers/CreateEventsFromWorkTimes";
+import { findLastInterval } from "../../Helpers/FindLastInterval";
 
 const DAYS_IN_WEEK = 7;
 const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -79,6 +80,7 @@ const MonthCalendar: FC = () => {
     const [removeEventPopupIsOpen, setRemoveEventPopupOpen] = useState<boolean>(false);
     const [editPopupIsOpen, setEditPopupOpen] = useState<boolean>(false);
     const [dateForAddWorkTime, setDateForAddWorkTime] = useState<Date>(currentDate);
+    const [lastInterval, setLastInterval] = useState({ start: "0:00", end: "23:00" });
 
     const { recruitersPending, changePending, workTimes, error, changeError } = useAppSelector(
         state => state.workDayState
@@ -105,6 +107,7 @@ const MonthCalendar: FC = () => {
 
     const addEventClickHandler = (date: Date) => {
         setDateForAddWorkTime(date);
+        setLastInterval(findLastInterval(events, date));
         setPopupOpen(true);
     };
     const editEventClickHandler = (date: Date) => {
@@ -204,6 +207,7 @@ const MonthCalendar: FC = () => {
                 <AddWorkTimePopup
                     title="Добавление смены"
                     isOpen={popupIsOpen}
+                    lastInterval={lastInterval}
                     onSubmit={add}
                     onCancel={() => setPopupOpen(false)}
                 />

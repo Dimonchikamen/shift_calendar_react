@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { getHour } from "../../../Helpers/DateTimeHelpers";
 import { Time } from "../../../Types/Time";
 import { getOptions } from "../../../Helpers/GetOptions";
@@ -10,13 +10,19 @@ const hourOptions: Time[] = getOptions(0, 23);
 interface IAddWorkingTimePopupProps {
     title: string;
     isOpen: boolean;
+    lastInterval: { start: string; end: string };
     onSubmit: (startHours: number, endHours: number) => void;
     onCancel: () => void;
 }
 
-const AddWorkTimePopup: FC<IAddWorkingTimePopupProps> = ({ title, isOpen, onSubmit, onCancel }) => {
+const AddWorkTimePopup: FC<IAddWorkingTimePopupProps> = ({ title, isOpen, lastInterval, onSubmit, onCancel }) => {
     const [currentStart, setStart] = useState(0);
     const [currentEnd, setEnd] = useState(23);
+
+    useEffect(() => {
+        setStart(parseInt(lastInterval.start));
+        setEnd(parseInt(lastInterval.end));
+    }, [lastInterval]);
 
     const changeStartHandler = (e: SelectChangeEvent) => setStart(getHour(e.target.value));
 
