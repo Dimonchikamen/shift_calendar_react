@@ -1,15 +1,10 @@
 import { FC, useEffect, useState } from "react";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import Button from "@mui/material/Button";
-import Popup from "../Popup";
-import s from "../Popup.module.css";
-import SelectItem from "../../SelectItem/SelectItem";
-import { getHour, getTimeFromHours } from "../../../Helpers/DateTimeHelpers";
+import { getHour } from "../../../Helpers/DateTimeHelpers";
 import { Time } from "../../../Types/Time";
 import { getOptions } from "../../../Helpers/GetOptions";
 import { SelectChangeEvent } from "@mui/material";
 import { ScheduleEvent } from "../../../Types/ScheduleEvent";
+import SetWorkTimePopup from "../SetWorkTimePopup/SetWorkTimePopup";
 
 const hourOptions: Time[] = getOptions(0, 23);
 
@@ -36,41 +31,20 @@ const EditWorkTimePopup: FC<IEditWorkingTimePopupProps> = ({ title, isOpen, sele
 
     const changeEndHandler = (e: SelectChangeEvent) => setEnd(getHour(e.target.value));
 
-    const submit = () => {
-        onSubmit(currentStart, currentEnd);
-    };
+    const submit = () => onSubmit(currentStart, currentEnd);
 
     return (
-        <Popup
+        <SetWorkTimePopup
             title={title}
             isOpen={isOpen}
+            hourOptions={hourOptions}
+            start={currentStart}
+            end={currentEnd}
+            onChangeStart={changeStartHandler}
+            onChangeEnd={changeEndHandler}
+            onSubmit={submit}
             onCancel={onCancel}
-            onClose={onCancel}
-        >
-            <DialogContent>
-                <div className={s.select_work_time_container}>
-                    <span>Рабочее время с</span>
-                    <SelectItem
-                        value={getTimeFromHours(currentStart)}
-                        options={hourOptions}
-                        size="small"
-                        optionDisableFunc={v => getHour(v) >= currentEnd}
-                        onchange={changeStartHandler}
-                    />
-                    <span>до</span>
-                    <SelectItem
-                        value={getTimeFromHours(currentEnd)}
-                        options={hourOptions}
-                        size="small"
-                        optionDisableFunc={v => getHour(v) <= currentStart}
-                        onchange={changeEndHandler}
-                    />
-                </div>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={submit}>Установить</Button>
-            </DialogActions>
-        </Popup>
+        />
     );
 };
 

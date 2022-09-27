@@ -133,7 +133,6 @@ const MonthCalendar: FC = () => {
         );
         dispatch(addRecruiterWorkTimeRequest(eventStart, eventEnd));
         setPopupOpen(false);
-        //setSelectedEvent(null); // probably necessary
     };
 
     const remove = () => {
@@ -197,8 +196,8 @@ const MonthCalendar: FC = () => {
                 </MonthCalendarPresentation>
                 <WaitPopup isOpen={changePending} />
                 <PopupError
+                    title="Что-то пошло не так..."
                     isOpen={Boolean(changeError)}
-                    title={"Что-то пошло не так..."}
                     errorCode={error}
                     onCancel={() => dispatch(closeErrorWindowAction())}
                 />
