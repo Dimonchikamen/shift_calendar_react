@@ -18,6 +18,10 @@ import { getRecruiterWorkTimesRequest } from "../../Redux/Actions/RecruitersActi
 import EditWorkTimePopup from "../../UiKit/Popup/EditWorkTimePopup/EditWorkTimePopup";
 import { createEventsFromWorkTimes } from "../../Helpers/CreateEventsFromWorkTimes";
 import { findLastInterval } from "../../Helpers/FindLastInterval";
+import { getTime, getTimeFromHours } from "../../Helpers/DateTimeHelpers";
+import { hasOverlapTime } from "../../Helpers/HasOverlap";
+import { DATE_FORMAT } from "../../Const";
+import moment from "moment";
 
 const DAYS_IN_WEEK = 7;
 const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -134,8 +138,30 @@ const MonthCalendar: FC = () => {
             dateForAddWorkTime.getDate(),
             endHours
         );
-        dispatch(addRecruiterWorkTimeRequest(eventStart, eventEnd));
-        setPopupOpen(false);
+        let hasOverlap = false;
+        let overlappedStart;
+        let overlappedEnd;
+        events.forEach(e => {
+            if (
+                e.start.split(" ")[0] === moment(dateForAddWorkTime).format(DATE_FORMAT) &&
+                hasOverlapTime(
+                    getTime(e.start),
+                    getTime(e.end),
+                    getTimeFromHours(startHours),
+                    getTimeFromHours(endHours)
+                )
+            ) {
+                hasOverlap = true;
+                overlappedStart = getTime(e.start);
+                overlappedEnd = getTime(e.end);
+            }
+        });
+        if (!hasOverlap) {
+            dispatch(addRecruiterWorkTimeRequest(eventStart, eventEnd));
+            setPopupOpen(false);
+        } else {
+            alert("Пересечение со сменой: [" + overlappedStart + " - " + overlappedEnd + "]");
+        }
     };
 
     const remove = () => {

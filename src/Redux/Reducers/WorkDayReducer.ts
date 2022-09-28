@@ -9,7 +9,29 @@ import { convertToWorkTime } from "../../Helpers/ConvertToWorkTime";
 const defaultState: GlobalState = {
     recruitersPending: false,
     changePending: false,
-    workTimes: [],
+    workTimes: [
+        {
+            id: 12,
+            start: "2022-09-30 15:00",
+            end: "2022-09-30 16:00",
+        },
+
+        {
+            id: 212,
+            start: "2022-09-29 2:00",
+            end: "2022-09-29 3:00",
+        },
+        {
+            id: 122212,
+            start: "2022-09-29 4:00",
+            end: "2022-09-29 8:00",
+        },
+        {
+            id: 12212,
+            start: "2022-09-29 8:00",
+            end: "2022-09-29 23:00",
+        },
+    ],
     error: null,
     changeError: null,
 };
