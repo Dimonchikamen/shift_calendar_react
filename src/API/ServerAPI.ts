@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Recruiter } from "../Types/Recruiter";
 import moment from "moment";
-import { DATE_FORMAT, DATE_TIME_FORMAT } from "../Components/ReactBigCalendar/ReactBigCalendar";
+import { DATE_FORMAT, DATE_TIME_FORMAT } from "../Components/ReactBigCalendar/ReactBigCalendar2";
 import { ChangeWorkTimePayload, GetWorkTimeSuccessPayload } from "../Redux/Types/WorkTimeTypes";
 
 const recruitersMock = [
@@ -12,8 +12,8 @@ const recruitersMock = [
             {
                 id: 11,
                 events: ["Ночь музеев"],
-                start: "2022-08-31 09:00",
-                end: "2022-08-31 11:00",
+                start: "2022-09-29 09:00",
+                end: "2022-09-29 11:00",
                 interviews: [
                     {
                         id: 111,
@@ -30,15 +30,15 @@ const recruitersMock = [
             {
                 id: 12,
                 events: ["Ночь музыки"],
-                start: "2022-08-31 15:00",
-                end: "2022-08-31 16:30",
+                start: "2022-09-29 15:00",
+                end: "2022-09-29 16:30",
                 interviews: [],
             },
             {
                 id: 171,
                 events: ["Ночь музыки"],
-                start: "2022-08-31 12:00",
-                end: "2022-08-31 13:30",
+                start: "2022-09-29 12:00",
+                end: "2022-09-29 13:30",
                 interviews: [
                     {
                         id: 11121,
@@ -71,8 +71,8 @@ const recruitersMock = [
             {
                 id: 32,
                 events: ["Ночь музеев"],
-                start: "2022-08-31 12:00",
-                end: "2022-08-31 16:00",
+                start: "2022-09-29 12:00",
+                end: "2022-09-29 16:00",
                 interviews: [
                     {
                         id: 321,
@@ -157,9 +157,6 @@ export class ServerAPI {
     }
 
     static async getRecruiters(start?: Date, end?: Date) {
-        for (let i = 0; i < 1000000000; i++) {
-            //dasdadsd;
-        }
         const url = "http://localhost:3000/";
         return await axios.get(url).then(response => recruitersMock);
     }

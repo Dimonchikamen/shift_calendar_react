@@ -6,7 +6,6 @@ import "react-big-scheduler/lib/css/style.css";
 import moment from "moment";
 import "moment/locale/ru";
 import s from "./ReactBigCalendar.module.css";
-import CalendarHeader from "./Components/CalendarHeader/CalendarHeader";
 import { ScheduleEvent } from "../../Types/ScheduleEvent";
 import InformationContainer from "./Components/InformationContainer/InformationContainer";
 import { RequiterInfo } from "../../Types/RequiterInfo";
@@ -14,18 +13,15 @@ import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
 import { changeViewTypeAction } from "../../Redux/Actions/ChangeViewTypeAction";
 import PopUp from "../../UiKit/Popup/AlertDialog/AlertDialog";
-import { createSchedulerEvent, createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents";
+import { createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents";
 import { resizeAction } from "../../Redux/Actions/ResizeAction";
 import Popover from "./Components/Popover/Popover";
-import { hasOverlap } from "../../Helpers/HasOverlap";
 import PopupError from "../../UiKit/Popup/ErrorPopup/ErrorPopup";
-import { CircularProgress } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
 import Alert from "@mui/material/Alert";
-import { getInterviewTimeRequest } from "../../Redux/Actions/InterviewTimeActions/GetInterviewTimeActions";
 import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
 import { getRecruitersRequest } from "../../Redux/Actions/RecruitersActions/GetRecruitersActions";
-import { getWorkTimeRequest } from "../../Redux/Actions/WorkTimeActions/WorkDayActions";
 import { FullDateTime } from "../../Types/FullDateTime";
 import {
     addRecruiterWorkTimeRequest,
@@ -34,7 +30,6 @@ import {
 } from "../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
 import { Time } from "../../Types/Time";
 import { getDate, getHour, getMinutes } from "../../Helpers/DateTimeHelpers";
-import { filterEvents } from "../../Helpers/Filters";
 import WaitPopup from "../../UiKit/Popup/WaitPopup/WaitPopup";
 
 export const widthDragDropContext = DragDropContext(HTML5Backend);
@@ -64,13 +59,8 @@ const ReactBigCalendar: FC = () => {
     const currentInterviewTime = state.currentInterviewTime === "" ? 30 : state.currentInterviewTime;
 
     const role = state.role;
-    const [resources, scheduleEvents, interviews] = useMemo(
-        () => createResourcesAndEvents(recruiters),
-        [recruiters, currentEvent]
-    );
+    const [resources, interviews] = useMemo(() => createResourcesAndEvents(recruiters), [recruiters, currentEvent]);
     const dispatch = useAppDispatch();
-    const [view, setCalendarView] = useState<"worktime" | "interview">("interview");
-    const [errorCode, setErrorCode] = useState(500);
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
@@ -86,15 +76,13 @@ const ReactBigCalendar: FC = () => {
         // @ts-ignore
         data.setLocaleMoment(moment);
         data.setResources(resources);
-        data.setEvents(view === "interview" ? filterEvents(interviews, currentEvent) : scheduleEvents);
+        data.setEvents(interviews);
         return { data };
     });
 
     useEffect(() => {
         dispatch(getEventsRequest());
         dispatch(getRecruitersRequest());
-        // dispatch(getWorkDayRequest(new Date(currentDate)));
-        //dispatch(getInterviewTimeRequest());
     }, []);
 
     useEffect(() => {
@@ -112,10 +100,10 @@ const ReactBigCalendar: FC = () => {
         setView(() => {
             const data = new SchedulerData(currentDate, viewType, false, false, config, behaviours);
             data.setResources(resources);
-            data.setEvents(view === "interview" ? filterEvents(interviews, currentEvent) : scheduleEvents);
+            data.setEvents(interviews);
             return { data };
         });
-    }, [config, resources, scheduleEvents, viewType, behaviours]);
+    }, [config, resources, interviews, viewType, behaviours]);
 
     const createData = (schedulerData: SchedulerData, event: ScheduleEvent): RequiterInfo => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -132,7 +120,7 @@ const ReactBigCalendar: FC = () => {
 
     const setSchedulerData = (schedulerData: SchedulerData) => {
         schedulerData.setResources(resources);
-        schedulerData.setEvents(view === "interview" ? filterEvents(interviews, currentEvent) : scheduleEvents);
+        schedulerData.setEvents(interviews);
         setCurrentDate(schedulerData.startDate);
         setView({ data: schedulerData });
     };
@@ -165,29 +153,6 @@ const ReactBigCalendar: FC = () => {
         if (selectedEvent) selectedEvent.bgColor = "#D9EDF7";
         setIsEditing(false);
         setSelectedEvent(event);
-    };
-
-    const addingEvent = (
-        schedulerData: SchedulerData,
-        slotId: string,
-        slotName: string,
-        start: FullDateTime,
-        end: FullDateTime
-    ) => {
-        let canAddEvent = true;
-        const ev = createSchedulerEvent(start, end, slotId);
-        scheduleEvents
-            .filter(event => event.resourceId === ev.resourceId)
-            .forEach(elem => {
-                if (hasOverlap(elem, ev)) {
-                    canAddEvent = false;
-                }
-            });
-        if (canAddEvent) {
-            setIsOpen(true);
-            setIsAdding(true);
-            setEventAdding(ev);
-        }
     };
 
     const deleteEvent = (event: ScheduleEvent) => {
@@ -267,7 +232,6 @@ const ReactBigCalendar: FC = () => {
                 title={title}
                 start={start}
                 end={end}
-                view={view}
                 role={role}
                 deleteEvent={deleteEvent}
                 editEvent={editEvent}
@@ -283,7 +247,6 @@ const ReactBigCalendar: FC = () => {
         return (
             <>
                 <div className={s.table_container}>
-                    <CalendarHeader currentDate={new Date(currentDate)} />
                     <div className={s.scheduler_container}>
                         <div>
                             <Scheduler
@@ -293,9 +256,6 @@ const ReactBigCalendar: FC = () => {
                                 onSelectDate={selectDate}
                                 onViewChange={viewChange}
                                 eventItemClick={eventItemClick}
-                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                // @ts-ignore
-                                newEvent={addingEvent}
                                 eventItemPopoverTemplateResolver={customPopover}
                             />
                         </div>
@@ -303,7 +263,6 @@ const ReactBigCalendar: FC = () => {
                             <InformationContainer
                                 data={selectData}
                                 isEditing={isEditing}
-                                view={view}
                                 eventEditing={eventAdding!}
                                 onEditEvent={editingEvent}
                             />
@@ -314,7 +273,7 @@ const ReactBigCalendar: FC = () => {
                 <PopupError
                     isOpen={Boolean(changeError)}
                     title={"Что-то пошло не так..."}
-                    errorCode={502}
+                    errorCode={error}
                     onCancel={() => dispatch(closeErrorWindowAction())}
                 />
                 <PopUp

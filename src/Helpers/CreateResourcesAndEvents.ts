@@ -3,16 +3,14 @@ import { ScheduleEvent } from "../Types/ScheduleEvent";
 import { createTitle } from "./CreateTitle";
 import { Resource } from "react-big-scheduler";
 import moment from "moment";
-import { DATE_TIME_FORMAT } from "../Components/ReactBigCalendar/ReactBigCalendar";
+import { DATE_TIME_FORMAT } from "../Components/ReactBigCalendar/ReactBigCalendar2";
 import { compareFullDateTime } from "./Compare";
 import { FullDateTime } from "../Types/FullDateTime";
 
 export const createResourcesAndEvents = (
-    recruiters: Recruiter[],
-    currentEvent?: string
-): [resources: Resource[], events: ScheduleEvent[], interviews: ScheduleEvent[]] => {
+    recruiters: Recruiter[]
+): [resources: Resource[], interviews: ScheduleEvent[]] => {
     const resources: Resource[] = [];
-    const events: ScheduleEvent[] = [];
     const ints: ScheduleEvent[] = [];
     recruiters.forEach(r => {
         resources.push({ id: String(r.id), name: r.name });
@@ -33,27 +31,11 @@ export const createResourcesAndEvents = (
                     interviews: [interview],
                 });
             });
-
-            const formattedStart = moment(workedTime.start).format(DATE_TIME_FORMAT);
-            const formattedEnd = moment(workedTime.end).format(DATE_TIME_FORMAT);
-            const eventColor =
-                currentEvent === workedTime.events[0] || currentEvent === "Все мероприятия" ? "#D9EDF7" : "#EEE";
-            events.push({
-                id: workedTime.id,
-                start: formattedStart,
-                end: formattedEnd,
-                resourceId: String(r.id),
-                title: createTitle(formattedStart, formattedEnd),
-                resizable: false,
-                bgColor: eventColor,
-                interviews: workedTime.interviews,
-            });
         });
     });
 
-    const res = events.sort((a, b) => compareFullDateTime(a.start, b.start));
     const interviews = ints.sort((a, b) => compareFullDateTime(a.start, b.start));
-    return [resources, res, interviews];
+    return [resources, interviews];
 };
 
 export const createSchedulerEvent = (start: FullDateTime, end: FullDateTime, resourceId: string): ScheduleEvent => {

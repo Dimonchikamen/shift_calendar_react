@@ -12,7 +12,3 @@ export const getMinutes = (time: Time) => Number(time.split(":")[1]);
 export const getHoursInAllDateTime = (fullDateTime: FullDateTime) => getTime(fullDateTime).split(":")[0];
 
 export const getMinutesInAllDateTime = (fullDateTime: FullDateTime) => getTime(fullDateTime).split(":")[1];
-
-export const getTimeFromHours = (hours: number | "") => (hours === "" ? "" : `${hours}:00`);
-
-export const getTimeFromHoursAndMinutes = (hours: number, minutes: number) => `${hours}:${minutes}`;

@@ -4,9 +4,7 @@ import GetRecruitersSaga from "./RecruitersSagas/GetRecruitersSaga";
 import GetInterviewTimeSaga from "./InterviewTimeSagas/GetInterviewTimeSaga";
 import ChangeInterviewTimeSaga from "./InterviewTimeSagas/ChangeInterviewTimeSaga";
 import ChangeEventSaga from "./EventsSagas/ChangeEventSaga";
-import AddRecruiterWorkTimeSaga from "./RecruitersSagas/AddRecruiterWorkTimeSaga";
-import RemoveRecruiterWorkTimeSaga from "./RecruitersSagas/RemoveRecruiterWorkTimeSaga";
-import EditRecruiterWorkTimeSaga from "./RecruitersSagas/EditRecruiterWorkTimeSaga";
+
 import GetWorkDaySaga from "./WorkDaySagas/GetWorkDaySaga";
 import ChangeWorkDaySaga from "./WorkDaySagas/ChangeWorkDaySaga";
 
@@ -19,8 +17,5 @@ export function* rootSaga() {
         fork(ChangeWorkDaySaga),
         fork(ChangeInterviewTimeSaga),
         fork(ChangeEventSaga),
-        fork(AddRecruiterWorkTimeSaga),
-        fork(RemoveRecruiterWorkTimeSaga),
-        fork(EditRecruiterWorkTimeSaga),
     ]);
 }
