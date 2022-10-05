@@ -1,0 +1,170 @@
+{
+    "eventsWorkTimeInformation": [
+        {
+            "eventId": 1386,
+            "interviewDuration": 30,
+            "workTimes": [
+                {
+                    "date": "2022-10-05",
+                    "beginTime": "14:00",
+                    "endTime": "21:00"
+                },
+                {
+                    "date": "2022-10-06",
+                    "beginTime": "10:00",
+                    "endTime": "17:00"
+                }
+            ]
+        },
+        {
+            "eventId": 1234,
+            "interviewDuration": 30,
+            "workTimes": [
+                {
+                    "date": "2022-10-05",
+                    "beginTime": "11:00",
+                    "endTime": "22:00"
+                },
+                {
+                    "date": "2022-10-06",
+                    "beginTime": "9:00",
+                    "endTime": "19:00"
+                }
+            ]
+        }
+    ],
+    "recruiters": [
+        {
+            "id": 1,
+            "name": "Попов Николай",
+            "freeWorkedTimes": [],
+            "workedTimes": [
+                {
+                    "id": 11,
+                    "eventId": 1234,
+                    "start": "2022-10-06 09:00",
+                    "end": "2022-10-06 11:00",
+                    "interviews": [
+                        {
+                            "id": 111,
+                            "name": "Ольшанский Кирилл",
+                            "eventId": 1234,
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "9:00",
+                            "end": "9:30"
+                        }
+                    ]
+                },
+                {
+                    "id": 12,
+                    "eventId": 1234,
+                    "start": "2022-10-06 15:00",
+                    "end": "2022-10-06 16:30",
+                    "interviews": []
+                },
+                {
+                    "id": 171,
+                    "eventId": 1386,
+                    "start": "2022-10-05 12:00",
+                    "end": "2022-10-05 13:30",
+                    "interviews": [
+                        {
+                            "id": 11121,
+                            "name": "Ольшанский Кирилл",
+                            "eventId": 1386,
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "12:00",
+                            "end": "12:30"
+                        },
+                        {
+                            "id": 11122,
+                            "name": "Ольшанский Кирилл",
+                            "eventId": 1386,
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "13:00",
+                            "end": "13:30"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Иванов Иван",
+            "freeWorkedTimes": [],
+            "workedTimes": [
+                {
+                    "id": 32,
+                    "eventId": 1386,
+                    "start": "2022-10-05 12:00",
+                    "end": "2022-10-05 16:00",
+                    "interviews": [
+                        {
+                            "id": 321,
+                            "name": "Денежный человек",
+                            "eventId": 1386,
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "12:30",
+                            "end": "13:00"
+                        },
+                        {
+                            "id": 322,
+                            "name": "Денежный человек",
+                            "eventId": 1386,
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "13:30",
+                            "end": "14:00"
+                        },
+                        {
+                            "id": 323,
+                            "name": "Кирилл Ольшанский",
+                            "eventId": 1386,
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "15:00",
+                            "end": "15:30"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 9,
+            "name": "Пустой человек",
+            "freeWorkedTimes": [
+                {
+                    "id": 110021,
+                    "start": "2022-10-05 12:00",
+                    "end": "2022-10-05 13:30"
+                },
+                {
+                    "id": 110022,
+                    "start": "2022-10-05 15:00",
+                    "end": "2022-10-05 16:00"
+                },
+                {
+                    "id": 110023,
+                    "start": "2022-10-06 10:00",
+                    "end": "2022-10-06 14:30"
+                },
+                {
+                    "id": 110024,
+                    "start": "2022-10-06 17:00",
+                    "end": "2022-10-06 18:00"
+                }
+            ],
+            "workedTimes": []
+        }
+    ]
+}

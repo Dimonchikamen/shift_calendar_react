@@ -1,5 +1,6 @@
 import { ActionTypes } from "../ActionTypes";
 import { Recruiter } from "../../Types/Recruiter";
+import { Event } from "../../Types/Event";
 
 export interface AddRecruiterRequestPayload {
     start: Date;
@@ -86,7 +87,7 @@ export type RemoveRecruiterWorkTimeFailure = {
 
 export type SortRecruiters = {
     type: ActionTypes.FILTER_RECRUITERS;
-    payload: string;
+    payload: Event;
 };
 
 export type RecruitersTypes =

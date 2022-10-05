@@ -2,12 +2,13 @@ import { ServerAPI } from "../../../API/ServerAPI";
 import { call, put, takeLatest } from "redux-saga/effects";
 import { ActionTypes } from "../../ActionTypes";
 import { getEventsFailure, getEventsSuccess } from "../../Actions/EventsActions/GetEventsActions";
+import { Event } from "../../../Types/Event";
 
-const getEventsFetch = (): Promise<string[]> => ServerAPI.getEvents();
+const getEventsFetch = (): Promise<Event[]> => ServerAPI.getEvents();
 
 function* getEvents() {
     try {
-        const response: string[] = yield call(getEventsFetch);
+        const response: Event[] = yield call(getEventsFetch);
         yield put(getEventsSuccess(response));
     } catch (e) {
         yield put(getEventsFailure({ error: (e as Error).message }));

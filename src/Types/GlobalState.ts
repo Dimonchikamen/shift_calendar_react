@@ -2,6 +2,7 @@ import { CalendarState } from "./CalendarState";
 
 export type GlobalState = {
     rolePending: boolean;
+    getInformationPending: boolean;
     allEventsPending: boolean;
     recruitersPending: boolean;
     workTimePending: boolean;

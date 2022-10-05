@@ -9,7 +9,7 @@ import { DATE_TIME_FORMAT } from "../Constants";
 
 export const createResourcesAndEvents = (
     recruiters: Recruiter[],
-    currentEvent?: string
+    currentEventId?: number
 ): [resources: Resource[], events: ScheduleEvent[], interviews: ScheduleEvent[]] => {
     const resources: Resource[] = [];
     const events: ScheduleEvent[] = [];
@@ -36,8 +36,7 @@ export const createResourcesAndEvents = (
 
             const formattedStart = moment(workedTime.start).format(DATE_TIME_FORMAT);
             const formattedEnd = moment(workedTime.end).format(DATE_TIME_FORMAT);
-            const eventColor =
-                currentEvent === workedTime.events[0] || currentEvent === "Все мероприятия" ? "#D9EDF7" : "#EEE";
+            const eventColor = currentEventId === workedTime.eventId || currentEventId === -1 ? "#D9EDF7" : "#EEE";
             events.push({
                 id: workedTime.id,
                 start: formattedStart,
@@ -47,6 +46,18 @@ export const createResourcesAndEvents = (
                 resizable: false,
                 bgColor: eventColor,
                 interviews: workedTime.interviews,
+            });
+        });
+        r.freeWorkedTimes.forEach(w => {
+            events.push({
+                id: w.id,
+                start: w.start,
+                end: w.end,
+                resourceId: String(r.id),
+                title: createTitle(w.start, w.end),
+                resizable: false,
+                bgColor: "#EEE",
+                interviews: [],
             });
         });
     });

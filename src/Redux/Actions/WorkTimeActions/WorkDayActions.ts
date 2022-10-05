@@ -3,28 +3,28 @@ import {
     ChangeWorkTimeRequest,
     ChangeWorkTimeSuccess,
     FailurePayload,
-    GetWorkTimeFailure,
-    GetWorkTimeRequest,
-    GetWorkTimeSuccess,
-    GetWorkTimeSuccessPayload,
+    // GetWorkTimeFailure,
+    // GetWorkTimeRequest,
+    // GetWorkTimeSuccess,
+    // GetWorkTimeSuccessPayload,
     ChangeWorkTimePayload,
 } from "../../Types/WorkTimeTypes";
 import { ActionTypes } from "../../ActionTypes";
-
-export const getWorkTimeRequest = (date: Date, eventId: number): GetWorkTimeRequest => ({
-    type: ActionTypes.GET_WORK_TIME_REQUEST,
-    payload: { date, eventId },
-});
-
-export const getWorkTimeSuccess = (payload: GetWorkTimeSuccessPayload | ""): GetWorkTimeSuccess => ({
-    type: ActionTypes.GET_WORK_TIME_SUCCESS,
-    payload,
-});
-
-export const getWorkTimeFailure = (payload: FailurePayload): GetWorkTimeFailure => ({
-    type: ActionTypes.GET_WORK_TIME_FAILURE,
-    payload,
-});
+//
+// export const getWorkTimeRequest = (date: Date, eventId: number): GetWorkTimeRequest => ({
+//     type: ActionTypes.GET_WORK_TIME_REQUEST,
+//     payload: { date, eventId },
+// });
+//
+// export const getWorkTimeSuccess = (payload: GetWorkTimeSuccessPayload | ""): GetWorkTimeSuccess => ({
+//     type: ActionTypes.GET_WORK_TIME_SUCCESS,
+//     payload,
+// });
+//
+// export const getWorkTimeFailure = (payload: FailurePayload): GetWorkTimeFailure => ({
+//     type: ActionTypes.GET_WORK_TIME_FAILURE,
+//     payload,
+// });
 
 export const changeWorkTimeRequest = (
     eventId: number,

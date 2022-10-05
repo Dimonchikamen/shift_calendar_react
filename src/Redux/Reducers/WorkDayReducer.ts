@@ -10,9 +10,16 @@ import { filterRecruiters } from "../../Helpers/Filters";
 import { RoleTypes } from "../Types/RoleTypes";
 import { resize } from "../Helpers/ResizeHelper";
 import { GlobalState } from "../../Types/GlobalState";
+import { GetInformationTypes } from "../Types/GetInformationTypes";
+import { WorkTime } from "../../Types/WorkTime";
+import { EventInformation } from "../../Types/EventInformation";
+import { DATE_FORMAT } from "../../Constants";
+import moment from "moment";
+import { getHour } from "../../Helpers/DateTimeHelpers";
 
 const defaultState: GlobalState = {
     rolePending: false,
+    getInformationPending: false,
     allEventsPending: false,
     recruitersPending: false,
     workTimePending: false,
@@ -20,8 +27,20 @@ const defaultState: GlobalState = {
     changePending: false,
     state: {
         role: "user",
-        events: ["Все мероприятия", "Ночь музеев", "Ночь музыки"],
-        currentEvent: "Все мероприятия",
+        events: [
+            { id: -1, title: "Все мероприятия" },
+            { id: 1386, title: "Ночь музыки" },
+            { id: 1234, title: "Ночь музеев" },
+        ],
+        eventsInformation: new Map<number, EventInformation>(),
+        currentEventInformation: { interviewDuration: 30, workTimes: new Map<string, WorkTime>() },
+
+        currentDate: new Date(),
+        currentEvent: { id: -1, title: "Все мероприятия" },
+        currentInformation: { start: 9, end: 19 },
+        currentInterviewDuration: 30,
+
+        currentWorkTime: { start: "9:00", end: "19:00" },
         currentInterviewTime: "",
         currentDayStart: "",
         currentDayEnd: "",
@@ -62,7 +81,14 @@ const defaultState: GlobalState = {
 
 const WorkDayReducer = (
     state = defaultState,
-    action: MainActions | WorkTimeTypes | InterviewTimeTypes | EventsTypes | RecruitersTypes | RoleTypes
+    action:
+        | MainActions
+        | WorkTimeTypes
+        | InterviewTimeTypes
+        | EventsTypes
+        | RecruitersTypes
+        | GetInformationTypes
+        | RoleTypes
 ): GlobalState => {
     if (action.type === ActionTypes.GET_INTERVIEW_TIME_REQUEST) {
         return { ...state, interviewTimePending: true };
@@ -72,10 +98,12 @@ const WorkDayReducer = (
         return { ...state, recruitersPending: true };
     } else if (action.type === ActionTypes.GET_WORK_TIME_REQUEST) {
         return { ...state, workTimePending: true };
+    } else if (action.type === ActionTypes.GET_INFORMATION_REQUEST) {
+        return { ...state, getInformationPending: true };
     } else if (
         action.type === ActionTypes.CHANGE_WORK_TIME_REQUEST ||
-        action.type === ActionTypes.CHANGE_INTERVIEW_TIME_REQUEST ||
-        action.type === ActionTypes.CHANGE_EVENT_REQUEST
+        action.type === ActionTypes.CHANGE_INTERVIEW_TIME_REQUEST //||
+        //action.type === ActionTypes.CHANGE_EVENT_REQUEST
     ) {
         return { ...state, changePending: true };
     } else if (action.type === ActionTypes.SET_ROLE) {
@@ -137,20 +165,46 @@ const WorkDayReducer = (
             changePending,
             changeError: null,
         };
+    } else if (action.type === ActionTypes.GET_INFORMATION_SUCCESS) {
+        const copy = getCopy(state.state);
+        const res = new Map<number, EventInformation>();
+        action.payload.eventsWorkTimeInformation.forEach(e => {
+            const workTimes = new Map();
+            e.workTimes.forEach(w => {
+                workTimes.set(w.date, { start: w.beginTime, end: w.endTime });
+            });
+            res.set(e.eventId, { interviewDuration: e.interviewDuration, workTimes });
+        });
+        copy.eventsInformation = res;
+        copy.currentEventInformation = res.get(copy.currentEvent.id) as EventInformation;
+        copy.currentInterviewDuration = copy.currentEventInformation.interviewDuration;
+        const a = copy.currentEventInformation.workTimes.get(moment(copy.currentDate).format(DATE_FORMAT)) as WorkTime;
+        copy.currentInformation = a ? { start: getHour(a.start), end: getHour(a.end) } : undefined;
+        copy.recruiters = action.payload.recruiters;
+        copy.currentRecruiters = action.payload.recruiters;
+        return { ...state, state: copy, getInformationPending: false, error: null };
     } else if (action.type === ActionTypes.GET_EVENTS_SUCCESS) {
         const copy = getCopy(state.state);
         copy.events = action.payload;
+        copy.currentEvent = action.payload[0];
         return {
             ...state,
+            state: copy,
             allEventsPending: false,
             error: null,
         };
     } else if (action.type === ActionTypes.CHANGE_EVENT_SUCCESS) {
         const copy = getCopy(state.state);
         copy.currentEvent = action.payload;
+        copy.currentEventInformation = copy.eventsInformation.get(action.payload.id) as EventInformation;
+        copy.currentInterviewDuration = copy.currentEventInformation.interviewDuration;
+        const a = copy.currentEventInformation.workTimes.get(moment(copy.currentDate).format(DATE_FORMAT)) as WorkTime;
+        copy.currentInformation = a ? { start: getHour(a.start), end: getHour(a.end) } : undefined;
+        //TODO... сделать фильтрацию
         return {
             ...state,
             state: copy,
+            allEventsPending: false,
             changePending: false,
             changeError: null,
         };
@@ -166,27 +220,20 @@ const WorkDayReducer = (
         };
     } else if (action.type === ActionTypes.FILTER_RECRUITERS) {
         const copy = getCopy(state.state, false, true, true);
-        copy.currentRecruiters = filterRecruiters(copy.recruiters, action.payload);
+        copy.currentRecruiters = filterRecruiters(copy.recruiters, action.payload.id);
         return { ...state, state: copy };
-    } /*  else if (action.type === ActionTypes.FILTER_EVENTS) {
-        const copy = getCopy(state.state, false, true, true);
-        copy.currentInterviews = filterEvents(copy.interviews, action.payload);
-        return { ...state, state: copy };
-    } */ else if (
-        action.type === ActionTypes.GET_WORK_TIME_FAILURE ||
-        action.type === ActionTypes.GET_INTERVIEW_TIME_FAILURE ||
+    } else if (
         action.type === ActionTypes.GET_EVENTS_FAILURE ||
-        action.type === ActionTypes.GET_RECRUITERS_FAILURE
+        action.type === ActionTypes.GET_RECRUITERS_FAILURE ||
+        action.type === ActionTypes.GET_INFORMATION_FAILURE
     ) {
-        const workTimePending = action.type === ActionTypes.GET_WORK_TIME_FAILURE ? false : state.workTimePending;
-        const interviewTimePending =
-            action.type === ActionTypes.GET_INTERVIEW_TIME_FAILURE ? false : state.interviewTimePending;
+        const getInformationPending =
+            action.type === ActionTypes.GET_INFORMATION_FAILURE ? false : state.getInformationPending;
         const allEventsPending = action.type === ActionTypes.GET_EVENTS_FAILURE ? false : state.allEventsPending;
         const recruitersPending = action.type === ActionTypes.GET_RECRUITERS_FAILURE ? false : state.recruitersPending;
         return {
             ...state,
-            workTimePending,
-            interviewTimePending,
+            getInformationPending,
             allEventsPending,
             recruitersPending,
             error: action.payload.error,
@@ -199,20 +246,6 @@ const WorkDayReducer = (
             ...state,
             changePending: false,
             changeError: action.payload.error,
-        };
-    } else if (action.type === ActionTypes.CHANGE_VIEW_TYPE) {
-        const copy = getCopy(state.state);
-        copy.viewType = action.payload;
-        return {
-            ...state,
-            state: copy,
-        };
-    } else if (action.type === ActionTypes.RESIZE) {
-        const copy = getCopy(state.state, true);
-        copy.config = resize(copy.config);
-        return {
-            ...state,
-            state: copy,
         };
     } else if (
         action.type === ActionTypes.ADD_RECRUITER_EVENT_REQUEST ||
@@ -227,7 +260,7 @@ const WorkDayReducer = (
         const copy = getCopy(state.state, false, true, true);
         const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
         copy.recruiters[index] = action.payload;
-        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent);
+        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent.id);
         return {
             ...state,
             state: copy,
@@ -238,7 +271,7 @@ const WorkDayReducer = (
         const copy = getCopy(state.state, false, true, true);
         const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
         copy.recruiters[index] = action.payload;
-        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent);
+        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent.id);
         return {
             ...state,
             state: copy,
@@ -249,7 +282,7 @@ const WorkDayReducer = (
         const copy = getCopy(state.state, false, true, true);
         const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
         copy.recruiters[index] = action.payload;
-        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent);
+        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent.id);
         return {
             ...state,
             state: copy,
@@ -262,6 +295,27 @@ const WorkDayReducer = (
         action.type === ActionTypes.REMOVE_RECRUITER_EVENT_FAILURE
     ) {
         return { ...state, changePending: false, changeError: action.payload.error };
+    } else if (action.type === ActionTypes.CHANGE_VIEW_TYPE) {
+        const copy = getCopy(state.state);
+        copy.viewType = action.payload;
+        return {
+            ...state,
+            state: copy,
+        };
+    } else if (action.type === ActionTypes.RESIZE) {
+        const copy = getCopy(state.state, true);
+        copy.config = resize(copy.config);
+        return {
+            ...state,
+            state: copy,
+        };
+    } else if (action.type === ActionTypes.CHANGE_DATE) {
+        console.log("CHANGE_DATE", action.payload);
+        const copy = getCopy(state.state);
+        copy.currentDate = action.payload;
+        const a = copy.currentEventInformation.workTimes.get(moment(copy.currentDate).format(DATE_FORMAT)) as WorkTime;
+        copy.currentInformation = a ? { start: getHour(a.start), end: getHour(a.end) } : undefined;
+        return { ...state, state: copy };
     } else if (action.type === ActionTypes.CLOSE_ERROR_WINDOW) {
         return { ...state, changeError: null };
     } else {

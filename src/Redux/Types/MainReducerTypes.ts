@@ -1,9 +1,14 @@
 import { ActionTypes } from "../ActionTypes";
 import { ViewTypes } from "react-big-scheduler";
 
-export type ChangeEvent = {
-    type: ActionTypes.CHANGE_EVENT_SUCCESS;
-    payload: string;
+// export type ChangeEvent = {
+//     type: ActionTypes.CHANGE_EVENT_SUCCESS;
+//     payload: string;
+// };
+
+export type ChangeDate = {
+    type: ActionTypes.CHANGE_DATE;
+    payload: Date;
 };
 
 export type ChangeInterviewTime = {
@@ -24,4 +29,10 @@ export type CloseErrorWindow = {
     type: ActionTypes.CLOSE_ERROR_WINDOW;
 };
 
-export type MainActions = ChangeEvent | ChangeInterviewTime | ChangeViewType | ResizeAction | CloseErrorWindow;
+export type MainActions =
+    | ChangeDate
+    //ChangeEvent
+    | ChangeInterviewTime
+    | ChangeViewType
+    | ResizeAction
+    | CloseErrorWindow;

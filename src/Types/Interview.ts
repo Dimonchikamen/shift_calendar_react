@@ -3,7 +3,7 @@ import { Time } from "./Time";
 export type Interview = {
     id: number; //Id этой записи на собеседования (или Id того, кто записался)
     name: string; // имя и фамилия, кто записался
-    event: string; // мероприяние, на собеседование которого записались
+    eventId: number; // мероприяние, на собеседование которого записались
     role: string; // на какую роль будет собеседоваться человек
     phone: string; // контактный телефон
     contacts: string[]; // список контактов (Telegram, WhatsApp, Vk и т.д.)
