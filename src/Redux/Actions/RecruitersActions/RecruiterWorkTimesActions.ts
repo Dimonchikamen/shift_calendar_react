@@ -18,10 +18,10 @@ export const addRecruiterWorkTimeRequest = (
     start: Date,
     end: Date,
     recruiterId: number,
-    event: string
+    eventId: number
 ): AddRecruiterWorkTimeRequest => ({
     type: ActionTypes.ADD_RECRUITER_EVENT_REQUEST,
-    payload: { start, end, recruiterId, event },
+    payload: { start, end, recruiterId, eventId },
 });
 
 export const addRecruiterWorkTimeSuccess = (payload: Recruiter): AddRecruiterWorkTimeSuccess => ({
@@ -38,10 +38,11 @@ export const editRecruiterWorkTimeRequest = (
     start: Date,
     end: Date,
     recruiterId: number,
-    workTimeId: number
+    workTimeId: number,
+    eventId: number
 ): EditRecruiterWorkTimeRequest => ({
     type: ActionTypes.EDIT_RECRUITER_EVENT_REQUEST,
-    payload: { start, end, recruiterId, workTimeId },
+    payload: { start, end, recruiterId, workTimeId, eventId },
 });
 
 export const editRecruiterWorkTimeSuccess = (payload: Recruiter): EditRecruiterWorkTimeSuccess => ({
@@ -56,10 +57,11 @@ export const editRecruiterWorkTimeFailure = (payload: FailurePayload): EditRecru
 
 export const removeRecruiterWorkTimeRequest = (
     recruiterId: number,
-    workTimeId: number
+    workTimeId: number,
+    eventId: number
 ): RemoveRecruiterWorkTimeRequest => ({
     type: ActionTypes.REMOVE_RECRUITER_EVENT_REQUEST,
-    payload: { recruiterId, workTimeId },
+    payload: { recruiterId, workTimeId, eventId },
 });
 
 export const removeRecruiterWorkTimeSuccess = (payload: Recruiter): RemoveRecruiterWorkTimeSuccess => ({

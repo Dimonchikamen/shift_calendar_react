@@ -235,7 +235,9 @@ const ReactBigCalendar: FC = () => {
             getHour(newEventEnd),
             getMinutes(newEventEnd)
         );
-        dispatch(editRecruiterWorkTimeRequest(start, end, Number(eventEditing.resourceId), eventEditing.id));
+        dispatch(
+            editRecruiterWorkTimeRequest(start, end, Number(eventEditing.resourceId), eventEditing.id, currentEvent.id)
+        );
         setIsEditing(false);
     };
 
@@ -248,7 +250,8 @@ const ReactBigCalendar: FC = () => {
                         new Date(eventAdding.start),
                         new Date(eventAdding.end),
                         Number(eventAdding.resourceId),
-                        eventAdding.id
+                        eventAdding.id,
+                        currentEvent.id
                     )
                 );
                 setIsEditing(false);
@@ -258,11 +261,13 @@ const ReactBigCalendar: FC = () => {
                         new Date(eventAdding.start),
                         new Date(eventAdding.end),
                         Number(eventAdding.resourceId),
-                        currentEvent.title
+                        currentEvent.id
                     )
                 );
             } else {
-                dispatch(removeRecruiterWorkTimeRequest(Number(eventAdding.resourceId), eventAdding.id));
+                dispatch(
+                    removeRecruiterWorkTimeRequest(Number(eventAdding.resourceId), eventAdding.id, currentEvent.id)
+                );
             }
         }
     };

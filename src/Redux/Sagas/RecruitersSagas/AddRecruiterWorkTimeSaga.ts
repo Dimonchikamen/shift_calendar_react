@@ -8,12 +8,12 @@ import {
     addRecruiterWorkTimeSuccess,
 } from "../../Actions/RecruitersActions/RecruiterWorkTimesActions";
 
-const addRecruiterWorkTimeFetch = (start: Date, end: Date, recruiterId: number, event: string): Promise<Recruiter> =>
-    ServerAPI.addRecruiterWorkTime(start, end, recruiterId, event);
+const addRecruiterWorkTimeFetch = (start: Date, end: Date, recruiterId: number, eventId: number): Promise<Recruiter> =>
+    ServerAPI.addRecruiterWorkTime(start, end, recruiterId, eventId);
 
-function* addRecruiterWorkTime({ payload: { start, end, recruiterId, event } }: AddRecruiterWorkTimeRequest) {
+function* addRecruiterWorkTime({ payload: { start, end, recruiterId, eventId } }: AddRecruiterWorkTimeRequest) {
     try {
-        const response: Recruiter = yield call(addRecruiterWorkTimeFetch, start, end, recruiterId, event);
+        const response: Recruiter = yield call(addRecruiterWorkTimeFetch, start, end, recruiterId, eventId);
         yield put(addRecruiterWorkTimeSuccess(response));
     } catch (e) {
         yield put(addRecruiterWorkTimeFailure({ error: (e as Error).message }));

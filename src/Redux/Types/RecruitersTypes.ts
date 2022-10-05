@@ -6,7 +6,7 @@ export interface AddRecruiterRequestPayload {
     start: Date;
     end: Date;
     recruiterId: number;
-    event: string;
+    eventId: number;
 }
 
 export interface EditRecruiterRequestPayload {
@@ -14,11 +14,13 @@ export interface EditRecruiterRequestPayload {
     end: Date;
     recruiterId: number;
     workTimeId: number;
+    eventId: number;
 }
 
 export interface RemoveRecruiterRequestPayload {
     recruiterId: number;
     workTimeId: number;
+    eventId: number;
 }
 
 export interface FailurePayload {

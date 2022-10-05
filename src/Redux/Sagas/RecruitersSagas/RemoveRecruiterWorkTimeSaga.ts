@@ -8,12 +8,12 @@ import {
 } from "../../Actions/RecruitersActions/RecruiterWorkTimesActions";
 import { ActionTypes } from "../../ActionTypes";
 
-const removeRecruiterWorkTimeFetch = (recruiterId: number, workTimeId: number): Promise<Recruiter> =>
-    ServerAPI.removeRecruiterWorkTime(recruiterId, workTimeId);
+const removeRecruiterWorkTimeFetch = (recruiterId: number, workTimeId: number, eventId: number): Promise<Recruiter> =>
+    ServerAPI.removeRecruiterWorkTime(recruiterId, workTimeId, eventId);
 
-function* removeRecruiterWorkTime({ payload: { recruiterId, workTimeId } }: RemoveRecruiterWorkTimeRequest) {
+function* removeRecruiterWorkTime({ payload: { recruiterId, workTimeId, eventId } }: RemoveRecruiterWorkTimeRequest) {
     try {
-        const response: Recruiter = yield call(removeRecruiterWorkTimeFetch, recruiterId, workTimeId);
+        const response: Recruiter = yield call(removeRecruiterWorkTimeFetch, recruiterId, workTimeId, eventId);
         yield put(removeRecruiterWorkTimeSuccess(response));
     } catch (e) {
         yield put(removeRecruiterWorkTimeFailure({ error: (e as Error).message }));
