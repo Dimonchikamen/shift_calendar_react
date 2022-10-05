@@ -4,12 +4,12 @@ import { Interview } from "./Interview";
 export type Recruiter = {
     id: number; //Id рекрутёра
     name: string; //Имя и фамилия
-    freeWorkedTimes: {
+    freeWorkedTimes?: {
         id: number;
         start: FullDateTime;
         end: FullDateTime;
     }[];
-    workedTimes: {
+    workedTimes?: {
         //Отрезки времени принятия на собеседования
         id: number; //Id этого отрезка
         eventId: number; //Мероприятие, на которые проводит собеседования. 1234

@@ -16,8 +16,8 @@ export const createResourcesAndEvents = (
     const ints: ScheduleEvent[] = [];
     recruiters.forEach(r => {
         resources.push({ id: String(r.id), name: r.name });
-        r.workedTimes.forEach(workedTime => {
-            workedTime.interviews.forEach(interview => {
+        r.workedTimes?.forEach(workedTime => {
+            workedTime.interviews?.forEach(interview => {
                 const intStart = workedTime.start.slice(0, 11) + interview.start;
                 const intEnd = workedTime.end.slice(0, 11) + interview.end;
                 const formattedStart = moment(intStart).format(DATE_TIME_FORMAT);
@@ -48,7 +48,7 @@ export const createResourcesAndEvents = (
                 interviews: workedTime.interviews,
             });
         });
-        r.freeWorkedTimes.forEach(w => {
+        r.freeWorkedTimes?.forEach(w => {
             events.push({
                 id: w.id,
                 start: w.start,

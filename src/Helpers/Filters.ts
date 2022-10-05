@@ -20,7 +20,7 @@ export const filterRecruiters = (recruiters: Recruiter[], eventId: number): Recr
     const res: Recruiter[] = [];
     recruiters.forEach(recruiter => {
         const res1: any[] = [];
-        recruiter.workedTimes.forEach(time => res1.push(time));
+        recruiter.workedTimes?.forEach(time => res1.push(time));
         if (res1.length !== 0) {
             const copy = { ...recruiter, workedTimes: res1 };
             res.push(copy);
