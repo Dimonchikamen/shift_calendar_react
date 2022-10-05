@@ -180,6 +180,9 @@ const WorkDayReducer = (
         copy.currentInterviewDuration = copy.currentEventInformation.interviewDuration;
         const a = copy.currentEventInformation.workTimes.get(moment(copy.currentDate).format(DATE_FORMAT)) as WorkTime;
         copy.currentInformation = a ? { start: getHour(a.start), end: getHour(a.end) } : undefined;
+        copy.config.dayStartFrom = copy.currentInformation?.start ?? 9;
+        copy.config.dayStopTo = copy.currentInformation?.end ?? 19;
+        copy.config = resize(copy.config);
         copy.recruiters = action.payload.recruiters;
         copy.currentRecruiters = action.payload.recruiters;
         return { ...state, state: copy, getInformationPending: false, error: null };
@@ -200,6 +203,9 @@ const WorkDayReducer = (
         copy.currentInterviewDuration = copy.currentEventInformation.interviewDuration;
         const a = copy.currentEventInformation.workTimes.get(moment(copy.currentDate).format(DATE_FORMAT)) as WorkTime;
         copy.currentInformation = a ? { start: getHour(a.start), end: getHour(a.end) } : undefined;
+        copy.config.dayStartFrom = copy.currentInformation?.start ?? 9;
+        copy.config.dayStopTo = copy.currentInformation?.end ?? 19;
+        copy.config = resize(copy.config);
         //TODO... сделать фильтрацию
         return {
             ...state,
@@ -310,11 +316,13 @@ const WorkDayReducer = (
             state: copy,
         };
     } else if (action.type === ActionTypes.CHANGE_DATE) {
-        console.log("CHANGE_DATE", action.payload);
         const copy = getCopy(state.state);
         copy.currentDate = action.payload;
         const a = copy.currentEventInformation.workTimes.get(moment(copy.currentDate).format(DATE_FORMAT)) as WorkTime;
         copy.currentInformation = a ? { start: getHour(a.start), end: getHour(a.end) } : undefined;
+        copy.config.dayStartFrom = copy.currentInformation?.start ?? 9;
+        copy.config.dayStopTo = copy.currentInformation?.end ?? 19;
+        copy.config = resize(copy.config);
         return { ...state, state: copy };
     } else if (action.type === ActionTypes.CLOSE_ERROR_WINDOW) {
         return { ...state, changeError: null };
