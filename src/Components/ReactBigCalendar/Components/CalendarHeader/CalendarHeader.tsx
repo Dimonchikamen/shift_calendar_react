@@ -20,10 +20,10 @@ interface ICalendarHeader {
 }
 
 const CalendarHeader: FC<ICalendarHeader> = ({ currentDate }) => {
-    const currentInformation = useAppSelector(state => state.workDayState.state.currentInformation)!;
-    console.log(currentInformation);
-    const min = currentInformation?.start; //getTimeFromHours(useAppSelector(state => state.workDayState.state.currentDayStart));
-    const max = currentInformation?.end; //getTimeFromHours(useAppSelector(state => state.workDayState.state.currentDayEnd));
+    const state = useAppSelector(state => state.workDayState.state)!;
+    const currentInformation = state.currentInformation;
+    const min = currentInformation?.start ?? getHour(getTimeFromHours(state.currentDayStart));
+    const max = currentInformation?.end ?? getHour(getTimeFromHours(state.currentDayEnd));
     const interviewDuration = getTimeFromHours(
         useAppSelector(state => state.workDayState.state.currentInterviewDuration)
     );

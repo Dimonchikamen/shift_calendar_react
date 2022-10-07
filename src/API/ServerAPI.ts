@@ -4,20 +4,20 @@ import moment from "moment";
 import { ChangeWorkTimePayload, GetWorkTimeSuccessPayload } from "../Redux/Types/WorkTimeTypes";
 import { DATE_FORMAT, DATE_TIME_FORMAT } from "../Constants";
 import { Event } from "../Types/Event";
-import eventsMock from "../Mocks/Events.json";
-import informationMock from "../Mocks/Response.json";
+import eventsMock from "../Mocks/Events2.json";
+import informationMock from "../Mocks/Response2.json";
 import { GetInformationResponse } from "../Types/GetInformationResponse";
 
 export class ServerAPI {
     static async getInformation(startDate: Date, endDate: Date): Promise<GetInformationResponse> {
         const start = moment(startDate).format(DATE_FORMAT);
         const end = moment(endDate).format(DATE_FORMAT);
-        const url = `/events/get-information?start=${start}&end=${end}`;
+        const url = `/events/get-information?start=${start}&end=${end}`; //'http://localhost:3000'
         return await axios.get(url).then(res => res.data); //res.data);
     }
 
     static async getEvents(): Promise<Event[]> {
-        const url = "/events/get-list";
+        const url = "/events/get-list"; //'http://localhost:3000'
         return await axios.get(url).then(response => response.data); //response.data);
     }
 

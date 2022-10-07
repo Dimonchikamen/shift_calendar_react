@@ -1,0 +1,92 @@
+{
+    "eventsWorkTimeInformations": [
+        {
+            "eventId": 1386,
+            "interviewDuration": 30,
+            "workTimes": [
+                { "date": "2022-10-03", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-04", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-05", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-06", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-07", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-08", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-09", "beginTime": "09:00", "endTime": "19:00" }
+            ]
+        },
+        {
+            "eventId": 1401,
+            "interviewDuration": 30,
+            "workTimes": [
+                { "date": "2022-10-03", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-04", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-05", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-06", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-07", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-08", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-09", "beginTime": "09:00", "endTime": "19:00" }
+            ]
+        },
+        {
+            "eventId": 1407,
+            "interviewDuration": 30,
+            "workTimes": [
+                { "date": "2022-10-03", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-04", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-05", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-06", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-07", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-08", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-09", "beginTime": "10:00", "endTime": "19:00" }
+            ]
+        }
+    ],
+
+    "recruiters": [
+        {
+            "id": 16726,
+            "name": "Никифоров Никита Леонидович",
+            "freeWorkedTimes": [
+                {
+                    "id": 21,
+                    "start": "2022-09-30 14:00",
+                    "end": "2022-09-30 20:00"
+                }
+            ],
+            "workedTimes": [
+                {
+                    "id": 1,
+                    "eventId": 1386,
+                    "start": "2022-09-21 11:00",
+                    "end": "2022-09-21 18:00",
+                    "interviews": []
+                }
+            ]
+        },
+        {
+            "id": 10000,
+            "name": "Иванов Иван Иванович",
+            "workedTimes": [
+                {
+                    "id": 3,
+                    "eventId": 1386,
+                    "start": "2022-09-30 09:00",
+                    "end": "2022-09-30 19:30",
+                    "interviews": []
+                }
+            ]
+        },
+        {
+            "id": 12345,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": [
+                {
+                    "id": 4,
+                    "eventId": 1386,
+                    "start": "2022-09-21 11:00",
+                    "end": "2022-09-21 15:00",
+                    "interviews": []
+                }
+            ]
+        }
+    ]
+}

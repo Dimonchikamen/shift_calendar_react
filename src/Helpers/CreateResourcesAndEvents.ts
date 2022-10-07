@@ -14,6 +14,7 @@ export const createResourcesAndEvents = (
     const resources: Resource[] = [];
     const events: ScheduleEvent[] = [];
     const ints: ScheduleEvent[] = [];
+    if (recruiters.length === 0) return [[], [], []];
     recruiters.forEach(r => {
         resources.push({ id: String(r.id), name: r.name });
         r.workedTimes?.forEach(workedTime => {
@@ -56,7 +57,7 @@ export const createResourcesAndEvents = (
                 resourceId: String(r.id),
                 title: createTitle(w.start, w.end),
                 resizable: false,
-                bgColor: "#EEE",
+                bgColor: "#D9EDF7",
                 interviews: [],
             });
         });

@@ -8,7 +8,7 @@ import Popup from "../Popup";
 interface IProps {
     isOpen: boolean;
     title: string;
-    errorCode: number;
+    errorCode: string | null;
     onCancel: () => void;
 }
 

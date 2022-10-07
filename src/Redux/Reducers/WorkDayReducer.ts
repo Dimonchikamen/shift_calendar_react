@@ -29,7 +29,7 @@ const defaultState: GlobalState = {
         role: "user",
         events: [
             { id: -1, title: "Все мероприятия" },
-            { id: 1386, title: "Ночь музыки" },
+            { id: 1388, title: "Ночь музыки" },
             { id: 1234, title: "Ночь музеев" },
         ],
         eventsInformation: new Map<number, EventInformation>(),
@@ -168,27 +168,30 @@ const WorkDayReducer = (
     } else if (action.type === ActionTypes.GET_INFORMATION_SUCCESS) {
         const copy = getCopy(state.state);
         const res = new Map<number, EventInformation>();
-        action.payload.eventsWorkTimeInformation.forEach(e => {
+        res.set(-1, { interviewDuration: 30, workTimes: new Map<string, WorkTime>() });
+        action.payload.eventsWorkTimeInformations.forEach(e => {
             const workTimes = new Map();
             e.workTimes.forEach(w => {
                 workTimes.set(w.date, { start: w.beginTime, end: w.endTime });
             });
-            res.set(e.eventId, { interviewDuration: e.interviewDuration, workTimes });
+            res.set(e.eventId, { interviewDuration: Number(e.interviewDuration), workTimes });
         });
         copy.eventsInformation = res;
+        copy.currentEvent.id = action.payload.eventsWorkTimeInformations[0].eventId;
         copy.currentEventInformation = res.get(copy.currentEvent.id) as EventInformation;
-        copy.currentInterviewDuration = copy.currentEventInformation.interviewDuration;
+        copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
         const a = copy.currentEventInformation.workTimes.get(moment(copy.currentDate).format(DATE_FORMAT)) as WorkTime;
-        copy.currentInformation = a ? { start: getHour(a.start), end: getHour(a.end) } : undefined;
-        copy.config.dayStartFrom = copy.currentInformation?.start ?? 9;
-        copy.config.dayStopTo = copy.currentInformation?.end ?? 19;
+        copy.currentInformation = a ? { start: getHour(a.start), end: getHour(a.end) } : { start: 8, end: 22 };
+        copy.config.dayStartFrom = copy.currentInformation?.start;
+        copy.config.dayStopTo = copy.currentInformation?.end;
         copy.config = resize(copy.config);
         copy.recruiters = action.payload.recruiters;
         copy.currentRecruiters = action.payload.recruiters;
         return { ...state, state: copy, getInformationPending: false, error: null };
     } else if (action.type === ActionTypes.GET_EVENTS_SUCCESS) {
         const copy = getCopy(state.state);
-        copy.events = action.payload;
+        copy.events = [{ id: -1, title: "Все мероприятия" }];
+        copy.events = copy.events.concat(action.payload);
         copy.currentEvent = action.payload[0];
         return {
             ...state,
@@ -200,11 +203,11 @@ const WorkDayReducer = (
         const copy = getCopy(state.state);
         copy.currentEvent = action.payload;
         copy.currentEventInformation = copy.eventsInformation.get(action.payload.id) as EventInformation;
-        copy.currentInterviewDuration = copy.currentEventInformation.interviewDuration;
+        copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
         const a = copy.currentEventInformation.workTimes.get(moment(copy.currentDate).format(DATE_FORMAT)) as WorkTime;
-        copy.currentInformation = a ? { start: getHour(a.start), end: getHour(a.end) } : undefined;
-        copy.config.dayStartFrom = copy.currentInformation?.start ?? 9;
-        copy.config.dayStopTo = copy.currentInformation?.end ?? 19;
+        copy.currentInformation = a ? { start: getHour(a.start), end: getHour(a.end) } : { start: 8, end: 22 };
+        copy.config.dayStartFrom = copy.currentInformation?.start;
+        copy.config.dayStopTo = copy.currentInformation?.end;
         copy.config = resize(copy.config);
         //TODO... сделать фильтрацию
         return {
@@ -243,6 +246,7 @@ const WorkDayReducer = (
             allEventsPending,
             recruitersPending,
             error: action.payload.error,
+            changeError: action.payload.error,
         };
     } else if (
         action.type === ActionTypes.CHANGE_WORK_TIME_FAILURE ||

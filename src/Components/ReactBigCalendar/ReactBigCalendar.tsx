@@ -18,7 +18,6 @@ import Popover from "./Components/Popover/Popover";
 import { hasOverlap } from "../../Helpers/HasOverlap";
 import PopupError from "../../UiKit/Popup/ErrorPopup/ErrorPopup";
 import { CircularProgress } from "@mui/material";
-import Alert from "@mui/material/Alert";
 // import { getInterviewTimeRequest } from "../../Redux/Actions/InterviewTimeActions/GetInterviewTimeActions";
 // import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
@@ -72,7 +71,7 @@ const ReactBigCalendar: FC = () => {
     );
     const dispatch = useAppDispatch();
     const [view, setCalendarView] = useState<"worktime" | "interview">("worktime");
-    const [errorCode, setErrorCode] = useState(500);
+    //const [errorCode, setErrorCode] = useState(500);
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
@@ -92,9 +91,9 @@ const ReactBigCalendar: FC = () => {
     });
 
     useEffect(() => {
-        dispatch(getEventsRequest());
         const [start, end] = getStartAndEndOfWeek(new Date(currentDate));
         dispatch(getInformationRequest(start, end));
+        dispatch(getEventsRequest());
     }, []);
 
     useEffect(() => {
@@ -298,8 +297,6 @@ const ReactBigCalendar: FC = () => {
 
     if (getInformationPending || allEventsPending || workTimePending || interviewTimePending || recruitersPending) {
         return <CircularProgress />;
-    } else if (error) {
-        return <Alert severity="error">Возникла ошибка при получении запроса с сервера.</Alert>;
     } else {
         return (
             <>
@@ -334,7 +331,7 @@ const ReactBigCalendar: FC = () => {
                 <PopupError
                     isOpen={Boolean(changeError)}
                     title={"Что-то пошло не так..."}
-                    errorCode={502}
+                    errorCode={error}
                     onCancel={() => dispatch(closeErrorWindowAction())}
                 />
                 <PopUp
