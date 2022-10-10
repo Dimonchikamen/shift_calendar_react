@@ -21,6 +21,7 @@ interface ICalendarHeader {
 
 const CalendarHeader: FC<ICalendarHeader> = ({ currentDate }) => {
     const state = useAppSelector(state => state.workDayState.state)!;
+    const currentEvent = useAppSelector(state => state.workDayState.state.currentEvent);
     const currentInformation = state.currentInformation;
     const min = currentInformation?.start ?? getHour(getTimeFromHours(state.currentDayStart));
     const max = currentInformation?.end ?? getHour(getTimeFromHours(state.currentDayEnd));
@@ -37,39 +38,15 @@ const CalendarHeader: FC<ICalendarHeader> = ({ currentDate }) => {
     };
 
     const changeInterviewTime = (e: SelectChangeEvent) => {
-        dispatch(changeInterviewTimeRequest(1, getHour(e.target.value)));
+        dispatch(changeInterviewTimeRequest(currentEvent.id, getHour(e.target.value)));
     };
 
     const changeMin = (e: SelectChangeEvent) => {
-        // if (max === "") {
-        //     dispatch(changeDayStart(getHour(e.target.value)));
-        // } else {
-        dispatch(
-            changeWorkTimeRequest(
-                1,
-                currentDate,
-                getHour(e.target.value),
-                max
-                //getHour(max)
-            )
-        );
-        //}
+        dispatch(changeWorkTimeRequest(currentEvent.id, currentDate, getHour(e.target.value), max));
     };
 
     const changeMax = (e: SelectChangeEvent) => {
-        // if (min === "") {
-        //     dispatch(changeDayEnd(getHour(e.target.value)));
-        // } else {
-        dispatch(
-            changeWorkTimeRequest(
-                1,
-                currentDate,
-                min,
-                //getHour(min),
-                getHour(e.target.value)
-            )
-        );
-        //}
+        dispatch(changeWorkTimeRequest(currentEvent.id, currentDate, min, getHour(e.target.value)));
     };
 
     return (
@@ -88,7 +65,7 @@ const CalendarHeader: FC<ICalendarHeader> = ({ currentDate }) => {
                             value={getTimeFromHours(min)}
                             options={hourOptions}
                             size="small"
-                            optionDisableFunc={v => getHour(v) >= max} //getHour(max) && max !== ""}
+                            optionDisableFunc={v => getHour(v) >= max}
                             onchange={changeMin}
                         />
                         <span>до</span>
@@ -96,7 +73,7 @@ const CalendarHeader: FC<ICalendarHeader> = ({ currentDate }) => {
                             value={getTimeFromHours(max)}
                             options={hourOptions}
                             size="small"
-                            optionDisableFunc={v => getHour(v) <= min} //getHour(min) && min !== ""}
+                            optionDisableFunc={v => getHour(v) <= min}
                             onchange={changeMax}
                         />
                     </div>
