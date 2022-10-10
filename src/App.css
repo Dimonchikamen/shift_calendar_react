@@ -1,7 +1,12 @@
 .app {
     padding: 20px 0;
     text-align: center;
-    /* height: 600px; */
+    width: 95vw;
+    max-width: 1900px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    left: calc(-50vw + 50%);
 }
 
 .wrapper {
@@ -37,29 +42,29 @@
     border: 1px solid lightgray;
 }
 
-.header2-text{
+.header2-text {
     display: flex;
     align-items: center;
     line-height: 100%;
 }
 
-.header2-text-label{
+.header2-text-label {
     font-weight: 700;
 }
 
 .MuiOutlinedInput-root > fieldset {
     top: 0;
 }
-.MuiOutlinedInput-root > fieldset > legend{
+.MuiOutlinedInput-root > fieldset > legend {
     display: none;
 }
 
-.round-all.event-item{
-    text-overflow:clip;
+.round-all.event-item {
+    text-overflow: clip;
     padding: 0 !important;
 }
 
-.event-item > span{
+.event-item > span {
     color: #151515;
     font-size: 15px;
     margin-left: 0 !important;

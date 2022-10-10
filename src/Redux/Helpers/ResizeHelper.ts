@@ -3,7 +3,7 @@ import { SchedulerDataConfig } from "react-big-scheduler";
 const getDiff = (min: number, max: number) => max - min + 1;
 
 export const resize = (config: SchedulerDataConfig) => {
-    const newWidth = window.innerWidth * 0.75;
+    const newWidth = window.innerWidth * 0.64;
     let newResourceTableWidth = config.dayResourceTableWidth;
     if (window.innerWidth < 1200) {
         newResourceTableWidth = 200;
