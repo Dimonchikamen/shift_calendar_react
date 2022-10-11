@@ -56,7 +56,7 @@ const CalendarHeader: FC<ICalendarHeader> = ({ currentDate }) => {
                 options={events}
                 onChange={changeEvent}
             />
-            {(role === "admin" || role === "coord") && (
+            {(role === "admin" || role === "coord") && currentEvent.id !== -1 && (
                 <div className={s.admin_container}>
                     <div className={s.select_work_time_container}>
                         <span>Рабочее время</span>
