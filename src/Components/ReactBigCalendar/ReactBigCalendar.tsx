@@ -79,7 +79,6 @@ const ReactBigCalendar: FC = () => {
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
     const [selectData, setData] = useState<RequiterInfo | null>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
-    //const [currentDate, setCurrentDate] = useState<FullDateTime>(moment().format(DATE_TIME_FORMAT));
     const [viewModel, setView] = useState<{ data: SchedulerData }>(() => {
         const data = new SchedulerData(currentDateString, viewType, false, false, config, behaviours);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

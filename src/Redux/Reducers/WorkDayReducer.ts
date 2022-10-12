@@ -102,8 +102,7 @@ const WorkDayReducer = (
         return { ...state, getInformationPending: true };
     } else if (
         action.type === ActionTypes.CHANGE_WORK_TIME_REQUEST ||
-        action.type === ActionTypes.CHANGE_INTERVIEW_TIME_REQUEST //||
-        //action.type === ActionTypes.CHANGE_EVENT_REQUEST
+        action.type === ActionTypes.CHANGE_INTERVIEW_TIME_REQUEST
     ) {
         return { ...state, changePending: true };
     } else if (action.type === ActionTypes.SET_ROLE) {
@@ -127,17 +126,11 @@ const WorkDayReducer = (
         action.type === ActionTypes.CHANGE_WORK_TIME_SUCCESS
     ) {
         const copy = getCopy(state.state, true);
-        if (action.payload === "") {
-            copy.currentDayStart = action.payload;
-            copy.config.dayStartFrom = 0;
-            copy.currentDayEnd = action.payload;
-            copy.config.dayStopTo = 23;
-        } else {
-            copy.currentDayStart = action.payload.start;
-            copy.currentDayEnd = action.payload.end;
-            copy.config.dayStartFrom = action.payload.start;
-            copy.config.dayStopTo = action.payload.end;
-        }
+        copy.currentDayStart = action.payload?.start;
+        copy.currentDayEnd = action.payload?.end;
+        copy.config.dayStartFrom = action.payload?.start ?? 9;
+        copy.config.dayStopTo = action.payload?.end ?? 19;
+        copy.currentInformation = { start: action.payload?.start, end: action.payload?.end };
         copy.config = resize(copy.config);
         const workTimePending = action.type === ActionTypes.GET_WORK_TIME_SUCCESS ? false : state.workTimePending;
         const changePending = action.type === ActionTypes.CHANGE_WORK_TIME_SUCCESS ? false : state.changePending;
@@ -154,7 +147,9 @@ const WorkDayReducer = (
         action.type === ActionTypes.CHANGE_INTERVIEW_TIME_SUCCESS
     ) {
         const copy = getCopy(state.state, true);
+        copy.currentEventInformation.interviewDuration = action.payload;
         copy.currentInterviewTime = action.payload;
+        copy.config.minuteStep = action.payload;
         const interviewTimePending =
             action.type === ActionTypes.GET_INTERVIEW_TIME_SUCCESS ? false : state.interviewTimePending;
         const changePending = action.type === ActionTypes.CHANGE_INTERVIEW_TIME_SUCCESS ? false : state.changePending;

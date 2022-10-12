@@ -42,7 +42,7 @@ export type GetWorkTimeRequest = {
 
 export type GetWorkTimeSuccess = {
     type: ActionTypes.GET_WORK_TIME_SUCCESS;
-    payload: GetWorkTimeSuccessPayload | "";
+    payload: GetWorkTimeSuccessPayload;
 };
 
 export type GetWorkTimeFailure = {
