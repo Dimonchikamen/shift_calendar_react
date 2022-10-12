@@ -12,24 +12,14 @@ export class ServerAPI {
     static async getInformation(startDate: Date, endDate: Date): Promise<GetInformationResponse> {
         const start = moment(startDate).format(DATE_FORMAT);
         const end = moment(endDate).format(DATE_FORMAT);
-        const url = `/events/get-information?start=${start}&end=${end}`; //'http://localhost:3000'
-        return await axios.get(url).then(res => res.data); //res.data);
+        const url = `/events/get-information?start=${start}&end=${end}`;
+        return await axios.get(url).then(res => res.data);
     }
 
     static async getEvents(): Promise<Event[]> {
-        const url = "/events/get-list"; //'http://localhost:3000'
-        return await axios.get(url).then(response => response.data); //response.data);
+        const url = "/events/get-list";
+        return await axios.get(url).then(response => response.data);
     }
-
-    // static async getRecruiters(start?: Date, end?: Date) {
-    //     const url = "http://localhost:3000/";
-    //     return await axios.get(url).then(response => recruitersMock);
-    // }
-
-    // static async getRecruiter(id: number) {
-    //     const url = "http://localhost:3000/";
-    //     return await axios.get(url).then(response => recruitersMock);
-    // }
 
     static async addRecruiterWorkTime(
         start: Date,
@@ -70,20 +60,12 @@ export class ServerAPI {
         return await axios.post(url, data).then(response => response.data);
     }
 
-    // static async getInterviewTime(eventId: number): Promise<number | ""> {
-    //     const url = this.startUrl + `/event/${eventId}/get-interview-time`;
-    //     return await axios.get(url).then(res => res.data);
-    // }
-
     static async changeInterviewTime(eventId: number, newInterviewTime: number): Promise<number> {
         const url = `/event/${eventId}/set-interview-time`;
+        const data = new FormData();
+        data.append("newInterwviewTime", String(newInterviewTime));
         return await axios.post(url, newInterviewTime).then(res => res.data);
     }
-
-    // static async getWorkTime(date: Date, eventId: number): Promise<GetWorkTimeSuccessPayload | ""> {
-    //     const url = this.startUrl + `/event/${eventId}/get-day-worktime/${moment(date).format(DATE_FORMAT)}`;
-    //     return await axios.get(url).then(res => res.data);
-    // }
 
     static async changeWorkTime(
         eventId: number,
