@@ -7,6 +7,7 @@ import { InterviewTimeTypes } from "../Types/InterviewTimeTypes";
 import { EventsTypes } from "../Types/EventsTypes";
 import { RecruitersTypes } from "../Types/RecruitersTypes";
 import { RoleTypes } from "../Types/RoleTypes";
+import { ViewType } from "../Types/ViewTypes";
 import { resize } from "../Helpers/ResizeHelper";
 import { GlobalState } from "../../Types/GlobalState";
 import { GetInformationTypes } from "../Types/GetInformationTypes";
@@ -27,6 +28,7 @@ const defaultState: GlobalState = {
     state: {
         role: "user",
         viewType: "read",
+        view: "worktime",
         events: [
             { id: -1, title: "Все мероприятия" },
             { id: 1388, title: "Ночь музыки" },
@@ -89,6 +91,7 @@ const WorkDayReducer = (
         | RecruitersTypes
         | GetInformationTypes
         | RoleTypes
+        | ViewType
 ): GlobalState => {
     if (action.type === ActionTypes.GET_INTERVIEW_TIME_REQUEST) {
         return { ...state, interviewTimePending: true };
@@ -105,6 +108,10 @@ const WorkDayReducer = (
         action.type === ActionTypes.CHANGE_INTERVIEW_TIME_REQUEST
     ) {
         return { ...state, changePending: true };
+    } else if (action.type === ActionTypes.SET_VIEW) {
+        const copy = getCopy(state.state);
+        copy.view = action.payload;
+        return { ...state, state: copy };
     } else if (action.type === ActionTypes.CHANGE_START_DAY) {
         const copy = getCopy(state.state, true);
         copy.currentDayStart = action.payload;

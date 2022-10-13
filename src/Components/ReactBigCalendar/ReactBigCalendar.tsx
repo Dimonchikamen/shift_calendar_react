@@ -37,6 +37,7 @@ import { getInformationRequest } from "../../Redux/Actions/GetInformationActions
 import { getStartAndEndOfWeek } from "../../Helpers/GetStartAndEndOfWeek";
 import { changeCurrentDateAction } from "../../Redux/Actions/ChangeCurrentDateActions";
 import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
+//import { filterEvents } from "../../Helpers/Filters";
 
 moment.locale("ru-ru");
 
@@ -66,12 +67,12 @@ const ReactBigCalendar: FC = () => {
 
     const config = state.config;
     const role = state.role;
-    const [resources, scheduleEvents] = useMemo(
+    const view = state.view;
+    const [resources, scheduleEvents, interviews] = useMemo(
         () => createResourcesAndEvents(recruiters, currentEvent.id),
         [recruiters, currentEvent]
     );
     const dispatch = useAppDispatch();
-    const [view, setCalendarView] = useState<"worktime" | "interview">("worktime");
     //const [errorCode, setErrorCode] = useState(500);
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -86,7 +87,7 @@ const ReactBigCalendar: FC = () => {
         // @ts-ignore
         data.setLocaleMoment(moment);
         data.setResources(resources);
-        data.setEvents(scheduleEvents);
+        data.setEvents(view === "interview" ? interviews : scheduleEvents);
         return { data };
     });
 
@@ -122,7 +123,7 @@ const ReactBigCalendar: FC = () => {
         setView(() => {
             const data = new SchedulerData(currentDateString, calendarViewType, false, false, config, behaviours);
             data.setResources(resources);
-            data.setEvents(scheduleEvents);
+            data.setEvents(view === "interview" ? interviews : scheduleEvents);
             return { data };
         });
     }, [currentDateString, config, resources, scheduleEvents, calendarViewType, behaviours]);
@@ -142,7 +143,7 @@ const ReactBigCalendar: FC = () => {
 
     const setSchedulerData = (schedulerData: SchedulerData) => {
         schedulerData.setResources(resources);
-        schedulerData.setEvents(scheduleEvents);
+        schedulerData.setEvents(view === "interview" ? interviews : scheduleEvents);
         if (currentEventInformation.workTimes.get(schedulerData.startDate) === undefined) {
             const [start, end] = getStartAndEndOfWeek(new Date(schedulerData.startDate));
             dispatch(getInformationRequest(start, end));
@@ -329,6 +330,7 @@ const ReactBigCalendar: FC = () => {
                             <InformationContainer
                                 data={selectData}
                                 isEditing={isEditing}
+                                view={view}
                                 eventEditing={eventAdding!}
                                 onEditEvent={editingEvent}
                             />

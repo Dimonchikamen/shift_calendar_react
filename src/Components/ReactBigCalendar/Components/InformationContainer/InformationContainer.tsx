@@ -30,7 +30,7 @@ const mergeInterviewsInfo = (interviews: Interview[]) => {
 interface IInformationContainerProps {
     data: RequiterInfo;
     role?: "admin" | "user";
-    view?: "interview" | "worktime";
+    view?: string;
     isEditing?: boolean;
     eventEditing: ScheduleEvent;
     onEditEvent: (eventEditing: ScheduleEvent, dayStart: string, dayEnd: string) => void;

@@ -20,7 +20,7 @@ interface IPopoverProps {
     role: string;
     viewType: ViewType;
     recruiters?: Recruiter[];
-    view?: "worktime" | "interview";
+    view?: string;
     deleteEvent: (eventItem: ScheduleEvent) => void;
     editEvent: (schedulerData: SchedulerData, eventItem: ScheduleEvent) => void;
 }

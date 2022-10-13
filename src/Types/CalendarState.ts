@@ -10,6 +10,7 @@ import { ViewType } from "./ViewType";
 export type CalendarState = {
     role: string;
     viewType: ViewType;
+    view: string;
     events: Event[];
     eventWorkTimeInformation: InformationResponse[];
     eventsInformation: Map<number, EventInformation>;

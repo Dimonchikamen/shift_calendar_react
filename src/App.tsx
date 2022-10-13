@@ -5,16 +5,19 @@ import "@toast-ui/calendar/dist/toastui-calendar.min.css";
 import ReactBigCalendar from "./Components/ReactBigCalendar/ReactBigCalendar";
 import { useAppDispatch } from "./Redux/Hooks";
 import { setRoleAction } from "./Redux/Actions/SetRoleAction";
+import { setViewAction } from "./Redux/Actions/SetViewAction";
 
 interface IAppProps {
     role: string;
+    view: string;
 }
 
-const App: FC<IAppProps> = ({ role }) => {
+const App: FC<IAppProps> = ({ role, view }) => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(setRoleAction(role));
+        dispatch(setViewAction(view));
     });
 
     return (
