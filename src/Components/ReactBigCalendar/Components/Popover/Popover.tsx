@@ -8,6 +8,7 @@ import { useAppDispatch } from "../../../../Redux/Hooks";
 import { DATE_TIME_FORMAT } from "../../../../Constants";
 import { changeEventAction } from "../../../../Redux/Actions/ChangeEventAction";
 import { Event } from "../../../../Types/Event";
+import { ViewType } from "../../../../Types/ViewType";
 
 interface IPopoverProps {
     schedulerData: SchedulerData;
@@ -16,9 +17,10 @@ interface IPopoverProps {
     start: any;
     end: any;
     currentEvent: Event;
+    role: string;
+    viewType: ViewType;
     recruiters?: Recruiter[];
     view?: "worktime" | "interview";
-    role?: string;
     deleteEvent: (eventItem: ScheduleEvent) => void;
     editEvent: (schedulerData: SchedulerData, eventItem: ScheduleEvent) => void;
 }
@@ -31,8 +33,9 @@ const Popover: FC<IPopoverProps> = ({
     start,
     end,
     currentEvent,
-    view = "worktime",
     role,
+    viewType,
+    view = "worktime",
     deleteEvent,
     editEvent,
 }) => {
@@ -40,7 +43,7 @@ const Popover: FC<IPopoverProps> = ({
     //     dispatch(changeEventAction(recruiters!, eventName));
     // };
 
-    if (eventItem.bgColor === "#EEE") {
+    if (eventItem.bgColor === "#EEE" && viewType === "edit") {
         return (
             <div className={s.Popover}>
                 <div>
@@ -66,7 +69,7 @@ const Popover: FC<IPopoverProps> = ({
             >
                 {start.format(DATE_TIME_FORMAT).slice(-5)} - {end.format(DATE_TIME_FORMAT).slice(-5)}
             </span>
-            {view === "worktime" && role === "admin" ? (
+            {view === "worktime" && role === "admin" && viewType === "edit" && (
                 <div className={s.btnswrapper}>
                     <Button
                         onClick={() => deleteEvent(eventItem)}
@@ -81,17 +84,6 @@ const Popover: FC<IPopoverProps> = ({
                         Редактировать
                     </Button>
                 </div>
-            ) : (
-                <>
-                    {/*{eventName.map(event => (*/}
-                    {/*    <span*/}
-                    {/*        className="header2-text"*/}
-                    {/*        key={Math.random()}*/}
-                    {/*    >*/}
-                    {/*        {event}*/}
-                    {/*    </span>*/}
-                    {/*))}*/}
-                </>
             )}
         </div>
     );

@@ -5,9 +5,11 @@ import { InformationResponse } from "./InformationResponse";
 import { WorkTime } from "./WorkTime";
 import { EventInformation } from "./EventInformation";
 import { WorkTimeInformation } from "./WorkTimeInformation";
+import { ViewType } from "./ViewType";
 
 export type CalendarState = {
     role: string;
+    viewType: ViewType;
     events: Event[];
     eventWorkTimeInformation: InformationResponse[];
     eventsInformation: Map<number, EventInformation>;
@@ -24,7 +26,7 @@ export type CalendarState = {
     currentDayStart: number | "";
     currentDayEnd: number | "";
     config: SchedulerDataConfig;
-    viewType: ViewTypes;
+    calendarViewType: ViewTypes;
     behaviours: object;
     recruiters: Recruiter[];
     currentRecruiters: Recruiter[];

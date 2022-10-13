@@ -10,7 +10,7 @@ import InformationContainer from "./Components/InformationContainer/InformationC
 import { RequiterInfo } from "../../Types/RequiterInfo";
 import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
-import { changeViewTypeAction } from "../../Redux/Actions/ChangeViewTypeAction";
+import { changeCalendarViewTypeAction } from "../../Redux/Actions/ChangeCalendarViewTypeAction";
 import PopUp from "../../UiKit/Popup/AlertDialog/AlertDialog";
 import { createSchedulerEvent, createResourcesAndEvents } from "../../Helpers/CreateResourcesAndEvents";
 import { resizeAction } from "../../Redux/Actions/ResizeAction";
@@ -52,11 +52,12 @@ const ReactBigCalendar: FC = () => {
         error,
         changeError,
     } = useAppSelector(state => state.workDayState);
-    const viewType = state.viewType;
+    const calendarViewType = state.calendarViewType;
     const recruiters = state.currentRecruiters;
     const behaviours = state.behaviours;
 
     const currentDate = state.currentDate;
+    const viewType = state.viewType;
     const currentDateString = moment(currentDate).format(DATE_TIME_FORMAT);
     const currentInformation = state.currentInformation;
     const currentEvent = state.currentEvent;
@@ -80,7 +81,7 @@ const ReactBigCalendar: FC = () => {
     const [selectData, setData] = useState<RequiterInfo | null>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [viewModel, setView] = useState<{ data: SchedulerData }>(() => {
-        const data = new SchedulerData(currentDateString, viewType, false, false, config, behaviours);
+        const data = new SchedulerData(currentDateString, calendarViewType, false, false, config, behaviours);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         data.setLocaleMoment(moment);
@@ -119,12 +120,12 @@ const ReactBigCalendar: FC = () => {
 
     useEffect(() => {
         setView(() => {
-            const data = new SchedulerData(currentDateString, viewType, false, false, config, behaviours);
+            const data = new SchedulerData(currentDateString, calendarViewType, false, false, config, behaviours);
             data.setResources(resources);
             data.setEvents(scheduleEvents);
             return { data };
         });
-    }, [currentDateString, config, resources, scheduleEvents, viewType, behaviours]);
+    }, [currentDateString, config, resources, scheduleEvents, calendarViewType, behaviours]);
 
     const createData = (schedulerData: SchedulerData, event: ScheduleEvent): RequiterInfo => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -151,6 +152,10 @@ const ReactBigCalendar: FC = () => {
         //setView({ data: schedulerData });
     };
 
+    const changeMainEvent = () => {
+        setSelectedEvent(null);
+    };
+
     const prevClick = (schedulerData: SchedulerData) => {
         schedulerData.prev();
         setSchedulerData(schedulerData);
@@ -167,7 +172,7 @@ const ReactBigCalendar: FC = () => {
     };
 
     const viewChange = (schedulerData: SchedulerData, view: any) => {
-        dispatch(changeViewTypeAction(view.viewType));
+        dispatch(changeCalendarViewTypeAction(view.viewType));
     };
 
     const eventItemClick = (schedulerData: SchedulerData, event: ScheduleEvent) => {
@@ -284,10 +289,11 @@ const ReactBigCalendar: FC = () => {
                 title={title}
                 start={start}
                 end={end}
-                view={view}
-                role={role}
-                recruiters={recruiters}
                 currentEvent={currentEvent}
+                role={role}
+                viewType={viewType}
+                view={view}
+                recruiters={recruiters}
                 deleteEvent={deleteEvent}
                 editEvent={editEvent}
             />
@@ -300,7 +306,10 @@ const ReactBigCalendar: FC = () => {
         return (
             <>
                 <div className={s.table_container}>
-                    <CalendarHeader currentDate={new Date(currentDate)} />
+                    <CalendarHeader
+                        currentDate={new Date(currentDate)}
+                        onChangeEvent={changeMainEvent}
+                    />
                     <div className={s.scheduler_container}>
                         <div>
                             <Scheduler

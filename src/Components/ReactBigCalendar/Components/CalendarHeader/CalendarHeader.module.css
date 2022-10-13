@@ -1,3 +1,8 @@
+.change_view_container {
+    text-align: left;
+    width: 100%;
+}
+
 .calendar_header {
     display: flex;
     justify-content: flex-start;

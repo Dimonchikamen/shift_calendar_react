@@ -10,17 +10,22 @@ import { getOptions } from "../../../../Helpers/GetOptions";
 import { changeInterviewTimeRequest } from "../../../../Redux/Actions/InterviewTimeActions/ChangeInterviewTimeActions";
 import { changeWorkTimeRequest } from "../../../../Redux/Actions/WorkTimeActions/WorkDayActions";
 import { changeEventAction } from "../../../../Redux/Actions/ChangeEventAction";
-import SelectEvent from "./Components/SelectEvent";
+import SelectEvent from "./Components/SelectEvent/SelectEvent";
+import ToggleViewButtons from "./Components/ToggleViewButtons/ToggleViewButtons";
+import { ViewType } from "../../../../Types/ViewType";
+import { changeViewTypeAction } from "../../../../Redux/Actions/ChangeViewTypeAction";
 
 const interviewTimeOptions: Time[] = ["15:00", "30:00", "45:00", "60:00"];
 const hourOptions: Time[] = getOptions(0, 23);
 
 interface ICalendarHeader {
     currentDate: Date;
+    onChangeEvent: () => void;
 }
 
-const CalendarHeader: FC<ICalendarHeader> = ({ currentDate }) => {
-    const state = useAppSelector(state => state.workDayState.state)!;
+const CalendarHeader: FC<ICalendarHeader> = ({ currentDate, onChangeEvent }) => {
+    const state = useAppSelector(state => state.workDayState.state);
+    const viewType = state.viewType;
     const currentEvent = useAppSelector(state => state.workDayState.state.currentEvent);
     const currentInformation = state.currentInformation;
     const min = currentInformation?.start ?? getHour(getTimeFromHours(state.currentDayStart));
@@ -33,7 +38,12 @@ const CalendarHeader: FC<ICalendarHeader> = ({ currentDate }) => {
     const role = useAppSelector(state => state.workDayState.state.role);
     const dispatch = useAppDispatch();
 
+    const changeViewType = (viewType: ViewType) => {
+        dispatch(changeViewTypeAction(viewType));
+    };
+
     const changeEvent = (newEvent: Event) => {
+        onChangeEvent();
         dispatch(changeEventAction(newEvent));
     };
 
@@ -50,45 +60,55 @@ const CalendarHeader: FC<ICalendarHeader> = ({ currentDate }) => {
     };
 
     return (
-        <div className={s.calendar_header}>
-            <SelectEvent
-                value={event}
-                options={events}
-                onChange={changeEvent}
-            />
-            {(role === "admin" || role === "coord") && currentEvent.id !== -1 && (
-                <div className={s.admin_container}>
-                    <div className={s.select_work_time_container}>
-                        <span>Рабочее время</span>
-                        <span>c</span>
-                        <SelectItem
-                            value={getTimeFromHours(min)}
-                            options={hourOptions}
-                            size="small"
-                            optionDisableFunc={v => getHour(v) >= max}
-                            onchange={changeMin}
-                        />
-                        <span>до</span>
-                        <SelectItem
-                            value={getTimeFromHours(max)}
-                            options={hourOptions}
-                            size="small"
-                            optionDisableFunc={v => getHour(v) <= min}
-                            onchange={changeMax}
-                        />
-                    </div>
-                    <div className={s.select_interview_time_container}>
-                        <span>Длительность собеседования</span>
-                        <SelectItem
-                            value={interviewDuration}
-                            options={interviewTimeOptions}
-                            size="small"
-                            onchange={changeInterviewTime}
-                        />
-                    </div>
+        <>
+            {(role === "admin" || role === "coord") && (
+                <div className={s.change_view_container}>
+                    <ToggleViewButtons
+                        viewType={viewType}
+                        onChangeView={changeViewType}
+                    />
                 </div>
             )}
-        </div>
+            <div className={s.calendar_header}>
+                <SelectEvent
+                    value={event}
+                    options={events}
+                    onChange={changeEvent}
+                />
+                {(role === "admin" || role === "coord") && currentEvent.id !== -1 && viewType === "edit" && (
+                    <div className={s.admin_container}>
+                        <div className={s.select_work_time_container}>
+                            <span>Рабочее время</span>
+                            <span>c</span>
+                            <SelectItem
+                                value={getTimeFromHours(min)}
+                                options={hourOptions}
+                                size="small"
+                                optionDisableFunc={v => getHour(v) >= max}
+                                onchange={changeMin}
+                            />
+                            <span>до</span>
+                            <SelectItem
+                                value={getTimeFromHours(max)}
+                                options={hourOptions}
+                                size="small"
+                                optionDisableFunc={v => getHour(v) <= min}
+                                onchange={changeMax}
+                            />
+                        </div>
+                        <div className={s.select_interview_time_container}>
+                            <span>Длительность собеседования</span>
+                            <SelectItem
+                                value={interviewDuration}
+                                options={interviewTimeOptions}
+                                size="small"
+                                onchange={changeInterviewTime}
+                            />
+                        </div>
+                    </div>
+                )}
+            </div>
+        </>
     );
 };
 

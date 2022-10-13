@@ -12,13 +12,13 @@ export class ServerAPI {
     static async getInformation(startDate: Date, endDate: Date): Promise<GetInformationResponse> {
         const start = moment(startDate).format(DATE_FORMAT);
         const end = moment(endDate).format(DATE_FORMAT);
-        const url = `/events/get-information?start=${start}&end=${end}`;
-        return await axios.get(url).then(res => res.data);
+        const url = "/"; //`/events/get-information?start=${start}&end=${end}`;
+        return await axios.get(url).then(res => informationMock); //res.data);
     }
 
     static async getEvents(): Promise<Event[]> {
-        const url = "/events/get-list";
-        return await axios.get(url).then(response => response.data);
+        const url = "/"; //"/events/get-list";
+        return await axios.get(url).then(response => eventsMock); //response.data);
     }
 
     static async addRecruiterWorkTime(

@@ -1,7 +1,7 @@
 import { FC, useCallback, useMemo } from "react";
-import { Event } from "../../../../../Types/Event";
+import { Event } from "../../../../../../Types/Event";
 import s from "./SelectEvent.module.css";
-import SelectItem from "../../../../../UiKit/SelectItem/SelectItem";
+import SelectItem from "../../../../../../UiKit/SelectItem/SelectItem";
 import { SelectChangeEvent } from "@mui/material";
 
 interface ISelectEventProps {

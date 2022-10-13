@@ -6,7 +6,6 @@ import { getCopy } from "../Helpers/CopyHelper";
 import { InterviewTimeTypes } from "../Types/InterviewTimeTypes";
 import { EventsTypes } from "../Types/EventsTypes";
 import { RecruitersTypes } from "../Types/RecruitersTypes";
-import { filterRecruiters } from "../../Helpers/Filters";
 import { RoleTypes } from "../Types/RoleTypes";
 import { resize } from "../Helpers/ResizeHelper";
 import { GlobalState } from "../../Types/GlobalState";
@@ -27,6 +26,7 @@ const defaultState: GlobalState = {
     changePending: false,
     state: {
         role: "user",
+        viewType: "read",
         events: [
             { id: -1, title: "Все мероприятия" },
             { id: 1388, title: "Ночь музыки" },
@@ -66,7 +66,7 @@ const defaultState: GlobalState = {
                 { viewName: "Неделя", viewType: ViewTypes.Week, showAgenda: false, isEventPerspective: false },
             ],
         },
-        viewType: ViewTypes.Day,
+        calendarViewType: ViewTypes.Day,
         behaviours: {
             isNonWorkingTimeFunc: () => false,
         },
@@ -105,10 +105,6 @@ const WorkDayReducer = (
         action.type === ActionTypes.CHANGE_INTERVIEW_TIME_REQUEST
     ) {
         return { ...state, changePending: true };
-    } else if (action.type === ActionTypes.SET_ROLE) {
-        const copy = getCopy(state.state);
-        copy.role = action.payload;
-        return { ...state, rolePending: false, state: copy };
     } else if (action.type === ActionTypes.CHANGE_START_DAY) {
         const copy = getCopy(state.state, true);
         copy.currentDayStart = action.payload;
@@ -204,7 +200,6 @@ const WorkDayReducer = (
         copy.config.dayStartFrom = copy.currentInformation?.start;
         copy.config.dayStopTo = copy.currentInformation?.end;
         copy.config = resize(copy.config);
-        //TODO... сделать фильтрацию
         return {
             ...state,
             state: copy,
@@ -212,20 +207,6 @@ const WorkDayReducer = (
             changePending: false,
             changeError: null,
         };
-    } else if (action.type === ActionTypes.GET_RECRUITERS_SUCCESS) {
-        const copy = getCopy(state.state);
-        copy.recruiters = action.payload;
-        copy.currentRecruiters = action.payload;
-        return {
-            ...state,
-            state: copy,
-            recruitersPending: false,
-            error: null,
-        };
-    } else if (action.type === ActionTypes.FILTER_RECRUITERS) {
-        const copy = getCopy(state.state, false, true, true);
-        copy.currentRecruiters = filterRecruiters(copy.recruiters, action.payload.id);
-        return { ...state, state: copy };
     } else if (
         action.type === ActionTypes.GET_EVENTS_FAILURE ||
         action.type === ActionTypes.GET_RECRUITERS_FAILURE ||
@@ -265,7 +246,6 @@ const WorkDayReducer = (
         const copy = getCopy(state.state, false, true, true);
         const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
         copy.recruiters[index] = action.payload;
-        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent.id);
         return {
             ...state,
             state: copy,
@@ -276,7 +256,6 @@ const WorkDayReducer = (
         const copy = getCopy(state.state, false, true, true);
         const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
         copy.recruiters[index] = action.payload;
-        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent.id);
         return {
             ...state,
             state: copy,
@@ -287,7 +266,6 @@ const WorkDayReducer = (
         const copy = getCopy(state.state, false, true, true);
         const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
         copy.recruiters[index] = action.payload;
-        copy.currentRecruiters = filterRecruiters(copy.recruiters, state.state.currentEvent.id);
         return {
             ...state,
             state: copy,
@@ -300,9 +278,20 @@ const WorkDayReducer = (
         action.type === ActionTypes.REMOVE_RECRUITER_EVENT_FAILURE
     ) {
         return { ...state, changePending: false, changeError: action.payload.error };
+    } else if (action.type === ActionTypes.SET_ROLE) {
+        const copy = getCopy(state.state);
+        copy.role = action.payload;
+        if (action.payload === "admin" || action.payload === "coord") {
+            copy.viewType = "edit";
+        }
+        return { ...state, rolePending: false, state: copy };
     } else if (action.type === ActionTypes.CHANGE_VIEW_TYPE) {
         const copy = getCopy(state.state);
         copy.viewType = action.payload;
+        return { ...state, state: copy };
+    } else if (action.type === ActionTypes.CHANGE_CALENDAR_VIEW_TYPE) {
+        const copy = getCopy(state.state);
+        copy.calendarViewType = action.payload;
         return {
             ...state,
             state: copy,
