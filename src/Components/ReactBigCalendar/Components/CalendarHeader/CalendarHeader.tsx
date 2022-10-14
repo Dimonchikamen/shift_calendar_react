@@ -13,7 +13,9 @@ import { changeEventAction } from "../../../../Redux/Actions/ChangeEventAction";
 import SelectEvent from "./Components/SelectEvent/SelectEvent";
 import ToggleViewButtons from "./Components/ToggleViewButtons/ToggleViewButtons";
 import { ViewType } from "../../../../Types/ViewType";
+import { ViewTypeWorktime } from "../../../../Types/ViewTypeWorktime";
 import { changeViewTypeAction } from "../../../../Redux/Actions/ChangeViewTypeAction";
+import { setViewAction } from "../../../../Redux/Actions/SetViewAction";
 
 const interviewTimeOptions: Time[] = ["15:00", "30:00", "45:00", "60:00"];
 const hourOptions: Time[] = getOptions(0, 23);
@@ -36,10 +38,14 @@ const CalendarHeader: FC<ICalendarHeader> = ({ currentDate, onChangeEvent }) => 
     const events = useAppSelector(state => state.workDayState.state.events);
     const event = useAppSelector(state => state.workDayState.state.currentEvent);
     const role = useAppSelector(state => state.workDayState.state.role);
+    const view = useAppSelector(state => state.workDayState.state.view);
     const dispatch = useAppDispatch();
 
     const changeViewType = (viewType: ViewType) => {
         dispatch(changeViewTypeAction(viewType));
+    };
+    const changeView = (view: ViewTypeWorktime) => {
+        dispatch(setViewAction(view));
     };
 
     const changeEvent = (newEvent: Event) => {
@@ -62,11 +68,22 @@ const CalendarHeader: FC<ICalendarHeader> = ({ currentDate, onChangeEvent }) => 
     return (
         <>
             {(role === "admin" || role === "coord") && (
-                <div className={s.change_view_container}>
-                    <ToggleViewButtons
-                        viewType={viewType}
-                        onChangeView={changeViewType}
-                    />
+                <div className={s.toggles}>
+                    <div className={s.change_view_container}>
+                        <ToggleViewButtons
+                            viewType={viewType}
+                            onChangeView={changeViewType}
+                            onChangeViewWorktime={changeView}
+                        />
+                    </div>
+
+                    <div className={s.change_view_container}>
+                        <ToggleViewButtons
+                            view={view}
+                            onChangeView={changeViewType}
+                            onChangeViewWorktime={changeView}
+                        />
+                    </div>
                 </div>
             )}
             <div className={s.calendar_header}>

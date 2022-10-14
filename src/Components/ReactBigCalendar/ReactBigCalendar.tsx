@@ -126,7 +126,7 @@ const ReactBigCalendar: FC = () => {
             data.setEvents(view === "interview" ? interviews : scheduleEvents);
             return { data };
         });
-    }, [currentDateString, config, resources, scheduleEvents, calendarViewType, behaviours]);
+    }, [currentDateString, config, resources, scheduleEvents, calendarViewType, behaviours, view]);
 
     const createData = (schedulerData: SchedulerData, event: ScheduleEvent): RequiterInfo => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

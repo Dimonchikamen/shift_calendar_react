@@ -1,6 +1,5 @@
 .change_view_container {
     text-align: left;
-    width: 100%;
 }
 
 .calendar_header {
@@ -25,7 +24,13 @@
     width: fit-content;
 }
 
-.admin_container{
+.admin_container {
     display: flex;
     gap: 4em;
+}
+
+.toggles {
+    display: flex;
+    gap: 2em;
+    margin-bottom: 1em;
 }
