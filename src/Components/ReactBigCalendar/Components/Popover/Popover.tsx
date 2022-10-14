@@ -4,9 +4,7 @@ import { SchedulerData } from "react-big-scheduler";
 import Button from "antd/lib/button";
 import s from "../Popover/Popover.module.css";
 import { Recruiter } from "../../../../Types/Recruiter";
-import { useAppDispatch } from "../../../../Redux/Hooks";
 import { DATE_TIME_FORMAT } from "../../../../Constants";
-import { changeEventAction } from "../../../../Redux/Actions/ChangeEventAction";
 import { Event } from "../../../../Types/Event";
 import { ViewType } from "../../../../Types/ViewType";
 
@@ -52,7 +50,7 @@ const Popover: FC<IPopoverProps> = ({
                     Переключить мероприятие на <strong>{currentEvent.title}</strong>?
                 </div>
                 <Button
-                    //onClick={() => changeEvent(thisEvent!)}
+                    // onClick={() => changeEvent(thisEvent!)}
                     className={s.Button}
                 >
                     Переключить

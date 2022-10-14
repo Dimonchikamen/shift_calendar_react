@@ -18,10 +18,7 @@ import Popover from "./Components/Popover/Popover";
 import { hasOverlap } from "../../Helpers/HasOverlap";
 import PopupError from "../../UiKit/Popup/ErrorPopup/ErrorPopup";
 import { CircularProgress } from "@mui/material";
-// import { getInterviewTimeRequest } from "../../Redux/Actions/InterviewTimeActions/GetInterviewTimeActions";
-// import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
-// import { getRecruitersRequest } from "../../Redux/Actions/RecruitersActions/GetRecruitersActions";
 import { FullDateTime } from "../../Types/FullDateTime";
 import {
     addRecruiterWorkTimeRequest,
@@ -30,31 +27,21 @@ import {
 } from "../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
 import { Time } from "../../Types/Time";
 import { getDate, getHour, getMinutes } from "../../Helpers/DateTimeHelpers";
-// import { getWorkTimeRequest } from "../../Redux/Actions/WorkTimeActions/WorkDayActions";
 import WaitPopup from "../../UiKit/Popup/WaitPopup/WaitPopup";
 import { DATE_TIME_FORMAT, widthDragDropContext } from "../../Constants";
 import { getInformationRequest } from "../../Redux/Actions/GetInformationActions";
 import { getStartAndEndOfWeek } from "../../Helpers/GetStartAndEndOfWeek";
 import { changeCurrentDateAction } from "../../Redux/Actions/ChangeCurrentDateActions";
 import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
-//import { filterEvents } from "../../Helpers/Filters";
 
 moment.locale("ru-ru");
 
 const ReactBigCalendar: FC = () => {
-    const {
-        getInformationPending,
-        allEventsPending,
-        workTimePending,
-        interviewTimePending,
-        recruitersPending,
-        changePending,
-        state,
-        error,
-        changeError,
-    } = useAppSelector(state => state.workDayState);
+    const { getInformationPending, allEventsPending, changePending, state, error, changeError } = useAppSelector(
+        state => state.workDayState
+    );
     const calendarViewType = state.calendarViewType;
-    const recruiters = state.currentRecruiters;
+    const recruiters = state.recruiters;
     const behaviours = state.behaviours;
 
     const currentDate = state.currentDate;
@@ -102,10 +89,6 @@ const ReactBigCalendar: FC = () => {
             const [start, end] = getStartAndEndOfWeek(new Date(currentDate));
             dispatch(getInformationRequest(start, end));
         }
-        // dispatch(getRecruitersRequest());
-        // dispatch(getWorkTimeRequest(new Date(currentDate), 1));
-        // dispatch(getInterviewTimeRequest(1));
-        // dispatch(getEventsRequest());
     }, [currentDate]);
 
     useEffect(() => {
@@ -149,8 +132,6 @@ const ReactBigCalendar: FC = () => {
             dispatch(getInformationRequest(start, end));
         }
         dispatch(changeCurrentDateAction(new Date(schedulerData.startDate)));
-        //setCurrentDate(schedulerData.startDate);
-        //setView({ data: schedulerData });
     };
 
     const changeMainEvent = () => {
@@ -301,7 +282,7 @@ const ReactBigCalendar: FC = () => {
         );
     };
 
-    if (getInformationPending || allEventsPending || workTimePending || interviewTimePending || recruitersPending) {
+    if (getInformationPending || allEventsPending) {
         return <CircularProgress />;
     } else {
         return (

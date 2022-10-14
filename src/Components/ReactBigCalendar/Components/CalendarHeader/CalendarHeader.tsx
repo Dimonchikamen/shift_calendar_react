@@ -30,8 +30,8 @@ const CalendarHeader: FC<ICalendarHeader> = ({ currentDate, onChangeEvent }) => 
     const viewType = state.viewType;
     const currentEvent = useAppSelector(state => state.workDayState.state.currentEvent);
     const currentInformation = state.currentInformation;
-    const min = currentInformation?.start ?? getHour(getTimeFromHours(state.currentDayStart));
-    const max = currentInformation?.end ?? getHour(getTimeFromHours(state.currentDayEnd));
+    const min = currentInformation?.start ?? getHour(getTimeFromHours(9));
+    const max = currentInformation?.end ?? getHour(getTimeFromHours(19));
     const interviewDuration = getTimeFromHours(
         useAppSelector(state => state.workDayState.state.currentInterviewDuration)
     );

@@ -27,21 +27,6 @@ export interface FailurePayload {
     error: string;
 }
 
-export type GetRecruitersRequest = {
-    type: ActionTypes.GET_RECRUITERS_REQUEST;
-    payload: { start?: Date; end?: Date };
-};
-
-export type GetRecruitersSuccess = {
-    type: ActionTypes.GET_RECRUITERS_SUCCESS;
-    payload: Recruiter[];
-};
-
-export type GetRecruitersFailure = {
-    type: ActionTypes.GET_RECRUITERS_FAILURE;
-    payload: FailurePayload;
-};
-
 export type AddRecruiterWorkTimeRequest = {
     type: ActionTypes.ADD_RECRUITER_EVENT_REQUEST;
     payload: AddRecruiterRequestPayload;
@@ -87,15 +72,7 @@ export type RemoveRecruiterWorkTimeFailure = {
     payload: FailurePayload;
 };
 
-export type SortRecruiters = {
-    type: ActionTypes.FILTER_RECRUITERS;
-    payload: Event;
-};
-
 export type RecruitersTypes =
-    | GetRecruitersRequest
-    | GetRecruitersSuccess
-    | GetRecruitersFailure
     | AddRecruiterWorkTimeRequest
     | AddRecruiterWorkTimeSuccess
     | AddRecruiterWorkTimeFailure
@@ -104,5 +81,4 @@ export type RecruitersTypes =
     | EditRecruiterWorkTimeFailure
     | RemoveRecruiterWorkTimeRequest
     | RemoveRecruiterWorkTimeSuccess
-    | RemoveRecruiterWorkTimeFailure
-    | SortRecruiters;
+    | RemoveRecruiterWorkTimeFailure;
