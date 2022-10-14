@@ -25,11 +25,4 @@ export type CloseErrorWindow = {
     type: ActionTypes.CLOSE_ERROR_WINDOW;
 };
 
-export type MainActions =
-    | ChangeDate
-    | ChangeViewType
-    //ChangeEvent
-    // | ChangeInterviewTime
-    | ChangeCalendarViewType
-    | ResizeAction
-    | CloseErrorWindow;
+export type MainActions = ChangeDate | ChangeViewType | ChangeCalendarViewType | ResizeAction | CloseErrorWindow;

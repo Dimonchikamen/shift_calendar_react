@@ -1,9 +1,8 @@
 import { FC } from "react";
 import { ScheduleEvent } from "../../../../Types/ScheduleEvent";
-import { Resource, SchedulerData } from "react-big-scheduler";
+import { SchedulerData } from "react-big-scheduler";
 import Button from "antd/lib/button";
 import s from "../Popover/Popover.module.css";
-import { Recruiter } from "../../../../Types/Recruiter";
 import { useAppDispatch } from "../../../../Redux/Hooks";
 import { DATE_TIME_FORMAT } from "../../../../Constants";
 import { changeEventAction } from "../../../../Redux/Actions/ChangeEventAction";
