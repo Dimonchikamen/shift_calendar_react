@@ -73,7 +73,7 @@ const ReactBigCalendar: FC = () => {
         [recruiters, currentEvent]
     );
     const dispatch = useAppDispatch();
-    //const [errorCode, setErrorCode] = useState(500);
+    const events = state.events;
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
@@ -290,11 +290,10 @@ const ReactBigCalendar: FC = () => {
                 title={title}
                 start={start}
                 end={end}
-                currentEvent={currentEvent}
                 role={role}
                 viewType={viewType}
                 view={view}
-                recruiters={recruiters}
+                events={events}
                 deleteEvent={deleteEvent}
                 editEvent={editEvent}
             />

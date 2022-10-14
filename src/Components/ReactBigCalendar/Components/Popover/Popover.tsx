@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { ScheduleEvent } from "../../../../Types/ScheduleEvent";
-import { SchedulerData } from "react-big-scheduler";
+import { Resource, SchedulerData } from "react-big-scheduler";
 import Button from "antd/lib/button";
 import s from "../Popover/Popover.module.css";
 import { Recruiter } from "../../../../Types/Recruiter";
@@ -16,10 +16,9 @@ interface IPopoverProps {
     title: string;
     start: any;
     end: any;
-    currentEvent: Event;
     role: string;
     viewType: ViewType;
-    recruiters?: Recruiter[];
+    events: Event[];
     view?: string;
     deleteEvent: (eventItem: ScheduleEvent) => void;
     editEvent: (schedulerData: SchedulerData, eventItem: ScheduleEvent) => void;
@@ -28,31 +27,38 @@ interface IPopoverProps {
 const Popover: FC<IPopoverProps> = ({
     schedulerData,
     eventItem,
-    recruiters,
+    events,
     title,
     start,
     end,
-    currentEvent,
     role,
     viewType,
     view = "worktime",
     deleteEvent,
     editEvent,
 }) => {
-    // const changeEvent = (eventName: string) => {
-    //     dispatch(changeEventAction(recruiters!, eventName));
-    // };
+    const dispatch = useAppDispatch();
+
+    const changeEvent = (event: Event) => {
+        dispatch(
+            changeEventAction({
+                id: event.id,
+                title: event.title,
+            })
+        );
+    };
 
     if (eventItem.bgColor === "#EEE" && viewType === "edit") {
+        const eventToChange = events.filter(ev => ev.id === eventItem.eventId)[0];
         return (
             <div className={s.Popover}>
                 <div>
                     Это рабочее время для другого мероприятия.
                     <br />
-                    Переключить мероприятие на <strong>{currentEvent.title}</strong>?
+                    Переключить мероприятие на <strong>{eventToChange.title}</strong>?
                 </div>
                 <Button
-                    //onClick={() => changeEvent(thisEvent!)}
+                    onClick={() => changeEvent(eventToChange)}
                     className={s.Button}
                 >
                     Переключить

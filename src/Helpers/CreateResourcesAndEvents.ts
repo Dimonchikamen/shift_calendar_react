@@ -42,6 +42,7 @@ export const createResourcesAndEvents = (
                 id: workedTime.id,
                 start: formattedStart,
                 end: formattedEnd,
+                eventId: workedTime.eventId,
                 resourceId: String(r.id),
                 title: createTitle(formattedStart, formattedEnd),
                 resizable: false,
