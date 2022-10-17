@@ -16,10 +16,19 @@ const getIntervals = (eventInfo: ScheduleEvent, interviewDuration: number) => {
 
     const res: string[] = [];
     let startMinutesIndex = minutes.findIndex(e => e === getMinutesInAllDateTime(eventInfo.start));
-    for (let i = 0; i < hours.length - 1; i++) {
+    for (let i = 0; i < hours.length; i++) {
         for (let j = startMinutesIndex; j < minutes.length; j++) {
             const start = `${hours[i]}:${minutes[j]}`;
-            const end = j === minutes.length - 1 ? `${hours[i + 1]}:${minutes[0]}` : `${hours[i]}:${minutes[j + 1]}`;
+            let end;
+            if (j === minutes.length - 1) {
+                if (i !== hours.length - 1) {
+                    end = `${hours[i + 1]}:${minutes[0]}`;
+                } else {
+                    continue;
+                }
+            } else {
+                end = `${hours[i]}:${minutes[j + 1]}`;
+            }
             res.push(createTitleFromHours(start, end));
         }
         startMinutesIndex = 0;
