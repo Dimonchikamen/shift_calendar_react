@@ -62,10 +62,11 @@
 .round-all.event-item {
     text-overflow: clip;
     padding: 0 !important;
+    border-radius: 5px;
 }
 
 .event-item > span {
     color: #151515;
-    font-size: 15px;
+    font-size: 0.7em;
     margin-left: 0 !important;
 }
