@@ -54,7 +54,7 @@ const Popover: FC<IPopoverProps> = ({
                 <div>
                     Это рабочее время для другого мероприятия.
                     <br />
-                    Переключить мероприятие на <strong>{eventToChange.title}</strong>?
+                    Переключить его на <strong>{eventToChange.title}</strong>?
                 </div>
                 <Button
                     onClick={() => changeEvent(eventToChange)}
