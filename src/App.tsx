@@ -4,10 +4,11 @@ import ReactBigCalendar from "./Components/ReactBigCalendar/ReactBigCalendar";
 import { useAppDispatch } from "./Redux/Hooks";
 import { setRoleAction } from "./Redux/Actions/SetRoleAction";
 import { setViewAction } from "./Redux/Actions/SetViewAction";
+import { ViewTypeWorktime } from "./Types/ViewTypeWorktime";
 
 interface IAppProps {
     role: string;
-    view: string;
+    view: ViewTypeWorktime;
 }
 
 const App: FC<IAppProps> = ({ role, view }) => {

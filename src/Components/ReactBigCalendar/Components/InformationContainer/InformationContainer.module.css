@@ -6,9 +6,10 @@
     background-color: #d9edf7;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 30px;
     padding: 15px;
+    height: fit-content;
 }
 
 .requiter,
@@ -40,7 +41,7 @@
     font-weight: 700;
 }
 
-a{
+a {
     color: #000;
 }
 
@@ -48,7 +49,7 @@ a{
     font-size: 18px;
 }
 
-.save_btn{
+.save_btn {
     padding: 5px 10px;
     border-radius: 4px;
     background-color: #1890ff;
@@ -58,23 +59,23 @@ a{
     cursor: pointer;
 }
 
-.select_work_time_container{
+.select_work_time_container {
     text-align: left;
 }
-.work_time_selector{
+.work_time_selector {
     margin-left: 5px;
     background-color: #fff;
 }
-.work_time_selector > div{
+.work_time_selector > div {
     padding: 2px 7px;
 }
-.work_time_selector > fieldset > legend{
+.work_time_selector > fieldset > legend {
     display: none;
 }
-.work_time_selector > fieldset{
-    top: 0
+.work_time_selector > fieldset {
+    top: 0;
 }
-.selector_container{
+.selector_container {
     display: flex;
     align-items: center;
 }

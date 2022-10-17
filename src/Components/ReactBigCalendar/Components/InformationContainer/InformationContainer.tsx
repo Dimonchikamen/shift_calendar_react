@@ -13,7 +13,7 @@ import { getHour, getTime } from "../../../../Helpers/DateTimeHelpers";
 import { createResourcesAndEvents } from "../../../../Helpers/CreateResourcesAndEvents";
 import { hasOverlapTime } from "../../../../Helpers/HasOverlap";
 
-const mergeInterviewsInfo = (interviews: Interview[]) => {
+export const mergeInterviewsInfo = (interviews: Interview[]) => {
     const res: { id: number; name: string; bookedTimes: string[] }[] = [];
     interviews.forEach(interview => {
         const index = res.findIndex(r => r.name === interview.name);
@@ -29,7 +29,7 @@ const mergeInterviewsInfo = (interviews: Interview[]) => {
 
 interface IInformationContainerProps {
     data: RequiterInfo;
-    role?: "admin" | "user";
+    role?: string;
     view?: string;
     isEditing?: boolean;
     eventEditing: ScheduleEvent;
@@ -93,114 +93,134 @@ const InformationContainer: FC<IInformationContainerProps> = ({
                 <span className={s.font_size_18}>Рекрутёр:</span>
                 <span className={s.time}>{data.name}</span>
             </div>
-
-            {view === "interview" ? (
+            {role === "admin" || role === "coord" ? (
+                <>
+                    {view === "interview" ? (
+                        <>
+                            <div className={s.work_time}>
+                                <span className={s.font_size_18}>Время собеседования:</span>
+                                <span className={s.time}>{currentInterview.start + " - " + currentInterview.end}</span>
+                            </div>
+                            <div className={s.work_time}>
+                                <span className={s.font_size_18}>Волонтер:</span>
+                                <span className={s.time}>{currentInterview.name}</span>
+                            </div>
+                            <div className={s.work_time}>
+                                <span className={s.font_size_18}>Роль:</span>
+                                <span className={s.time}>{currentInterview.role}</span>
+                            </div>
+                            <div className={s.work_time}>
+                                <span className={s.font_size_18}>Контакты:</span>
+                                <span className={s.time}>{currentInterview.phone}</span>
+                            </div>
+                            <div className={s.work_time}>
+                                <span className={s.font_size_18}>Способ связи:</span>
+                                <span className={s.time}>{currentInterview.contacts}</span>
+                            </div>
+                            <div className={s.work_time}>
+                                <a href="#">
+                                    <span className={s.time}>Анкета волонтера</span>
+                                </a>
+                            </div>
+                        </>
+                    ) : !isEditing ? (
+                        <>
+                            <div className={s.work_time}>
+                                <span className={s.font_size_18}>Рабочий промежуток времени:</span>
+                                <span className={s.time}>{data.workTimeTitle}</span>
+                            </div>
+                            <div className={s.available_interviews}>
+                                <span className={s.font_size_18}>Доступные собеседования:</span>
+                                {data.availableInterviewTimes.map((t, i) => (
+                                    <span
+                                        key={`available_time_${i}`}
+                                        className={s.time}
+                                    >
+                                        {t}
+                                    </span>
+                                ))}
+                                {mergedInterviewsInfo.map(interview => (
+                                    <div
+                                        key={`interview_${interview.id}`}
+                                        className={s.interview}
+                                    >
+                                        <span>{interview.name}</span>
+                                        <div className={s.interview_times}>
+                                            {interview.bookedTimes.map((t, i) => (
+                                                <span
+                                                    key={`booked_time_${interview.id}_${i}`}
+                                                    className={s.time}
+                                                >
+                                                    {t}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className={s.work_time}>
+                                <span className={s.font_size_18}>Рабочий промежуток времени:</span>
+                                <span className={s.time}>{data.workTimeTitle}</span>
+                            </div>
+                            <div className={s.select_work_time_container}>
+                                <div>Изменить рабочее время:</div>
+                                <div className={s.selector_container}>
+                                    <span>с</span>
+                                    <SelectItem
+                                        value={workTimeStart}
+                                        options={options}
+                                        size="small"
+                                        optionDisableFunc={o =>
+                                            getHour(o) < dayStart || getHour(o) >= getHour(workTimeEnd)
+                                        }
+                                        onchange={e => setDayStart(e.target.value)}
+                                        className={s.work_time_selector}
+                                    />
+                                </div>
+                                <div className={s.selector_container}>
+                                    <span>до</span>
+                                    <SelectItem
+                                        value={workTimeEnd}
+                                        options={options}
+                                        size="small"
+                                        optionDisableFunc={o =>
+                                            getHour(o) > dayEnd || getHour(o) <= getHour(workTimeStart)
+                                        }
+                                        onchange={e => setDayEnd(e.target.value)}
+                                        className={s.work_time_selector}
+                                    />
+                                </div>
+                                {isTimeWrong ? (
+                                    <>
+                                        <span style={{ color: "red", fontSize: "13px" }}>Введите корректное время</span>
+                                    </>
+                                ) : (
+                                    <></>
+                                )}
+                            </div>
+                            <Button
+                                className={s.save_btn}
+                                onClick={() => editingEvent(eventEditing)}
+                            >
+                                Сохранить
+                            </Button>
+                        </>
+                    )}
+                </>
+            ) : (
                 <>
                     <div className={s.work_time}>
                         <span className={s.font_size_18}>Время собеседования:</span>
                         <span className={s.time}>{currentInterview.start + " - " + currentInterview.end}</span>
                     </div>
-                    <div className={s.work_time}>
-                        <span className={s.font_size_18}>Волонтер:</span>
-                        <span className={s.time}>{currentInterview.name}</span>
-                    </div>
-                    <div className={s.work_time}>
-                        <span className={s.font_size_18}>Роль:</span>
-                        <span className={s.time}>{currentInterview.role}</span>
-                    </div>
-                    <div className={s.work_time}>
-                        <span className={s.font_size_18}>Контакты:</span>
-                        <span className={s.time}>{currentInterview.phone}</span>
-                    </div>
-                    <div className={s.work_time}>
-                        <span className={s.font_size_18}>Способ связи:</span>
-                        <span className={s.time}>{currentInterview.contacts}</span>
-                    </div>
-                    <div className={s.work_time}>
-                        <a href="#">
-                            <span className={s.time}>Анкета волонтера</span>
-                        </a>
-                    </div>
-                </>
-            ) : !isEditing ? (
-                <>
-                    <div className={s.work_time}>
-                        <span className={s.font_size_18}>Рабочий промежуток времени:</span>
-                        <span className={s.time}>{data.workTimeTitle}</span>
-                    </div>
-                    <div className={s.available_interviews}>
-                        <span className={s.font_size_18}>Доступные собеседования:</span>
-                        {data.availableInterviewTimes.map((t, i) => (
-                            <span
-                                key={`available_time_${i}`}
-                                className={s.time}
-                            >
-                                {t}
-                            </span>
-                        ))}
-                        {mergedInterviewsInfo.map(interview => (
-                            <div
-                                key={`interview_${interview.id}`}
-                                className={s.interview}
-                            >
-                                <span>{interview.name}</span>
-                                <div className={s.interview_times}>
-                                    {interview.bookedTimes.map((t, i) => (
-                                        <span
-                                            key={`booked_time_${interview.id}_${i}`}
-                                            className={s.time}
-                                        >
-                                            {t}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </>
-            ) : (
-                <>
-                    <div className={s.work_time}>
-                        <span className={s.font_size_18}>Рабочий промежуток времени:</span>
-                        <span className={s.time}>{data.workTimeTitle}</span>
-                    </div>
-                    <div className={s.select_work_time_container}>
-                        <div>Изменить рабочее время:</div>
-                        <div className={s.selector_container}>
-                            <span>с</span>
-                            <SelectItem
-                                value={workTimeStart}
-                                options={options}
-                                size="small"
-                                optionDisableFunc={o => getHour(o) < dayStart || getHour(o) >= getHour(workTimeEnd)}
-                                onchange={e => setDayStart(e.target.value)}
-                                className={s.work_time_selector}
-                            />
-                        </div>
-                        <div className={s.selector_container}>
-                            <span>до</span>
-                            <SelectItem
-                                value={workTimeEnd}
-                                options={options}
-                                size="small"
-                                optionDisableFunc={o => getHour(o) > dayEnd || getHour(o) <= getHour(workTimeStart)}
-                                onchange={e => setDayEnd(e.target.value)}
-                                className={s.work_time_selector}
-                            />
-                        </div>
-                        {isTimeWrong ? (
-                            <>
-                                <span style={{ color: "red", fontSize: "13px" }}>Введите корректное время</span>
-                            </>
-                        ) : (
-                            <></>
-                        )}
-                    </div>
                     <Button
                         className={s.save_btn}
-                        onClick={() => editingEvent(eventEditing)}
+                        onClick={() => alert("ok")}
                     >
-                        Сохранить
+                        Записаться
                     </Button>
                 </>
             )}

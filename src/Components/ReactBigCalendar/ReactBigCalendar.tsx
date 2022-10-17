@@ -56,7 +56,7 @@ const ReactBigCalendar: FC = () => {
     const role = state.role;
     const view = state.view;
     const [resources, scheduleEvents, interviews] = useMemo(
-        () => createResourcesAndEvents(recruiters, currentEvent.id),
+        () => createResourcesAndEvents(recruiters, currentEvent.id, role),
         [recruiters, currentEvent]
     );
     const dispatch = useAppDispatch();
@@ -173,6 +173,7 @@ const ReactBigCalendar: FC = () => {
         start: FullDateTime,
         end: FullDateTime
     ) => {
+        if (role === "user") return;
         let canAddEvent = true;
         const ev = createSchedulerEvent(start, end, slotId);
         scheduleEvents
@@ -311,6 +312,7 @@ const ReactBigCalendar: FC = () => {
                                 data={selectData}
                                 isEditing={isEditing}
                                 view={view}
+                                role={role}
                                 eventEditing={eventAdding!}
                                 onEditEvent={editingEvent}
                             />
