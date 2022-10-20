@@ -8,12 +8,13 @@ import { FullDateTime } from "../Types/FullDateTime";
 import { DATE_TIME_FORMAT } from "../Constants";
 import { getAvailableTimes } from "./GetAvailableTimes";
 import { ScheduleInterviewEvent } from "../Types/ScheduleInterviewEvent";
-import { getHoursInAllDateTime } from "./DateTimeHelpers";
+import { getTime } from "./DateTimeHelpers";
 
 export const createResourcesAndEvents = (
     recruiters: Recruiter[],
     currentEventId?: number,
-    role?: string
+    role?: string,
+    interviewDuration?: number
 ): [resources: Resource[], events: ScheduleEvent[], interviews: ScheduleInterviewEvent[]] => {
     const resources: Resource[] = [];
     const events: ScheduleEvent[] = [];
@@ -72,7 +73,7 @@ export const createResourcesAndEvents = (
     const interviews = ints.sort((a, b) => compareFullDateTime(a.start, b.start));
 
     const freeInts: ScheduleInterviewEvent[] = [];
-    const availableTimes = res.map(ev => ({ event: ev, times: getAvailableTimes(ev, [], 30) }));
+    const availableTimes = res.map(ev => ({ event: ev, times: getAvailableTimes(ev, [], interviewDuration!) }));
     availableTimes.forEach(obj => {
         obj.times.forEach(time => {
             const intStart = obj.event.start.slice(0, 11) + time.split(" - ")[0];
@@ -82,7 +83,7 @@ export const createResourcesAndEvents = (
             if (
                 !interviews.some(
                     ev =>
-                        Number(getHoursInAllDateTime(ev.start)) === Number(time.split(" - ")[0]) &&
+                        getTime(ev.start) === time.split(" - ")[0] &&
                         ev.start.slice(0, 11) === formattedStart.slice(0, 11) &&
                         ev.resourceId === obj.event.resourceId
                 )

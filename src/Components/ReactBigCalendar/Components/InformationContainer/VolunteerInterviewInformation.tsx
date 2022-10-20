@@ -19,6 +19,7 @@ const VolunteerInterviewInformation: FC<IVolunteerInterviewInformationProps> = (
             <Button
                 className={s.save_btn}
                 onClick={() => onSignUp(interview)}
+                variant={"contained"}
             >
                 Записаться
             </Button>

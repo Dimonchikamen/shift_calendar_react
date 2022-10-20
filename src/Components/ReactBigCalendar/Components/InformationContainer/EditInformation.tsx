@@ -94,6 +94,7 @@ const EditInformation: FC<IEditInformationProps> = ({ data, eventEditing, onEdit
             <Button
                 className={s.save_btn}
                 onClick={() => editingEvent(eventEditing)}
+                variant={"contained"}
             >
                 Сохранить
             </Button>

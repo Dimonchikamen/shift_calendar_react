@@ -66,6 +66,7 @@ const defaultState: GlobalState = {
                 { viewName: "День", viewType: ViewTypes.Day, showAgenda: false, isEventPerspective: false },
                 { viewName: "Неделя", viewType: ViewTypes.Week, showAgenda: false, isEventPerspective: false },
             ],
+            calendarPopoverEnabled: false,
         },
         calendarViewType: ViewTypes.Day,
         behaviours: {

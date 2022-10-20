@@ -58,7 +58,7 @@ const ReactBigCalendar: FC = () => {
     const role = state.role;
     const view = state.view;
     const [resources, scheduleEvents, interviews] = useMemo(
-        () => createResourcesAndEvents(recruiters, currentEvent.id, role),
+        () => createResourcesAndEvents(recruiters, currentEvent.id, role, currentInterviewDuration),
         [recruiters, currentEvent]
     );
     const dispatch = useAppDispatch();
@@ -129,13 +129,17 @@ const ReactBigCalendar: FC = () => {
                 availableInterviewTimes,
                 interviews: event.interviews,
             };
-        } else
+        } else {
+            const selectedInterview = scheduleEvents
+                .filter(e => e.id === event.workTimeId)[0]
+                .interviews.filter(i => i.id === event.id);
             return {
                 name: recruiter.name,
                 workTimeTitle: event.title,
                 availableInterviewTimes: [],
-                interviews: [],
+                interviews: selectedInterview,
             };
+        }
     };
 
     const setSchedulerData = (schedulerData: SchedulerData) => {
@@ -304,6 +308,11 @@ const ReactBigCalendar: FC = () => {
     if (getInformationPending || allEventsPending) {
         return <CircularProgress />;
     } else {
+        const di = document.querySelector("i.anticon.anticon-left.icon-nav");
+        const today = moment(new Date()).format(DATE_TIME_FORMAT).split(" ")[0];
+        if (di !== null && role === "user" && currentDateString.split(" ")[0] <= today) {
+            di.remove();
+        }
         return (
             <>
                 <div className={s.table_container}>

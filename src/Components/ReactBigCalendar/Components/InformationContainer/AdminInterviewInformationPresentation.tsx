@@ -1,7 +1,6 @@
 import { FC } from "react";
 import s from "./InformationContainer.module.css";
 import { Interview } from "../../../../Types/Interview";
-import { ScheduleInterviewEvent } from "../../../../Types/ScheduleInterviewEvent";
 
 interface IAdminInterviewInformationPresentationProps {
     interview: Interview;
@@ -28,7 +27,14 @@ const AdminInterviewInformationPresentation: FC<IAdminInterviewInformationPresen
             </div>
             <div className={s.work_time}>
                 <span className={s.font_size_18}>Способ связи:</span>
-                <span className={s.time}>{interview.contacts}</span>
+                {interview.contacts.map((contact, i) => (
+                    <span
+                        key={`contact-${i}`}
+                        className={s.time}
+                    >
+                        {contact}
+                    </span>
+                ))}
             </div>
             <div className={s.work_time}>
                 <a href="#">
