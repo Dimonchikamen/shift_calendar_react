@@ -7,6 +7,7 @@ import { Event } from "../Types/Event";
 import eventsMock from "../Mocks/Events2.json";
 import informationMock from "../Mocks/Response2.json";
 import { GetInformationResponse } from "../Types/GetInformationResponse";
+import { FullDateTime } from "../Types/FullDateTime";
 
 export class ServerAPI {
     static async getInformation(startDate: Date, endDate: Date): Promise<GetInformationResponse> {
@@ -79,6 +80,21 @@ export class ServerAPI {
         data.append("end", String(newEnd));
         data.append("date", moment(date).format(DATE_TIME_FORMAT));
         data.append("eventId", String(eventId));
+        return await axios.post(url, data).then(res => res.data);
+    }
+
+    static async singUpVolunteer(
+        recruiterWorkTimeId: number,
+        roleId: number,
+        start: FullDateTime,
+        end: FullDateTime
+    ): Promise<Recruiter> {
+        const url = "/events/set-interview";
+        const data = new FormData();
+        data.append("workTimeId", String(recruiterWorkTimeId));
+        data.append("roleId", String(roleId));
+        data.append("start", start);
+        data.append("end", end);
         return await axios.post(url, data).then(res => res.data);
     }
 }

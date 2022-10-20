@@ -14,6 +14,7 @@ import { GetInformationTypes } from "../Types/GetInformationTypes";
 import { WorkTime } from "../../Types/WorkTime";
 import { EventInformation } from "../../Types/EventInformation";
 import { setWorkTimeHelper } from "../Helpers/SetWorkTimeHelper";
+import { SignUpVolunteerTypes } from "../Types/SignUpVolunteerTypes";
 
 const defaultState: GlobalState = {
     rolePending: false,
@@ -88,6 +89,7 @@ const WorkDayReducer = (
         | EventsTypes
         | RecruitersTypes
         | GetInformationTypes
+        | SignUpVolunteerTypes
         | RoleTypes
         | ViewType
 ): GlobalState => {
@@ -97,13 +99,12 @@ const WorkDayReducer = (
         return { ...state, getInformationPending: true };
     } else if (
         action.type === ActionTypes.CHANGE_WORK_TIME_REQUEST ||
-        action.type === ActionTypes.CHANGE_INTERVIEW_TIME_REQUEST
+        action.type === ActionTypes.CHANGE_INTERVIEW_TIME_REQUEST ||
+        action.type === ActionTypes.SIGN_UP_VOLUNTEER_REQUEST
     ) {
         return { ...state, changePending: true };
     } else if (action.type === ActionTypes.CHANGE_WORK_TIME_SUCCESS) {
         const copy = getCopy(state.state, true);
-        //copy.currentDayStart = action.payload?.start;
-        //copy.currentDayEnd = action.payload?.end;
         copy.config.dayStartFrom = action.payload?.start ?? 9;
         copy.config.dayStopTo = action.payload?.end ?? 19;
         copy.currentInformation = { start: action.payload?.start, end: action.payload?.end };
@@ -118,7 +119,6 @@ const WorkDayReducer = (
     } else if (action.type === ActionTypes.CHANGE_INTERVIEW_TIME_SUCCESS) {
         const copy = getCopy(state.state, true);
         copy.currentEventInformation.interviewDuration = action.payload;
-        //copy.currentInterviewTime = action.payload;
         copy.config.minuteStep = action.payload;
         return {
             ...state,
@@ -155,19 +155,11 @@ const WorkDayReducer = (
             allEventsPending: false,
             error: null,
         };
-    } else if (action.type === ActionTypes.CHANGE_EVENT) {
-        const copy = getCopy(state.state);
-        copy.currentEvent = action.payload;
-        copy.currentEventInformation = copy.eventsInformation.get(action.payload.id) as EventInformation;
-        copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
-        setWorkTimeHelper(copy);
-        return {
-            ...state,
-            state: copy,
-            allEventsPending: false,
-            changePending: false,
-            changeError: null,
-        };
+    } else if (action.type === ActionTypes.SIGN_UP_VOLUNTEER_SUCCESS) {
+        const copy = getCopy(state.state, false, true);
+        const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
+        copy.recruiters[index] = action.payload;
+        return { ...state, state: copy, changePending: false, error: null };
     } else if (action.type === ActionTypes.GET_EVENTS_FAILURE || action.type === ActionTypes.GET_INFORMATION_FAILURE) {
         const getInformationPending =
             action.type === ActionTypes.GET_INFORMATION_FAILURE ? false : state.getInformationPending;
@@ -181,7 +173,8 @@ const WorkDayReducer = (
         };
     } else if (
         action.type === ActionTypes.CHANGE_WORK_TIME_FAILURE ||
-        action.type === ActionTypes.CHANGE_INTERVIEW_TIME_FAILURE
+        action.type === ActionTypes.CHANGE_INTERVIEW_TIME_FAILURE ||
+        action.type === ActionTypes.SIGN_UP_VOLUNTEER_FAILURE
     ) {
         return {
             ...state,
@@ -217,6 +210,16 @@ const WorkDayReducer = (
         action.type === ActionTypes.REMOVE_RECRUITER_EVENT_FAILURE
     ) {
         return { ...state, changePending: false, changeError: action.payload.error };
+    } else if (action.type === ActionTypes.CHANGE_EVENT) {
+        const copy = getCopy(state.state);
+        copy.currentEvent = action.payload;
+        copy.currentEventInformation = copy.eventsInformation.get(action.payload.id) as EventInformation;
+        copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
+        setWorkTimeHelper(copy);
+        return {
+            ...state,
+            state: copy,
+        };
     } else if (action.type === ActionTypes.SET_ROLE) {
         const copy = getCopy(state.state);
         copy.role = action.payload;

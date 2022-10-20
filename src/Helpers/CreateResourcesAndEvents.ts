@@ -7,16 +7,17 @@ import { compareFullDateTime } from "./Compare";
 import { FullDateTime } from "../Types/FullDateTime";
 import { DATE_TIME_FORMAT } from "../Constants";
 import { getAvailableTimes } from "./GetAvailableTimes";
+import { ScheduleInterviewEvent } from "../Types/ScheduleInterviewEvent";
+import { getHoursInAllDateTime } from "./DateTimeHelpers";
 
 export const createResourcesAndEvents = (
     recruiters: Recruiter[],
     currentEventId?: number,
     role?: string
-): [resources: Resource[], events: ScheduleEvent[], interviews: ScheduleEvent[]] => {
+): [resources: Resource[], events: ScheduleEvent[], interviews: ScheduleInterviewEvent[]] => {
     const resources: Resource[] = [];
     const events: ScheduleEvent[] = [];
-    const ints: ScheduleEvent[] = [];
-    const freeInts: ScheduleEvent[] = [];
+    const ints: ScheduleInterviewEvent[] = [];
     if (recruiters.length === 0) return [[], [], []];
     recruiters.forEach(r => {
         resources.push({ id: String(r.id), name: r.name });
@@ -34,7 +35,7 @@ export const createResourcesAndEvents = (
                     title: interview.start,
                     resizable: false,
                     bgColor: "#D9EDF7",
-                    interviews: [interview],
+                    workTimeId: workedTime.id,
                 });
             });
 
@@ -69,6 +70,8 @@ export const createResourcesAndEvents = (
 
     const res = events.sort((a, b) => compareFullDateTime(a.start, b.start));
     const interviews = ints.sort((a, b) => compareFullDateTime(a.start, b.start));
+
+    const freeInts: ScheduleInterviewEvent[] = [];
     const availableTimes = res.map(ev => ({ event: ev, times: getAvailableTimes(ev, [], 30) }));
     availableTimes.forEach(obj => {
         obj.times.forEach(time => {
@@ -79,37 +82,28 @@ export const createResourcesAndEvents = (
             if (
                 !interviews.some(
                     ev =>
-                        ev.interviews[0].start === time.split(" - ")[0] &&
+                        Number(getHoursInAllDateTime(ev.start)) === Number(time.split(" - ")[0]) &&
                         ev.start.slice(0, 11) === formattedStart.slice(0, 11) &&
                         ev.resourceId === obj.event.resourceId
                 )
             ) {
                 const id = Math.floor(Math.random() * 1000);
                 freeInts.push({
-                    id: id,
+                    id,
                     start: formattedStart,
                     end: formattedEnd,
                     resourceId: obj.event.resourceId,
                     title: intStart.split(" ")[1],
                     resizable: false,
                     bgColor: "#D9EDF7",
-                    interviews: [
-                        {
-                            id: id,
-                            name: "",
-                            role: "",
-                            phone: "",
-                            contacts: [""],
-                            start: formattedStart.split(" ")[1],
-                            end: formattedEnd.split(" ")[1],
-                        },
-                    ],
+                    workTimeId: obj.event.id,
                 });
             }
         });
     });
-    const frees = freeInts.sort((a, b) => compareFullDateTime(a.start, b.start));
-    return [resources, res, role === "admin" || role === "coord" ? interviews : frees];
+
+    const freeInterviews = freeInts.sort((a, b) => compareFullDateTime(a.start, b.start));
+    return [resources, res, role === "admin" || role === "coord" ? interviews : freeInterviews];
 };
 
 export const createSchedulerEvent = (start: FullDateTime, end: FullDateTime, resourceId: string): ScheduleEvent => {

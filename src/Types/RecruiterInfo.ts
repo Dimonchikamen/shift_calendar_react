@@ -1,6 +1,6 @@
 import { Interview } from "./Interview";
 
-export type RequiterInfo = {
+export type RecruiterInfo = {
     name: string;
     workTimeTitle: string;
     availableInterviewTimes: string[];

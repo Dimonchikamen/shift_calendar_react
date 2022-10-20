@@ -7,7 +7,7 @@ import s from "./ReactBigCalendar.module.css";
 import CalendarHeader from "./Components/CalendarHeader/CalendarHeader";
 import { ScheduleEvent } from "../../Types/ScheduleEvent";
 import InformationContainer from "./Components/InformationContainer/InformationContainer";
-import { RequiterInfo } from "../../Types/RequiterInfo";
+import { RecruiterInfo } from "../../Types/RecruiterInfo";
 import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
 import { changeCalendarViewTypeAction } from "../../Redux/Actions/ChangeCalendarViewTypeAction";
@@ -33,6 +33,8 @@ import { getInformationRequest } from "../../Redux/Actions/GetInformationActions
 import { getStartAndEndOfWeek } from "../../Helpers/GetStartAndEndOfWeek";
 import { changeCurrentDateAction } from "../../Redux/Actions/ChangeCurrentDateActions";
 import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
+import { ScheduleInterviewEvent } from "../../Types/ScheduleInterviewEvent";
+import { signUpVolunteerRequest } from "../../Redux/Actions/SignUpVolunteerActions";
 
 moment.locale("ru-ru");
 
@@ -65,8 +67,8 @@ const ReactBigCalendar: FC = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
     const [isAdding, setIsAdding] = useState<boolean>(true);
-    const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
-    const [selectData, setData] = useState<RequiterInfo | null>(null);
+    const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | ScheduleInterviewEvent | null>(null);
+    const [selectData, setData] = useState<RecruiterInfo | null>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [viewModel, setView] = useState<{ data: SchedulerData }>(() => {
         const data = new SchedulerData(currentDateString, calendarViewType, false, false, config, behaviours);
@@ -111,17 +113,29 @@ const ReactBigCalendar: FC = () => {
         });
     }, [currentDateString, config, resources, scheduleEvents, calendarViewType, behaviours, view]);
 
-    const createData = (schedulerData: SchedulerData, event: ScheduleEvent): RequiterInfo => {
+    function isScheduleEvent(event: ScheduleEvent | ScheduleInterviewEvent): event is ScheduleEvent {
+        return (event as ScheduleEvent).interviews !== undefined;
+    }
+
+    const createData = (schedulerData: SchedulerData, event: ScheduleEvent | ScheduleInterviewEvent): RecruiterInfo => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const recruiter = schedulerData.resources.find((r: Resource) => r.id === event.resourceId);
-        const availableInterviewTimes = getAvailableTimes(event, event.interviews, currentInterviewDuration);
-        return {
-            name: recruiter.name,
-            workTimeTitle: event.title,
-            availableInterviewTimes,
-            interviews: event.interviews,
-        };
+        if (isScheduleEvent(event)) {
+            const availableInterviewTimes = getAvailableTimes(event, event.interviews, currentInterviewDuration);
+            return {
+                name: recruiter.name,
+                workTimeTitle: event.title,
+                availableInterviewTimes,
+                interviews: event.interviews,
+            };
+        } else
+            return {
+                name: recruiter.name,
+                workTimeTitle: event.title,
+                availableInterviewTimes: [],
+                interviews: [],
+            };
     };
 
     const setSchedulerData = (schedulerData: SchedulerData) => {
@@ -157,7 +171,7 @@ const ReactBigCalendar: FC = () => {
         dispatch(changeCalendarViewTypeAction(view.viewType));
     };
 
-    const eventItemClick = (schedulerData: SchedulerData, event: ScheduleEvent) => {
+    const eventItemClick = (schedulerData: SchedulerData, event: ScheduleEvent | ScheduleInterviewEvent) => {
         if (event.bgColor === "#EEE") return;
         setData(createData(schedulerData, event));
         event.bgColor = "#1890ff";
@@ -203,6 +217,11 @@ const ReactBigCalendar: FC = () => {
         setEventAdding(event);
         eventItemClick(schedulerData, event);
         setIsEditing(true);
+    };
+
+    const signUpHandler = (interviewEvent: ScheduleInterviewEvent) => {
+        const roleId = Number((document.querySelector("#root") as HTMLDivElement).dataset.roleId);
+        dispatch(signUpVolunteerRequest(interviewEvent.workTimeId, roleId, interviewEvent.start, interviewEvent.end));
     };
 
     const editingEvent = (eventEditing: ScheduleEvent, newEventStart: Time, newEventEnd: Time) => {
@@ -310,11 +329,13 @@ const ReactBigCalendar: FC = () => {
                         {selectedEvent && selectData && (
                             <InformationContainer
                                 data={selectData}
-                                isEditing={isEditing}
+                                interview={selectedEvent as ScheduleInterviewEvent}
                                 view={view}
                                 role={role}
+                                isEditing={isEditing}
                                 eventEditing={eventAdding!}
                                 onEditEvent={editingEvent}
+                                onSignUp={signUpHandler}
                             />
                         )}
                     </div>

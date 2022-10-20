@@ -87,11 +87,13 @@ const CalendarHeader: FC<ICalendarHeader> = ({ currentDate, onChangeEvent }) => 
                 </div>
             )}
             <div className={s.calendar_header}>
-                <SelectEvent
-                    value={event}
-                    options={events}
-                    onChange={changeEvent}
-                />
+                {(role === "admin" || role === "coord") && (
+                    <SelectEvent
+                        value={event}
+                        options={events}
+                        onChange={changeEvent}
+                    />
+                )}
                 {(role === "admin" || role === "coord") && currentEvent.id !== -1 && viewType === "edit" && (
                     <div className={s.admin_container}>
                         <div className={s.select_work_time_container}>
