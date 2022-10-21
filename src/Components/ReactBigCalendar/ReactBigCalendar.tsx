@@ -28,7 +28,7 @@ import {
 import { Time } from "../../Types/Time";
 import { getDate, getHour, getMinutes } from "../../Helpers/DateTimeHelpers";
 import WaitPopup from "../../UiKit/Popup/WaitPopup/WaitPopup";
-import { DATE_TIME_FORMAT, widthDragDropContext } from "../../Constants";
+import { DATE_FORMAT, DATE_TIME_FORMAT, widthDragDropContext } from "../../Constants";
 import { getInformationRequest } from "../../Redux/Actions/GetInformationActions";
 import { getStartAndEndOfWeek } from "../../Helpers/GetStartAndEndOfWeek";
 import { changeCurrentDateAction } from "../../Redux/Actions/ChangeCurrentDateActions";
@@ -309,7 +309,7 @@ const ReactBigCalendar: FC = () => {
         return <CircularProgress />;
     } else {
         const di = document.querySelector("i.anticon.anticon-left.icon-nav");
-        const today = moment(new Date()).format(DATE_TIME_FORMAT).split(" ")[0];
+        const today = moment(new Date()).format(DATE_FORMAT);
         if (di !== null && role === "user" && currentDateString.split(" ")[0] <= today) {
             di.remove();
         }
