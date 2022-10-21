@@ -191,7 +191,7 @@ const ReactBigCalendar: FC = () => {
         start: FullDateTime,
         end: FullDateTime
     ) => {
-        if (role === "user") return;
+        if (role !== "admin" && role !== "coord") return;
         let canAddEvent = true;
         const ev = createSchedulerEvent(start, end, slotId);
         scheduleEvents
