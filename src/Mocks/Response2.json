@@ -4,39 +4,39 @@
             "eventId": 1386,
             "interviewDuration": 30,
             "workTimes": [
-                { "date": "2022-10-13", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-14", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-15", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-16", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-17", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-18", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-19", "beginTime": "09:00", "endTime": "22:00" }
+                { "date": "2022-10-23", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-10-24", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-10-25", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-10-26", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-10-27", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-10-28", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-10-29", "beginTime": "09:00", "endTime": "22:00" }
             ]
         },
         {
             "eventId": 1401,
             "interviewDuration": 30,
             "workTimes": [
-                { "date": "2022-10-13", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-14", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-15", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-16", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-17", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-18", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-19", "beginTime": "09:00", "endTime": "19:00" }
+                { "date": "2022-10-23", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-24", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-25", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-26", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-27", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-28", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-29", "beginTime": "09:00", "endTime": "19:00" }
             ]
         },
         {
             "eventId": 1407,
             "interviewDuration": 30,
             "workTimes": [
-                { "date": "2022-10-13", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-14", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-15", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-16", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-17", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-18", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-19", "beginTime": "10:00", "endTime": "19:00" }
+                { "date": "2022-10-23", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-24", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-25", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-26", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-27", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-28", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-29", "beginTime": "10:00", "endTime": "19:00" }
             ]
         }
     ],
@@ -88,8 +88,8 @@
                 {
                     "id": 3,
                     "eventId": 1386,
-                    "start": "2022-10-13 09:00",
-                    "end": "2022-10-13 22:30",
+                    "start": "2022-10-24 09:00",
+                    "end": "2022-10-24 22:30",
                     "interviews": [
                         {
                             "id": 111,
@@ -111,6 +111,41 @@
                         },
                         {
                             "id": 12211,
+                            "name": "Дубровский Любил",
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "21:30",
+                            "end": "22:00"
+                        }
+                    ]
+                },
+                {
+                    "id": 53,
+                    "eventId": 1386,
+                    "start": "2022-10-25 09:00",
+                    "end": "2022-10-25 22:30",
+                    "interviews": [
+                        {
+                            "id": 17611,
+                            "name": "Ольшанский Кирилл",
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "9:00",
+                            "end": "9:30"
+                        },
+                        {
+                            "id": 1654211,
+                            "name": "Гошанский Курил",
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "10:00",
+                            "end": "10:30"
+                        },
+                        {
+                            "id": 122345211,
                             "name": "Дубровский Любил",
                             "role": "Тимлидер",
                             "phone": "+7999999999",
