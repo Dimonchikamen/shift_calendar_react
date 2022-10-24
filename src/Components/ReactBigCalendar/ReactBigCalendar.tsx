@@ -316,6 +316,11 @@ const ReactBigCalendar: FC = () => {
     if (getInformationPending || allEventsPending) {
         return <CircularProgress />;
     } else {
+        const di = document.querySelector("i.anticon.anticon-left.icon-nav");
+        const today = moment(new Date()).format(DATE_FORMAT);
+        if (di !== null && role === "user" && currentDateString.split(" ")[0] <= today) {
+            di.remove();
+        }
         return (
             <>
                 <div className={s.table_container}>
