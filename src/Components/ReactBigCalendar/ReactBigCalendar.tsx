@@ -91,6 +91,14 @@ const ReactBigCalendar: FC = () => {
             const [start, end] = getStartAndEndOfWeek(new Date(currentDate));
             dispatch(getInformationRequest(start, end));
         }
+
+        const di = document.querySelector("i.anticon.anticon-left.icon-nav") as HTMLDivElement;
+        const today = moment(new Date()).format(DATE_FORMAT).split(" ")[0];
+        if (di !== null && role === "user" && currentDateString.split(" ")[0] <= today) {
+            di.style.display = "none";
+        } else {
+            di.style.display = "inline";
+        }
     }, [currentDate]);
 
     useEffect(() => {
@@ -308,11 +316,6 @@ const ReactBigCalendar: FC = () => {
     if (getInformationPending || allEventsPending) {
         return <CircularProgress />;
     } else {
-        const di = document.querySelector("i.anticon.anticon-left.icon-nav");
-        const today = moment(new Date()).format(DATE_FORMAT);
-        if (di !== null && role === "user" && currentDateString.split(" ")[0] <= today) {
-            di.remove();
-        }
         return (
             <>
                 <div className={s.table_container}>

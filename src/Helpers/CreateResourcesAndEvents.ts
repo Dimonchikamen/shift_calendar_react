@@ -8,7 +8,16 @@ import { FullDateTime } from "../Types/FullDateTime";
 import { DATE_TIME_FORMAT } from "../Constants";
 import { getAvailableTimes } from "./GetAvailableTimes";
 import { ScheduleInterviewEvent } from "../Types/ScheduleInterviewEvent";
-import { getTime } from "./DateTimeHelpers";
+import { getHoursInAllDateTime, getTime } from "./DateTimeHelpers";
+
+const isDateEarlierThanNow = (date: string) => {
+    const nowDate = moment(new Date()).format(DATE_TIME_FORMAT);
+    const intDate = moment(date).format(DATE_TIME_FORMAT);
+    const nowHours = Number(getHoursInAllDateTime(nowDate));
+    const dateHours = Number(getHoursInAllDateTime(intDate));
+    if (intDate.slice(0, 11) === nowDate.slice(0, 11)) return dateHours <= nowHours;
+    else if (intDate.slice(0, 11) < nowDate.slice(0, 11)) return true;
+};
 
 export const createResourcesAndEvents = (
     recruiters: Recruiter[],
@@ -88,6 +97,7 @@ export const createResourcesAndEvents = (
                         ev.resourceId === obj.event.resourceId
                 )
             ) {
+                if (isDateEarlierThanNow(formattedStart)) return;
                 const id = Math.floor(Math.random() * 1000);
                 freeInts.push({
                     id,
