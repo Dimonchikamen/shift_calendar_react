@@ -242,9 +242,11 @@ const WorkDayReducer = (
     } else if (action.type === ActionTypes.SET_IS_WIDGET) {
         const copy = getCopy(state.state);
         copy.isWidget = action.payload;
-        copy.config.creatable = false;
-        if (copy.role === "admin" || copy.role === "coord") {
+        if (copy.isWidget) {
+            copy.role = "";
+            copy.viewType = "read";
             copy.view = "interview";
+            copy.config.creatable = false;
         }
         return { ...state, state: copy };
     } else if (action.type === ActionTypes.CHANGE_CALENDAR_VIEW_TYPE) {

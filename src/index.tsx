@@ -11,11 +11,9 @@ root.render(
     <React.StrictMode>
         <Provider store={store}>
             <App
-                role={rootElement.dataset?.role ?? "user"}
+                role={rootElement.dataset?.role ?? ""}
                 view={
-                    rootElement.dataset?.roleId === undefined ||
-                    rootElement.dataset?.roleId === null ||
-                    rootElement.dataset.roleId === ""
+                    rootElement.dataset.roleId === undefined || rootElement.dataset.roleId === null
                         ? "worktime"
                         : "interview"
                 }
