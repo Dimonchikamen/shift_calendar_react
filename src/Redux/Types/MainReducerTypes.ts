@@ -17,6 +17,11 @@ export type ChangeCalendarViewType = {
     payload: ViewTypes;
 };
 
+export type SetIsWidget = {
+    type: ActionTypes.SET_IS_WIDGET;
+    payload: boolean;
+};
+
 export type ResizeAction = {
     type: ActionTypes.RESIZE;
 };
@@ -25,4 +30,10 @@ export type CloseErrorWindow = {
     type: ActionTypes.CLOSE_ERROR_WINDOW;
 };
 
-export type MainActions = ChangeDate | ChangeViewType | ChangeCalendarViewType | ResizeAction | CloseErrorWindow;
+export type MainActions =
+    | ChangeDate
+    | ChangeViewType
+    | ChangeCalendarViewType
+    | SetIsWidget
+    | ResizeAction
+    | CloseErrorWindow;

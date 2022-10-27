@@ -6,6 +6,7 @@ import { DATE_FORMAT, DATE_TIME_FORMAT } from "../Constants";
 import { Event } from "../Types/Event";
 import eventsMock from "../Mocks/Events2.json";
 import informationMock from "../Mocks/Response2.json";
+import informationForVolunteerMock from "../Mocks/ResponseForVolunteer.json";
 import { GetInformationResponse } from "../Types/GetInformationResponse";
 import { FullDateTime } from "../Types/FullDateTime";
 

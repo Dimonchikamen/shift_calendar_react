@@ -4,11 +4,13 @@ import { Event } from "./Event";
 import { EventInformation } from "./EventInformation";
 import { WorkTimeInformation } from "./WorkTimeInformation";
 import { ViewType } from "./ViewType";
+import { ViewTypeWorktime } from "./ViewTypeWorktime";
 
 export type CalendarState = {
     role: string;
     viewType: ViewType;
-    view: string;
+    view: ViewTypeWorktime;
+    isWidget: boolean;
     events: Event[];
     eventsInformation: Map<number, EventInformation>;
     currentEventInformation: EventInformation;

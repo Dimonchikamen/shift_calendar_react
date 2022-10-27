@@ -35,6 +35,8 @@ import { changeCurrentDateAction } from "../../Redux/Actions/ChangeCurrentDateAc
 import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
 import { ScheduleInterviewEvent } from "../../Types/ScheduleInterviewEvent";
 import { signUpVolunteerRequest } from "../../Redux/Actions/SignUpVolunteerActions";
+import { ViewTypeWorktime } from "../../Types/ViewTypeWorktime";
+import { setViewAction } from "../../Redux/Actions/SetViewAction";
 
 moment.locale("ru-ru");
 
@@ -152,6 +154,11 @@ const ReactBigCalendar: FC = () => {
         dispatch(changeCurrentDateAction(new Date(schedulerData.startDate)));
     };
 
+    const changeView = (view: ViewTypeWorktime) => {
+        setSelectedEvent(null);
+        dispatch(setViewAction(view));
+    };
+
     const changeMainEvent = () => {
         setSelectedEvent(null);
     };
@@ -179,7 +186,7 @@ const ReactBigCalendar: FC = () => {
         if (event.bgColor === "#EEE") return;
         setData(createData(schedulerData, event));
         event.bgColor = "#1890ff";
-        if (selectedEvent) selectedEvent.bgColor = "#D9EDF7";
+        if (selectedEvent && event !== selectedEvent) selectedEvent.bgColor = "#D9EDF7";
         setIsEditing(false);
         setSelectedEvent(event);
     };
@@ -191,7 +198,7 @@ const ReactBigCalendar: FC = () => {
         start: FullDateTime,
         end: FullDateTime
     ) => {
-        if (role !== "admin" && role !== "coord") return;
+        //if ((role !== "admin" && role !== "coord") || view === "interview") return;
         let canAddEvent = true;
         const ev = createSchedulerEvent(start, end, slotId);
         scheduleEvents
@@ -310,7 +317,7 @@ const ReactBigCalendar: FC = () => {
     } else {
         const di = document.querySelector("i.anticon.anticon-left.icon-nav");
         const today = moment(new Date()).format(DATE_FORMAT);
-        if (di !== null && role === "user" && currentDateString.split(" ")[0] <= today) {
+        if (di !== null && role !== "admin" && role !== "coord" && currentDateString.split(" ")[0] <= today) {
             di.remove();
         }
         return (
@@ -319,6 +326,7 @@ const ReactBigCalendar: FC = () => {
                     <CalendarHeader
                         currentDate={new Date(currentDate)}
                         onChangeEvent={changeMainEvent}
+                        onChangeView={changeView}
                     />
                     <div className={s.scheduler_container}>
                         <div>

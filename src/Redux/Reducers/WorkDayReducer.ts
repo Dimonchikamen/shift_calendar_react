@@ -25,9 +25,10 @@ const defaultState: GlobalState = {
     interviewTimePending: false,
     changePending: false,
     state: {
-        role: "user",
+        role: "",
         viewType: "read",
         view: "worktime",
+        isWidget: false,
         events: [
             { id: -1, title: "Все мероприятия" },
             { id: 1388, title: "Ночь музыки" },
@@ -229,12 +230,22 @@ const WorkDayReducer = (
         }
         return { ...state, state: copy };
     } else if (action.type === ActionTypes.CHANGE_VIEW_TYPE) {
-        const copy = getCopy(state.state);
+        const copy = getCopy(state.state, true);
+        copy.config.creatable = copy.view === "worktime" && action.payload === "edit";
         copy.viewType = action.payload;
         return { ...state, state: copy };
     } else if (action.type === ActionTypes.SET_VIEW) {
-        const copy = getCopy(state.state);
+        const copy = getCopy(state.state, true);
+        copy.config.creatable = copy.viewType === "edit" && action.payload === "worktime";
         copy.view = action.payload;
+        return { ...state, state: copy };
+    } else if (action.type === ActionTypes.SET_IS_WIDGET) {
+        const copy = getCopy(state.state);
+        copy.isWidget = action.payload;
+        copy.config.creatable = false;
+        if (copy.role === "admin" || copy.role === "coord") {
+            copy.view = "interview";
+        }
         return { ...state, state: copy };
     } else if (action.type === ActionTypes.CHANGE_CALENDAR_VIEW_TYPE) {
         const copy = getCopy(state.state);

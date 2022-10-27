@@ -7,10 +7,11 @@ import AdminInformationPresentation from "./AdminInformationPresentation";
 import VolunteerInterviewInformation from "./VolunteerInterviewInformation";
 import EditInformation from "./EditInformation";
 import { ScheduleInterviewEvent } from "../../../../Types/ScheduleInterviewEvent";
+import { ViewTypeWorktime } from "../../../../Types/ViewTypeWorktime";
 
 interface IInformationContainerProps {
     role: string;
-    view: string;
+    view: ViewTypeWorktime;
     isEditing: boolean;
     data: RecruiterInfo;
     interview?: ScheduleInterviewEvent;
