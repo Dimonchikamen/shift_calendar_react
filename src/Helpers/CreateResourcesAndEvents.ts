@@ -23,6 +23,7 @@ export const createResourcesAndEvents = (
     recruiters: Recruiter[],
     currentEventId?: number,
     role?: string,
+    isWidget?: boolean,
     interviewDuration?: number
 ): [resources: Resource[], events: ScheduleEvent[], interviews: ScheduleInterviewEvent[]] => {
     const resources: Resource[] = [];
@@ -114,7 +115,7 @@ export const createResourcesAndEvents = (
     });
 
     const freeInterviews = freeInts.sort((a, b) => compareFullDateTime(a.start, b.start));
-    return [resources, res, role === "admin" || role === "coord" ? interviews : freeInterviews];
+    return [resources, res, (role === "admin" || role === "coord") && !isWidget ? interviews : freeInterviews];
 };
 
 export const createSchedulerEvent = (start: FullDateTime, end: FullDateTime, resourceId: string): ScheduleEvent => {

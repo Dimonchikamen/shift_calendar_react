@@ -35,6 +35,8 @@ import { changeCurrentDateAction } from "../../Redux/Actions/ChangeCurrentDateAc
 import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsActions";
 import { ScheduleInterviewEvent } from "../../Types/ScheduleInterviewEvent";
 import { signUpVolunteerRequest } from "../../Redux/Actions/SignUpVolunteerActions";
+import { ViewTypeWorktime } from "../../Types/ViewTypeWorktime";
+import { setViewAction } from "../../Redux/Actions/SetViewAction";
 
 moment.locale("ru-ru");
 
@@ -58,7 +60,7 @@ const ReactBigCalendar: FC = () => {
     const role = state.role;
     const view = state.view;
     const [resources, scheduleEvents, interviews] = useMemo(
-        () => createResourcesAndEvents(recruiters, currentEvent.id, role, currentInterviewDuration),
+        () => createResourcesAndEvents(recruiters, currentEvent.id, role, state.isWidget, currentInterviewDuration),
         [recruiters, currentEvent]
     );
     const dispatch = useAppDispatch();
@@ -80,10 +82,21 @@ const ReactBigCalendar: FC = () => {
         return { data };
     });
 
+    const removePrevClick = () => {
+        const di = document.querySelector("i.anticon.anticon-left.icon-nav") as HTMLDivElement | null;
+        const a = new Date();
+        if (di && role !== "admin" && role !== "coord" && currentDate <= a) {
+            di.style.display = "none";
+        } else if (di) {
+            di.style.display = "inline";
+        }
+    };
+
     useEffect(() => {
         const [start, end] = getStartAndEndOfWeek(new Date(currentDate));
         dispatch(getInformationRequest(start, end));
         dispatch(getEventsRequest());
+        removePrevClick();
     }, []);
 
     useEffect(() => {
@@ -91,14 +104,7 @@ const ReactBigCalendar: FC = () => {
             const [start, end] = getStartAndEndOfWeek(new Date(currentDate));
             dispatch(getInformationRequest(start, end));
         }
-
-        const di = document.querySelector("i.anticon.anticon-left.icon-nav") as HTMLDivElement;
-        const today = moment(new Date()).format(DATE_FORMAT).split(" ")[0];
-        if (di !== null && role === "user" && currentDateString.split(" ")[0] <= today) {
-            di.style.display = "none";
-        } else {
-            di.style.display = "inline";
-        }
+        removePrevClick();
     }, [currentDate]);
 
     useEffect(() => {
@@ -119,6 +125,7 @@ const ReactBigCalendar: FC = () => {
             data.setEvents(view === "interview" ? interviews : scheduleEvents);
             return { data };
         });
+        removePrevClick();
     }, [currentDateString, config, resources, scheduleEvents, calendarViewType, behaviours, view]);
 
     function isScheduleEvent(event: ScheduleEvent | ScheduleInterviewEvent): event is ScheduleEvent {
@@ -160,6 +167,11 @@ const ReactBigCalendar: FC = () => {
         dispatch(changeCurrentDateAction(new Date(schedulerData.startDate)));
     };
 
+    const changeView = (view: ViewTypeWorktime) => {
+        setSelectedEvent(null);
+        dispatch(setViewAction(view));
+    };
+
     const changeMainEvent = () => {
         setSelectedEvent(null);
     };
@@ -187,7 +199,7 @@ const ReactBigCalendar: FC = () => {
         if (event.bgColor === "#EEE") return;
         setData(createData(schedulerData, event));
         event.bgColor = "#1890ff";
-        if (selectedEvent) selectedEvent.bgColor = "#D9EDF7";
+        if (selectedEvent && event !== selectedEvent) selectedEvent.bgColor = "#D9EDF7";
         setIsEditing(false);
         setSelectedEvent(event);
     };
@@ -199,7 +211,7 @@ const ReactBigCalendar: FC = () => {
         start: FullDateTime,
         end: FullDateTime
     ) => {
-        if (role !== "admin" && role !== "coord") return;
+        //if ((role !== "admin" && role !== "coord") || view === "interview") return;
         let canAddEvent = true;
         const ev = createSchedulerEvent(start, end, slotId);
         scheduleEvents
@@ -322,6 +334,7 @@ const ReactBigCalendar: FC = () => {
                     <CalendarHeader
                         currentDate={new Date(currentDate)}
                         onChangeEvent={changeMainEvent}
+                        onChangeView={changeView}
                     />
                     <div className={s.scheduler_container}>
                         <div>

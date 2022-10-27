@@ -33,6 +33,7 @@ export enum ActionTypes {
 
     SET_ROLE = "SET_ROLE",
     SET_VIEW = "SET_VIEW",
+    SET_IS_WIDGET = "SET_IS_WIDGET",
     RESIZE = "RESIZE",
     CHANGE_EVENT = "CHANGE_EVENT",
     CHANGE_VIEW_TYPE = "CHANGE_VIEW_TYPE",
