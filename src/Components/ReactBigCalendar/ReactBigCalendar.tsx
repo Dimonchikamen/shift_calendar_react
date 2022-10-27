@@ -237,7 +237,7 @@ const ReactBigCalendar: FC = () => {
     };
 
     const editingEvent = (eventEditing: ScheduleEvent, newEventStart: Time, newEventEnd: Time) => {
-        const date = getDate(currentDateString);
+        const date = getDate(moment(eventEditing.start).format(DATE_FORMAT));
         const start = new Date(
             date.getFullYear(),
             date.getMonth(),
