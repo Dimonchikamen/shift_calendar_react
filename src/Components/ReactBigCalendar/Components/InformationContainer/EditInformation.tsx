@@ -36,6 +36,8 @@ const EditInformation: FC<IEditInformationProps> = ({ data, eventEditing, onEdit
         const index = recruiters.findIndex(r => r.id === Number(eventEditing.resourceId));
         const currentRecruiter = recruiters[index];
         const [, events] = createResourcesAndEvents([currentRecruiter]);
+        const interviewsStart = getHour(eventEditing.interviews[0].start);
+        const interviewsEnd = getHour(eventEditing.interviews[eventEditing.interviews.length - 1].end);
         let isOverlap = false;
         events.forEach(e => {
             if (e.id !== eventEditing.id && hasOverlap(e, eventEditing)) {
@@ -44,6 +46,12 @@ const EditInformation: FC<IEditInformationProps> = ({ data, eventEditing, onEdit
         });
         if (isOverlap || parseInt(workTimeStart) >= parseInt(workTimeEnd)) {
             setIsTimeWrong(true);
+            return;
+        }
+
+        if (parseInt(workTimeStart) > interviewsStart || parseInt(workTimeEnd) < interviewsEnd) {
+            setIsTimeWrong(true);
+            alert("Нельзя сократить смену: стоит собеседование.");
             return;
         }
         onEditEvent(eventEditing, workTimeStart, workTimeEnd);
@@ -82,7 +90,7 @@ const EditInformation: FC<IEditInformationProps> = ({ data, eventEditing, onEdit
                 </div>
                 {isTimeWrong ? (
                     <>
-                        <span style={{ color: "red", fontSize: "13px" }}>Введите корректное время</span>
+                        <span style={{ color: "red", fontSize: "13px" }}>Некорректное время или есть наложение</span>
                     </>
                 ) : (
                     <></>
