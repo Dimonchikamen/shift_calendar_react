@@ -53,7 +53,6 @@ export const createResourcesAndEvents = (
             const formattedStart = moment(workedTime.start).format(DATE_TIME_FORMAT);
             const formattedEnd = moment(workedTime.end).format(DATE_TIME_FORMAT);
             const eventColor = currentEventId === workedTime.eventId || currentEventId === -1 ? "#D9EDF7" : "#EEE";
-            const isFree = workedTime.interviews.length === 0;
             events.push({
                 id: workedTime.id,
                 start: formattedStart,
@@ -62,8 +61,8 @@ export const createResourcesAndEvents = (
                 resourceId: String(r.id),
                 title: createTitle(formattedStart, formattedEnd),
                 resizable: false,
-                bgColor: isFree ? "#CEC" : eventColor,
-                isFree: isFree,
+                bgColor: eventColor,
+                isFree: false,
                 interviews: workedTime.interviews,
             });
         });

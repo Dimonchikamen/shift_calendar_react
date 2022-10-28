@@ -237,6 +237,7 @@ const ReactBigCalendar: FC = () => {
 
     const setEvent = (schedulerData: SchedulerData, event: ScheduleEvent) => {
         event.isFree = false;
+        event.bgColor = "#D9EDF7";
         eventItemClick(schedulerData, event);
     };
 
