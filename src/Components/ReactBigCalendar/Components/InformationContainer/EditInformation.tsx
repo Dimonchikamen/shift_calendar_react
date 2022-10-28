@@ -2,14 +2,14 @@ import { FC, useEffect, useMemo, useState } from "react";
 import s from "./InformationContainer.module.css";
 import { RecruiterInfo } from "../../../../Types/RecruiterInfo";
 import SelectItem from "../../../../UiKit/SelectItem/SelectItem";
-import { getHour, getTime } from "../../../../Helpers/DateTimeHelpers";
+import { getHour } from "../../../../Helpers/DateTimeHelpers";
 import { useAppSelector } from "../../../../Redux/Hooks";
 import { Button } from "@mui/material";
 import { Time } from "../../../../Types/Time";
 import { getOptions } from "../../../../Helpers/GetOptions";
 import { ScheduleEvent } from "../../../../Types/ScheduleEvent";
 import { createResourcesAndEvents } from "../../../../Helpers/CreateResourcesAndEvents";
-import { hasOverlapTime } from "../../../../Helpers/HasOverlap";
+import { hasOverlap } from "../../../../Helpers/HasOverlap";
 
 interface IEditInformationProps {
     data: RecruiterInfo;
@@ -36,17 +36,21 @@ const EditInformation: FC<IEditInformationProps> = ({ data, eventEditing, onEdit
         const index = recruiters.findIndex(r => r.id === Number(eventEditing.resourceId));
         const currentRecruiter = recruiters[index];
         const [, events] = createResourcesAndEvents([currentRecruiter]);
-        let hasOverlap = false;
+        const interviewsStart = getHour(eventEditing.interviews[0].start);
+        const interviewsEnd = getHour(eventEditing.interviews[eventEditing.interviews.length - 1].end);
+        let isOverlap = false;
         events.forEach(e => {
-            if (
-                e.id !== eventEditing.id &&
-                hasOverlapTime(getTime(e.start), getTime(e.end), workTimeStart, workTimeEnd)
-            ) {
-                hasOverlap = true;
+            if (e.id !== eventEditing.id && hasOverlap(e, eventEditing)) {
+                isOverlap = true;
             }
         });
-        if (hasOverlap || parseInt(workTimeStart) >= parseInt(workTimeEnd)) {
+        if (isOverlap || parseInt(workTimeStart) >= parseInt(workTimeEnd)) {
             setIsTimeWrong(true);
+            return;
+        }
+
+        if (parseInt(workTimeStart) > interviewsStart || parseInt(workTimeEnd) < interviewsEnd) {
+            alert("Нельзя сократить смену: стоит собеседование.");
             return;
         }
         onEditEvent(eventEditing, workTimeStart, workTimeEnd);
@@ -85,7 +89,7 @@ const EditInformation: FC<IEditInformationProps> = ({ data, eventEditing, onEdit
                 </div>
                 {isTimeWrong ? (
                     <>
-                        <span style={{ color: "red", fontSize: "13px" }}>Введите корректное время</span>
+                        <span style={{ color: "red", fontSize: "13px" }}>Некорректное время или есть наложение</span>
                     </>
                 ) : (
                     <></>
