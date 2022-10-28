@@ -1,13 +1,13 @@
-.Popover{
+.Popover {
     width: fit-content;
 }
 
-.btnswrapper{
+.btnswrapper {
     display: flex;
     gap: 0.4em;
 }
 
-.Button{
+.Button {
     cursor: pointer;
     border: 1px solid #d9d9d9;
     border-radius: 3px;
@@ -15,9 +15,9 @@
     margin-top: 10px;
     padding: 3px 12px;
     color: rgba(0, 0, 0, 0.65);
-    transition: .4s;
+    transition: 0.4s;
 }
-.Button:hover{
+.Button:hover {
     filter: opacity(0.8);
     color: #1890ff;
 }

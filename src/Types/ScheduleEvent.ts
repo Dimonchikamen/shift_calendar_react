@@ -10,5 +10,6 @@ export type ScheduleEvent = {
     title: string;
     resizable: boolean;
     bgColor: string;
+    isFree?: boolean;
     interviews: Interview[];
 };

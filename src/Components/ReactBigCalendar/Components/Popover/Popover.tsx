@@ -19,8 +19,10 @@ interface IPopoverProps {
     viewType: ViewType;
     events: Event[];
     view?: string;
+    currentEvent?: Event;
     deleteEvent: (eventItem: ScheduleEvent) => void;
     editEvent: (schedulerData: SchedulerData, eventItem: ScheduleEvent) => void;
+    setEvent: (schedulerData: SchedulerData, eventItem: ScheduleEvent) => void;
 }
 
 const Popover: FC<IPopoverProps> = ({
@@ -33,8 +35,10 @@ const Popover: FC<IPopoverProps> = ({
     role,
     viewType,
     view = "worktime",
+    currentEvent,
     deleteEvent,
     editEvent,
+    setEvent,
 }) => {
     const dispatch = useAppDispatch();
 
@@ -47,7 +51,7 @@ const Popover: FC<IPopoverProps> = ({
         );
     };
 
-    if (eventItem.bgColor === "#EEE" && viewType === "edit") {
+    if (eventItem.bgColor === "#EEE" && viewType === "edit" && eventItem.interviews.length > 0) {
         const eventToChange = events.filter(ev => ev.id === eventItem.eventId)[0];
         return (
             <div className={s.Popover}>
@@ -75,20 +79,37 @@ const Popover: FC<IPopoverProps> = ({
                 {start.format(DATE_TIME_FORMAT).slice(-5)} - {end.format(DATE_TIME_FORMAT).slice(-5)}
             </span>
             {view === "worktime" && role === "admin" && viewType === "edit" && (
-                <div className={s.btnswrapper}>
-                    <Button
-                        onClick={() => deleteEvent(eventItem)}
-                        className={s.Button}
-                    >
-                        Удалить
-                    </Button>
-                    <Button
-                        onClick={() => editEvent(schedulerData, eventItem)}
-                        className={s.Button}
-                    >
-                        Редактировать
-                    </Button>
-                </div>
+                <>
+                    {!eventItem.isFree ? (
+                        <div className={s.btnswrapper}>
+                            <Button
+                                onClick={() => deleteEvent(eventItem)}
+                                className={s.Button}
+                            >
+                                Удалить
+                            </Button>
+                            <Button
+                                onClick={() => editEvent(schedulerData, eventItem)}
+                                className={s.Button}
+                            >
+                                Редактировать
+                            </Button>
+                        </div>
+                    ) : (
+                        <>
+                            <div>
+                                Назначить эту смену на мероприятие <strong>{currentEvent?.title}</strong>?
+                            </div>
+
+                            <Button
+                                onClick={() => setEvent(schedulerData, eventItem)}
+                                className={s.Button}
+                            >
+                                Назначить
+                            </Button>
+                        </>
+                    )}
+                </>
             )}
         </div>
     );

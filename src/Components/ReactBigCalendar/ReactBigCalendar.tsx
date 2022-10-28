@@ -235,6 +235,11 @@ const ReactBigCalendar: FC = () => {
         setSelectedEvent(event);
     };
 
+    const setEvent = (schedulerData: SchedulerData, event: ScheduleEvent) => {
+        event.isFree = false;
+        eventItemClick(schedulerData, event);
+    };
+
     const editEvent = (schedulerData: SchedulerData, event: ScheduleEvent) => {
         setData(createData(schedulerData, event));
         setSelectedEvent(event);
@@ -319,8 +324,10 @@ const ReactBigCalendar: FC = () => {
                 viewType={viewType}
                 view={view}
                 events={events}
+                currentEvent={currentEvent}
                 deleteEvent={deleteEvent}
                 editEvent={editEvent}
+                setEvent={setEvent}
             />
         );
     };
