@@ -199,8 +199,8 @@ const WorkDayReducer = (
         const index = copy.recruiters.findIndex(r => r.id === Number(action.payload.recruiterId));
         if (!copy.recruiters[index].workedTimes) copy.recruiters[index].workedTimes = [];
         copy.recruiters[index].workedTimes!.push({
-            id: action.payload.workTimeId,
-            eventId: action.payload.eventId,
+            id: Number(action.payload.workTimeId),
+            eventId: Number(action.payload.eventId),
             start: moment(action.payload.start).format(DATE_TIME_FORMAT),
             end: moment(action.payload.end).format(DATE_TIME_FORMAT),
             interviews: [],
@@ -219,8 +219,8 @@ const WorkDayReducer = (
         );
         const currWorktime = copy.recruiters[index].workedTimes![workTimeIndex];
         copy.recruiters[index].workedTimes![workTimeIndex] = {
-            id: action.payload.workTimeId,
-            eventId: action.payload.eventId,
+            id: Number(action.payload.workTimeId),
+            eventId: Number(action.payload.eventId),
             start: moment(action.payload.start).format(DATE_TIME_FORMAT),
             end: moment(action.payload.end).format(DATE_TIME_FORMAT),
             interviews: currWorktime.interviews,
@@ -228,7 +228,7 @@ const WorkDayReducer = (
         return { ...state, state: copy, changePending: false, changeError: null };
     } else if (action.type === ActionTypes.REMOVE_RECRUITER_EVENT_SUCCESS) {
         const copy = getCopy(state.state, false, true, true);
-        const index = copy.recruiters.findIndex(r => r.id === action.payload);
+        const index = copy.recruiters.findIndex(r => r.id === Number(action.payload));
         const workTimeIndex = copy.recruiters[index].workedTimes!.findIndex(w => w.id === Number(action.payload));
         copy.recruiters[index].workedTimes!.splice(workTimeIndex, 1);
         return {
