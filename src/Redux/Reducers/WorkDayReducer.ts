@@ -196,9 +196,9 @@ const WorkDayReducer = (
         };
     } else if (action.type === ActionTypes.ADD_RECRUITER_EVENT_SUCCESS) {
         const copy = getCopy(state.state, false, true, true);
-        const index = copy.recruiters.findIndex(r => r.id === action.payload.recruiterId);
+        const index = copy.recruiters.findIndex(r => r.id === Number(action.payload.recruiterId));
         if (!copy.recruiters[index].workedTimes) copy.recruiters[index].workedTimes = [];
-        copy.recruiters[index].workedTimes?.push({
+        copy.recruiters[index].workedTimes!.push({
             id: action.payload.workTimeId,
             eventId: action.payload.eventId,
             start: moment(action.payload.start).format(DATE_TIME_FORMAT),
@@ -213,8 +213,10 @@ const WorkDayReducer = (
         };
     } else if (action.type === ActionTypes.EDIT_RECRUITER_EVENT_SUCCESS) {
         const copy = getCopy(state.state, false, true, true);
-        const index = copy.recruiters.findIndex(r => r.id === action.payload.recruiterId);
-        const workTimeIndex = copy.recruiters[index].workedTimes!.findIndex(w => w.id === action.payload.workTimeId);
+        const index = copy.recruiters.findIndex(r => r.id === Number(action.payload.recruiterId));
+        const workTimeIndex = copy.recruiters[index].workedTimes!.findIndex(
+            w => w.id === Number(action.payload.workTimeId)
+        );
         const currWorktime = copy.recruiters[index].workedTimes![workTimeIndex];
         copy.recruiters[index].workedTimes![workTimeIndex] = {
             id: action.payload.workTimeId,
@@ -227,7 +229,7 @@ const WorkDayReducer = (
     } else if (action.type === ActionTypes.REMOVE_RECRUITER_EVENT_SUCCESS) {
         const copy = getCopy(state.state, false, true, true);
         const index = copy.recruiters.findIndex(r => r.id === action.payload);
-        const workTimeIndex = copy.recruiters[index].workedTimes!.findIndex(w => w.id === action.payload);
+        const workTimeIndex = copy.recruiters[index].workedTimes!.findIndex(w => w.id === Number(action.payload));
         copy.recruiters[index].workedTimes!.splice(workTimeIndex, 1);
         return {
             ...state,
