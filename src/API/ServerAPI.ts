@@ -7,8 +7,10 @@ import { Event } from "../Types/Event";
 import eventsMock from "../Mocks/Events2.json";
 import informationMock from "../Mocks/Response2.json";
 import informationForVolunteerMock from "../Mocks/ResponseForVolunteer.json";
+import informationForRecruiterMock from "../Mocks/ResponseForRecruiter.json";
 import { GetInformationResponse } from "../Types/GetInformationResponse";
 import { FullDateTime } from "../Types/FullDateTime";
+import { RecruiterWorkTimePayload } from "../Redux/Types/RecruitersTypes";
 
 export class ServerAPI {
     static async getInformation(startDate: Date, endDate: Date): Promise<GetInformationResponse> {
@@ -28,7 +30,7 @@ export class ServerAPI {
         end: Date,
         recruiterId: number,
         eventId: number
-    ): Promise<Recruiter> {
+    ): Promise<RecruiterWorkTimePayload> {
         const url = `/event/${eventId}/set-worktime`;
         const data = new FormData();
         data.append("start", moment(start).format(DATE_TIME_FORMAT));
@@ -44,7 +46,7 @@ export class ServerAPI {
         recruiterId: number,
         workTimeId: number,
         eventId: number
-    ): Promise<Recruiter> {
+    ): Promise<RecruiterWorkTimePayload> {
         const url = `/event/${eventId}/set-worktime`;
         const data = new FormData();
         data.append("start", moment(start).format(DATE_TIME_FORMAT));
@@ -54,7 +56,7 @@ export class ServerAPI {
         return await axios.post(url, data).then(response => response.data);
     }
 
-    static async removeRecruiterWorkTime(recruiterId: number, workTimeId: number, eventId: number): Promise<Recruiter> {
+    static async removeRecruiterWorkTime(recruiterId: number, workTimeId: number, eventId: number): Promise<number> {
         const url = `/event/${eventId}/remove-worktime`;
         const data = new FormData();
         data.append("recruiterId", String(recruiterId));

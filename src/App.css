@@ -1,12 +1,8 @@
 .app {
     padding: 20px 0;
     text-align: center;
-    width: 95vw;
     max-width: 1900px;
     display: flex;
-    justify-content: center;
-    position: relative;
-    left: calc(-50vw + 50%);
 }
 
 .wrapper {
@@ -59,6 +55,10 @@
     display: none;
 }
 
+#root .overflow-text {
+    white-space: normal;
+}
+
 .round-all.event-item {
     text-overflow: clip;
     padding: 0 !important;
@@ -69,4 +69,11 @@
     color: #151515;
     font-size: 0.7em;
     margin-left: 0 !important;
+}
+
+@media (max-width: 1024px) {
+    #root .slot-text {
+        font-size: 12px;
+    }
+
 }

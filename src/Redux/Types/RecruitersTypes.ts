@@ -1,15 +1,13 @@
 import { ActionTypes } from "../ActionTypes";
-import { Recruiter } from "../../Types/Recruiter";
-import { Event } from "../../Types/Event";
 
-export interface AddRecruiterRequestPayload {
+export interface AddRecruiterWorkTimeRequestPayload {
     start: Date;
     end: Date;
     recruiterId: number;
     eventId: number;
 }
 
-export interface EditRecruiterRequestPayload {
+export interface RecruiterWorkTimePayload {
     start: Date;
     end: Date;
     recruiterId: number;
@@ -29,12 +27,12 @@ export interface FailurePayload {
 
 export type AddRecruiterWorkTimeRequest = {
     type: ActionTypes.ADD_RECRUITER_EVENT_REQUEST;
-    payload: AddRecruiterRequestPayload;
+    payload: AddRecruiterWorkTimeRequestPayload;
 };
 
 export type AddRecruiterWorkTimeSuccess = {
     type: ActionTypes.ADD_RECRUITER_EVENT_SUCCESS;
-    payload: Recruiter;
+    payload: RecruiterWorkTimePayload;
 };
 
 export type AddRecruiterWorkTimeFailure = {
@@ -44,12 +42,12 @@ export type AddRecruiterWorkTimeFailure = {
 
 export type EditRecruiterWorkTimeRequest = {
     type: ActionTypes.EDIT_RECRUITER_EVENT_REQUEST;
-    payload: EditRecruiterRequestPayload;
+    payload: RecruiterWorkTimePayload;
 };
 
 export type EditRecruiterWorkTimeSuccess = {
     type: ActionTypes.EDIT_RECRUITER_EVENT_SUCCESS;
-    payload: Recruiter;
+    payload: RecruiterWorkTimePayload;
 };
 
 export type EditRecruiterWorkTimeFailure = {
@@ -64,7 +62,7 @@ export type RemoveRecruiterWorkTimeRequest = {
 
 export type RemoveRecruiterWorkTimeSuccess = {
     type: ActionTypes.REMOVE_RECRUITER_EVENT_SUCCESS;
-    payload: Recruiter;
+    payload: number;
 };
 
 export type RemoveRecruiterWorkTimeFailure = {

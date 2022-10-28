@@ -15,6 +15,8 @@ import { WorkTime } from "../../Types/WorkTime";
 import { EventInformation } from "../../Types/EventInformation";
 import { setWorkTimeHelper } from "../Helpers/SetWorkTimeHelper";
 import { SignUpVolunteerTypes } from "../Types/SignUpVolunteerTypes";
+import { DATE_TIME_FORMAT } from "../../Constants";
+import moment from "moment";
 
 const defaultState: GlobalState = {
     rolePending: false,
@@ -48,10 +50,10 @@ const defaultState: GlobalState = {
         currentDayEnd: "",
         config: {
             dayCellWidth: 50,
-            weekCellWidth: 1100 / 7,
-            dayResourceTableWidth: 300,
-            weekResourceTableWidth: 300,
-            schedulerWidth: 1100,
+            weekCellWidth: 1000 / 7,
+            dayResourceTableWidth: 180,
+            weekResourceTableWidth: 260,
+            schedulerWidth: 1000,
             startResizable: true,
             endResizable: true,
             movable: false,
@@ -192,14 +194,41 @@ const WorkDayReducer = (
             ...state,
             changePending: true,
         };
-    } else if (
-        action.type === ActionTypes.ADD_RECRUITER_EVENT_SUCCESS ||
-        action.type === ActionTypes.REMOVE_RECRUITER_EVENT_SUCCESS ||
-        action.type === ActionTypes.EDIT_RECRUITER_EVENT_SUCCESS
-    ) {
+    } else if (action.type === ActionTypes.ADD_RECRUITER_EVENT_SUCCESS) {
         const copy = getCopy(state.state, false, true, true);
-        const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
-        copy.recruiters[index] = action.payload;
+        const index = copy.recruiters.findIndex(r => r.id === action.payload.recruiterId);
+        if (!copy.recruiters[index].workedTimes) copy.recruiters[index].workedTimes = [];
+        copy.recruiters[index].workedTimes?.push({
+            id: action.payload.workTimeId,
+            eventId: action.payload.eventId,
+            start: moment(action.payload.start).format(DATE_TIME_FORMAT),
+            end: moment(action.payload.end).format(DATE_TIME_FORMAT),
+            interviews: [],
+        });
+        return {
+            ...state,
+            state: copy,
+            changePending: false,
+            changeError: null,
+        };
+    } else if (action.type === ActionTypes.EDIT_RECRUITER_EVENT_SUCCESS) {
+        const copy = getCopy(state.state, false, true, true);
+        const index = copy.recruiters.findIndex(r => r.id === action.payload.recruiterId);
+        const workTimeIndex = copy.recruiters[index].workedTimes!.findIndex(w => w.id === action.payload.workTimeId);
+        const currWorktime = copy.recruiters[index].workedTimes![workTimeIndex];
+        copy.recruiters[index].workedTimes![workTimeIndex] = {
+            id: action.payload.workTimeId,
+            eventId: action.payload.eventId,
+            start: moment(action.payload.start).format(DATE_TIME_FORMAT),
+            end: moment(action.payload.end).format(DATE_TIME_FORMAT),
+            interviews: currWorktime.interviews,
+        };
+        return { ...state, state: copy, changePending: false, changeError: null };
+    } else if (action.type === ActionTypes.REMOVE_RECRUITER_EVENT_SUCCESS) {
+        const copy = getCopy(state.state, false, true, true);
+        const index = copy.recruiters.findIndex(r => r.id === action.payload);
+        const workTimeIndex = copy.recruiters[index].workedTimes!.findIndex(w => w.id === action.payload);
+        copy.recruiters[index].workedTimes!.splice(workTimeIndex, 1);
         return {
             ...state,
             state: copy,
@@ -227,6 +256,9 @@ const WorkDayReducer = (
         copy.role = action.payload;
         if (action.payload === "admin" || action.payload === "coord") {
             copy.viewType = "edit";
+        } else if (action.payload === "recruiter") {
+            copy.viewType = "read";
+            copy.config.creatable = false;
         }
         return { ...state, state: copy };
     } else if (action.type === ActionTypes.CHANGE_VIEW_TYPE) {

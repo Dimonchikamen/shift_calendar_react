@@ -1,6 +1,5 @@
-import { Recruiter } from "../../../Types/Recruiter";
 import { ServerAPI } from "../../../API/ServerAPI";
-import { EditRecruiterWorkTimeRequest } from "../../Types/RecruitersTypes";
+import { EditRecruiterWorkTimeRequest, RecruiterWorkTimePayload } from "../../Types/RecruitersTypes";
 import { call, put, takeLatest } from "redux-saga/effects";
 import {
     editRecruiterWorkTimeFailure,
@@ -14,13 +13,13 @@ const editRecruiterWorkTimeFetch = (
     recruiterId: number,
     workTimeId: number,
     eventId: number
-): Promise<Recruiter> => ServerAPI.editRecruiterWorkTime(start, end, recruiterId, workTimeId, eventId);
+): Promise<RecruiterWorkTimePayload> => ServerAPI.editRecruiterWorkTime(start, end, recruiterId, workTimeId, eventId);
 
 function* editRecruiterWorkTime({
     payload: { start, end, recruiterId, workTimeId, eventId },
 }: EditRecruiterWorkTimeRequest) {
     try {
-        const response: Recruiter = yield call(
+        const response: RecruiterWorkTimePayload = yield call(
             editRecruiterWorkTimeFetch,
             start,
             end,

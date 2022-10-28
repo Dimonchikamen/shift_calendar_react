@@ -1,7 +1,3 @@
-.table_container {
-    padding: 20px;
-}
-
 .scheduler_container {
     display: flex;
     gap: 20px;
@@ -9,4 +5,10 @@
 
 .scheduler_container > div > table {
     margin: 0;
+}
+
+@media (max-width: 1400px) {
+    .scheduler_container {
+        flex-direction: column;
+    }
 }
