@@ -42,6 +42,7 @@ export const createResourcesAndEvents = (
                 const formattedEnd = moment(intEnd).format(DATE_TIME_FORMAT);
                 ints.push({
                     id: interview.id,
+                    userId: interview.userId,
                     start: formattedStart,
                     end: formattedEnd,
                     resourceId: String(r.id),
@@ -106,7 +107,7 @@ export const createResourcesAndEvents = (
                 )
             ) {
                 if (isDateEarlierThanNow(formattedStart)) return;
-                const id = Math.floor(Math.random() * 1000);
+                const id = Math.floor(Math.random() * 1000000);
                 freeInts.push({
                     id,
                     start: formattedStart,

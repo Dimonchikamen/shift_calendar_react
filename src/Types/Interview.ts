@@ -1,7 +1,8 @@
 import { Time } from "./Time";
 
 export type Interview = {
-    id: number; //Id этой записи на собеседования (или Id того, кто записался)
+    id: number; //Id этой записи на собеседования
+    userId: number; // Id того, кто записался
     name: string; // имя и фамилия, кто записался
     role: string; // на какую роль будет собеседоваться человек
     phone: string; // контактный телефон
