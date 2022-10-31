@@ -31,11 +31,7 @@ const defaultState: GlobalState = {
         viewType: "read",
         view: "worktime",
         isWidget: false,
-        events: [
-            { id: -1, title: "Все мероприятия" },
-            { id: 1388, title: "Ночь музыки" },
-            { id: 1234, title: "Ночь музеев" },
-        ],
+        events: [{ id: -1, title: "Все мероприятия" }],
         eventsInformation: new Map<number, EventInformation>(),
         currentEventInformation: { interviewDuration: 30, workTimes: new Map<string, WorkTime>() },
 
@@ -142,9 +138,9 @@ const WorkDayReducer = (
             res.set(e.eventId, { interviewDuration: Number(e.interviewDuration), workTimes });
         });
         copy.eventsInformation = res;
-        copy.currentEvent.id = action.payload.eventsWorkTimeInformations[0].eventId;
-        copy.currentEventInformation = res.get(copy.currentEvent.id) as EventInformation;
-        copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
+        //copy.currentEvent.id = action.payload.eventsWorkTimeInformations[0].eventId;
+        // copy.currentEventInformation = res.get(copy.currentEvent.id) as EventInformation;
+        // copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
         setWorkTimeHelper(copy);
         copy.recruiters = action.payload.recruiters;
         return { ...state, state: copy, getInformationPending: false, error: null };
@@ -301,6 +297,7 @@ const WorkDayReducer = (
             state: copy,
         };
     } else if (action.type === ActionTypes.CHANGE_DATE) {
+        console.log("STATE___", state);
         const copy = getCopy(state.state);
         copy.currentDate = action.payload;
         setWorkTimeHelper(copy);
