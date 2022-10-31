@@ -284,6 +284,8 @@ const ReactBigCalendar: FC = () => {
         dispatch(
             editRecruiterWorkTimeRequest(start, end, Number(eventEditing.resourceId), eventEditing.id, currentEvent.id)
         );
+        eventEditing.bgColor = "#D9EDF7";
+        setSelectedEvent(null);
         setIsEditing(false);
     };
 
