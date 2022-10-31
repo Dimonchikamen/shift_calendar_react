@@ -9,6 +9,7 @@ import { DATE_TIME_FORMAT } from "../Constants";
 import { getAvailableTimes } from "./GetAvailableTimes";
 import { ScheduleInterviewEvent } from "../Types/ScheduleInterviewEvent";
 import { getHoursInAllDateTime, getTime } from "./DateTimeHelpers";
+import { ViewType } from "../Types/ViewType";
 
 const isDateEarlierThanNow = (date: string) => {
     const nowDate = moment(new Date()).format(DATE_TIME_FORMAT);
@@ -24,6 +25,7 @@ export const createResourcesAndEvents = (
     currentEventId?: number,
     role?: string,
     isWidget?: boolean,
+    viewType?: ViewType,
     interviewDuration?: number
 ): [resources: Resource[], events: ScheduleEvent[], interviews: ScheduleInterviewEvent[]] => {
     const resources: Resource[] = [];
@@ -67,17 +69,18 @@ export const createResourcesAndEvents = (
             });
         });
         r.freeWorkedTimes?.forEach(w => {
-            events.push({
-                id: w.id,
-                start: w.start,
-                end: w.end,
-                resourceId: String(r.id),
-                title: createTitle(w.start, w.end),
-                resizable: false,
-                bgColor: "#CEC",
-                isFree: true,
-                interviews: [],
-            });
+            if (viewType && viewType === "edit")
+                events.push({
+                    id: w.id,
+                    start: w.start,
+                    end: w.end,
+                    resourceId: String(r.id),
+                    title: createTitle(w.start, w.end),
+                    resizable: false,
+                    bgColor: "#CEC",
+                    isFree: true,
+                    interviews: [],
+                });
         });
     });
 
@@ -117,7 +120,11 @@ export const createResourcesAndEvents = (
     });
 
     const freeInterviews = freeInts.sort((a, b) => compareFullDateTime(a.start, b.start));
-    return [resources, res, (role === "admin" || role === "coord") && !isWidget ? interviews : freeInterviews];
+    return [
+        resources,
+        res,
+        (role === "admin" || role === "coord" || role === "recruiter") && !isWidget ? interviews : freeInterviews,
+    ];
 };
 
 export const createSchedulerEvent = (start: FullDateTime, end: FullDateTime, resourceId: string): ScheduleEvent => {

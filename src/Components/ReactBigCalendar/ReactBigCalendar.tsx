@@ -22,6 +22,7 @@ import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowActi
 import { FullDateTime } from "../../Types/FullDateTime";
 import {
     addRecruiterWorkTimeRequest,
+    addRecruiterWorkTimeSuccess,
     editRecruiterWorkTimeRequest,
     removeRecruiterWorkTimeRequest,
 } from "../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
@@ -37,6 +38,7 @@ import { ScheduleInterviewEvent } from "../../Types/ScheduleInterviewEvent";
 import { signUpVolunteerRequest } from "../../Redux/Actions/SignUpVolunteerActions";
 import { ViewTypeWorktime } from "../../Types/ViewTypeWorktime";
 import { setViewAction } from "../../Redux/Actions/SetViewAction";
+import AddWorkTimePopup from "../../UiKit/Popup/AddWorkTimePopup/AddWorkTimePopup";
 
 moment.locale("ru-ru");
 
@@ -60,13 +62,24 @@ const ReactBigCalendar: FC = () => {
     const role = state.role;
     const view = state.view;
     const [resources, scheduleEvents, interviews] = useMemo(
-        () => createResourcesAndEvents(recruiters, currentEvent.id, role, state.isWidget, currentInterviewDuration),
-        [recruiters, currentEvent]
+        () =>
+            createResourcesAndEvents(
+                recruiters,
+                currentEvent.id,
+                role,
+                state.isWidget,
+                viewType,
+                currentInterviewDuration
+            ),
+        [recruiters, currentEvent, viewType]
     );
     const dispatch = useAppDispatch();
     const events = state.events;
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [addWorkTimeOpen, setWorkTimeOpen] = useState<boolean>(false);
+    const [selectedFreeWorkTimeForAddNewWorkTime, setSelectedFreeWorkTimeForAddNewWorkTime] =
+        useState<ScheduleEvent | null>(null);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
     const [isAdding, setIsAdding] = useState<boolean>(true);
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | ScheduleInterviewEvent | null>(null);
@@ -236,9 +249,7 @@ const ReactBigCalendar: FC = () => {
     };
 
     const setEvent = (schedulerData: SchedulerData, event: ScheduleEvent) => {
-        event.isFree = false;
-        event.bgColor = "#D9EDF7";
-        eventItemClick(schedulerData, event);
+        setSelectedFreeWorkTimeForAddNewWorkTime(event);
     };
 
     const editEvent = (schedulerData: SchedulerData, event: ScheduleEvent) => {
@@ -305,6 +316,15 @@ const ReactBigCalendar: FC = () => {
                 );
             }
         }
+    };
+
+    const addWorkTimeFromFreeWorkTime = (ev: ScheduleEvent, newStart: Date, newEnd: Date) => {
+        setSelectedFreeWorkTimeForAddNewWorkTime(null);
+        dispatch(addRecruiterWorkTimeRequest(newStart, newEnd, Number(ev.resourceId), currentEvent.id));
+    };
+
+    const cancelSetWorkTimeFromFreeWorkTime = () => {
+        setSelectedFreeWorkTimeForAddNewWorkTime(null);
     };
 
     const customPopover = (
@@ -380,6 +400,17 @@ const ReactBigCalendar: FC = () => {
                     errorCode={error}
                     onCancel={() => dispatch(closeErrorWindowAction())}
                 />
+                {selectedFreeWorkTimeForAddNewWorkTime && (
+                    <AddWorkTimePopup
+                        title="Назначить рабочее время"
+                        isOpen={selectedFreeWorkTimeForAddNewWorkTime !== null}
+                        selectedFreeWorkTime={selectedFreeWorkTimeForAddNewWorkTime}
+                        min={currentInformation!.start}
+                        max={currentInformation!.end}
+                        onSubmit={addWorkTimeFromFreeWorkTime}
+                        onCancel={cancelSetWorkTimeFromFreeWorkTime}
+                    />
+                )}
                 <PopUp
                     isOpen={isOpen}
                     event={eventAdding!}
