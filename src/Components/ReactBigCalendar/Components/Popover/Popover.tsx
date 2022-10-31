@@ -98,7 +98,8 @@ const Popover: FC<IPopoverProps> = ({
                     ) : (
                         <>
                             <div>
-                                Назначить эту смену на мероприятие <strong>{currentEvent?.title}</strong>?
+                                Это свободное время. Назначить его на мероприятие <strong>{currentEvent?.title}</strong>
+                                ?
                             </div>
 
                             <Button

@@ -13,7 +13,7 @@ const removeRecruiterWorkTimeFetch = (recruiterId: number, workTimeId: number, e
 function* removeRecruiterWorkTime({ payload: { recruiterId, workTimeId, eventId } }: RemoveRecruiterWorkTimeRequest) {
     try {
         const response: number = yield call(removeRecruiterWorkTimeFetch, recruiterId, workTimeId, eventId);
-        yield put(removeRecruiterWorkTimeSuccess(response));
+        yield put(removeRecruiterWorkTimeSuccess(recruiterId, workTimeId));
     } catch (e) {
         yield put(removeRecruiterWorkTimeFailure({ error: (e as Error).message }));
     }

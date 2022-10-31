@@ -196,7 +196,7 @@ const ReactBigCalendar: FC = () => {
     };
 
     const eventItemClick = (schedulerData: SchedulerData, event: ScheduleEvent | ScheduleInterviewEvent) => {
-        if (event.bgColor === "#EEE") return;
+        if (event.bgColor === "#EEE" || (event as ScheduleEvent).isFree) return;
         setData(createData(schedulerData, event));
         event.bgColor = "#1890ff";
         if (selectedEvent && event !== selectedEvent) selectedEvent.bgColor = "#D9EDF7";

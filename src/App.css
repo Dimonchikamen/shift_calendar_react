@@ -55,9 +55,9 @@
     display: none;
 }
 
-#root .overflow-text {
-    white-space: normal;
-}
+/*#root .overflow-text {*/
+/*    white-space: normal;*/
+/*}*/
 
 .round-all.event-item {
     text-overflow: clip;

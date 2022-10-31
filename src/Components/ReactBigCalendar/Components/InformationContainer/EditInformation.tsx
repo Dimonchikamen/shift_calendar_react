@@ -21,7 +21,7 @@ const EditInformation: FC<IEditInformationProps> = ({ data, eventEditing, onEdit
     const recruiters = useAppSelector(state => state.workDayState.state.recruiters);
     const dayStart = useAppSelector(state => state.workDayState.state.config.dayStartFrom)!;
     const dayEnd = useAppSelector(state => state.workDayState.state.config.dayStopTo)!;
-    const options: Time[] = getOptions(dayStart, dayEnd);
+    const options: Time[] = getOptions(dayStart, dayEnd, 0.5);
     const [leftTime, rightTime] = useMemo(() => data.workTimeTitle.split(" - "), [data.workTimeTitle]);
     const [workTimeStart, setDayStart] = useState<Time>(leftTime);
     const [workTimeEnd, setDayEnd] = useState<Time>(rightTime);

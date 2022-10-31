@@ -21,6 +21,11 @@ export interface RemoveRecruiterRequestPayload {
     eventId: number;
 }
 
+export interface RemoveRecruiterWorkTimeSuccessPayload {
+    recruiterId: number;
+    workTimeId: number;
+}
+
 export interface FailurePayload {
     error: string;
 }
@@ -62,7 +67,7 @@ export type RemoveRecruiterWorkTimeRequest = {
 
 export type RemoveRecruiterWorkTimeSuccess = {
     type: ActionTypes.REMOVE_RECRUITER_EVENT_SUCCESS;
-    payload: number;
+    payload: RemoveRecruiterWorkTimeSuccessPayload;
 };
 
 export type RemoveRecruiterWorkTimeFailure = {

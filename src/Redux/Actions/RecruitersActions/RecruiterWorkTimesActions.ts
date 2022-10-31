@@ -63,9 +63,12 @@ export const removeRecruiterWorkTimeRequest = (
     payload: { recruiterId, workTimeId, eventId },
 });
 
-export const removeRecruiterWorkTimeSuccess = (payload: number): RemoveRecruiterWorkTimeSuccess => ({
+export const removeRecruiterWorkTimeSuccess = (
+    recruiterId: number,
+    workTimeId: number
+): RemoveRecruiterWorkTimeSuccess => ({
     type: ActionTypes.REMOVE_RECRUITER_EVENT_SUCCESS,
-    payload,
+    payload: { recruiterId, workTimeId },
 });
 
 export const removeRecruiterWorkTimeFailure = (payload: FailurePayload): RemoveRecruiterWorkTimeFailure => ({

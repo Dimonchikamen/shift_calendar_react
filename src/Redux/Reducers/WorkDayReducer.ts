@@ -228,8 +228,10 @@ const WorkDayReducer = (
         return { ...state, state: copy, changePending: false, changeError: null };
     } else if (action.type === ActionTypes.REMOVE_RECRUITER_EVENT_SUCCESS) {
         const copy = getCopy(state.state, false, true, true);
-        const index = copy.recruiters.findIndex(r => r.id === Number(action.payload));
-        const workTimeIndex = copy.recruiters[index].workedTimes!.findIndex(w => w.id === Number(action.payload));
+        const index = copy.recruiters.findIndex(r => r.id === Number(action.payload.recruiterId));
+        const workTimeIndex = copy.recruiters[index].workedTimes!.findIndex(
+            w => w.id === Number(action.payload.workTimeId)
+        );
         copy.recruiters[index].workedTimes!.splice(workTimeIndex, 1);
         return {
             ...state,
