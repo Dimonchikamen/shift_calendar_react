@@ -97,17 +97,23 @@ const Popover: FC<IPopoverProps> = ({
                         </div>
                     ) : (
                         <>
-                            <div>
-                                Это свободное время. Назначить его на мероприятие <strong>{currentEvent?.title}</strong>
-                                ?
-                            </div>
+                            {currentEvent?.id !== -1 ? (
+                                <>
+                                    <div>
+                                        Это свободное время. Назначить его на мероприятие{" "}
+                                        <strong>{currentEvent?.title}</strong>?
+                                    </div>
 
-                            <Button
-                                onClick={() => setEvent(schedulerData, eventItem)}
-                                className={s.Button}
-                            >
-                                Назначить
-                            </Button>
+                                    <Button
+                                        onClick={() => setEvent(schedulerData, eventItem)}
+                                        className={s.Button}
+                                    >
+                                        Назначить
+                                    </Button>
+                                </>
+                            ) : (
+                                <></>
+                            )}
                         </>
                     )}
                 </>
