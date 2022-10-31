@@ -27,7 +27,7 @@ import {
     removeRecruiterWorkTimeRequest,
 } from "../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
 import { Time } from "../../Types/Time";
-import { getDate, getHour, getMinutes } from "../../Helpers/DateTimeHelpers";
+import { getDate, getHour, getMinutes, getTime } from "../../Helpers/DateTimeHelpers";
 import WaitPopup from "../../UiKit/Popup/WaitPopup/WaitPopup";
 import { DATE_FORMAT, DATE_TIME_FORMAT, widthDragDropContext } from "../../Constants";
 import { getInformationRequest } from "../../Redux/Actions/GetInformationActions";
@@ -39,6 +39,7 @@ import { signUpVolunteerRequest } from "../../Redux/Actions/SignUpVolunteerActio
 import { ViewTypeWorktime } from "../../Types/ViewTypeWorktime";
 import { setViewAction } from "../../Redux/Actions/SetViewAction";
 import AddWorkTimePopup from "../../UiKit/Popup/AddWorkTimePopup/AddWorkTimePopup";
+import { findLastInterval } from "../../Helpers/FindLastInterval";
 
 moment.locale("ru-ru");
 
@@ -77,9 +78,9 @@ const ReactBigCalendar: FC = () => {
     const events = state.events;
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [addWorkTimeOpen, setWorkTimeOpen] = useState<boolean>(false);
     const [selectedFreeWorkTimeForAddNewWorkTime, setSelectedFreeWorkTimeForAddNewWorkTime] =
         useState<ScheduleEvent | null>(null);
+    const [worktimeWeek, setWorktimeWeek] = useState<ScheduleEvent | null>(null);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
     const [isAdding, setIsAdding] = useState<boolean>(true);
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | ScheduleInterviewEvent | null>(null);
@@ -224,9 +225,18 @@ const ReactBigCalendar: FC = () => {
         start: FullDateTime,
         end: FullDateTime
     ) => {
-        //if ((role !== "admin" && role !== "coord") || view === "interview") return;
+        let ev = createSchedulerEvent(start, end, slotId);
+        if (schedulerData.viewType === 1) {
+            const today = start.slice(0, 10);
+            start = today + " " + currentEventInformation.workTimes.get(today)?.start;
+            end = today + " " + currentEventInformation.workTimes.get(today)?.end;
+            const ints = scheduleEvents.filter(e => e.start.slice(0, 10) === today && e.resourceId === slotId);
+            const last = findLastInterval(ints, new Date(today), { start: getTime(start), end: getTime(end) });
+            start = today + " " + last.start;
+            end = today + " " + last.end;
+            ev = createSchedulerEvent(start, end, slotId);
+        }
         let canAddEvent = true;
-        const ev = createSchedulerEvent(start, end, slotId);
         scheduleEvents
             .filter(event => event.resourceId === ev.resourceId)
             .forEach(elem => {
@@ -234,10 +244,13 @@ const ReactBigCalendar: FC = () => {
                     canAddEvent = false;
                 }
             });
-        if (canAddEvent) {
+        if (canAddEvent && schedulerData.viewType !== 1) {
             setIsOpen(true);
             setIsAdding(true);
             setEventAdding(ev);
+        }
+        if (schedulerData.viewType === 1 && ev.start !== ev.end) {
+            setWorktimeWeek(ev);
         }
     };
 
@@ -327,6 +340,15 @@ const ReactBigCalendar: FC = () => {
         setSelectedFreeWorkTimeForAddNewWorkTime(null);
     };
 
+    const addWorkTimeFromWeek = (ev: ScheduleEvent, newStart: Date, newEnd: Date) => {
+        setWorktimeWeek(null);
+        dispatch(addRecruiterWorkTimeRequest(newStart, newEnd, Number(ev.resourceId), currentEvent.id));
+    };
+
+    const cancelSetWorkTimeFromWeek = () => {
+        setWorktimeWeek(null);
+    };
+
     const customPopover = (
         schedulerData: SchedulerData,
         eventItem: ScheduleEvent,
@@ -409,6 +431,17 @@ const ReactBigCalendar: FC = () => {
                         max={currentInformation!.end}
                         onSubmit={addWorkTimeFromFreeWorkTime}
                         onCancel={cancelSetWorkTimeFromFreeWorkTime}
+                    />
+                )}
+                {worktimeWeek && (
+                    <AddWorkTimePopup
+                        title="Назначить рабочее время"
+                        isOpen={worktimeWeek !== null}
+                        selectedFreeWorkTime={worktimeWeek}
+                        min={getHour(getTime(worktimeWeek.start))}
+                        max={getHour(getTime(worktimeWeek.end))}
+                        onSubmit={addWorkTimeFromWeek}
+                        onCancel={cancelSetWorkTimeFromWeek}
                     />
                 )}
                 <PopUp
