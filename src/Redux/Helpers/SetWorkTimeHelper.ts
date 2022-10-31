@@ -5,7 +5,7 @@ import { WorkTime } from "../../Types/WorkTime";
 import { getHour } from "../../Helpers/DateTimeHelpers";
 import { resize } from "./ResizeHelper";
 
-export const setWorkTimeHelper = (calendarState: CalendarState) => {
+export const setWorkTimeHelper = (calendarState: CalendarState): void => {
     const a = calendarState.currentEventInformation.workTimes.get(
         moment(calendarState.currentDate).format(DATE_FORMAT)
     ) as WorkTime;
@@ -13,5 +13,4 @@ export const setWorkTimeHelper = (calendarState: CalendarState) => {
     calendarState.config.dayStartFrom = calendarState.currentInformation?.start;
     calendarState.config.dayStopTo = calendarState.currentInformation?.end;
     calendarState.config = resize(calendarState.config);
-    return calendarState;
 };

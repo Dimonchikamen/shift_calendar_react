@@ -31,11 +31,7 @@ const defaultState: GlobalState = {
         viewType: "read",
         view: "worktime",
         isWidget: false,
-        events: [
-            { id: -1, title: "Все мероприятия" },
-            { id: 1388, title: "Ночь музыки" },
-            { id: 1234, title: "Ночь музеев" },
-        ],
+        events: [{ id: -1, title: "Все мероприятия" }],
         eventsInformation: new Map<number, EventInformation>(),
         currentEventInformation: { interviewDuration: 30, workTimes: new Map<string, WorkTime>() },
 
@@ -142,9 +138,9 @@ const WorkDayReducer = (
             res.set(e.eventId, { interviewDuration: Number(e.interviewDuration), workTimes });
         });
         copy.eventsInformation = res;
-        copy.currentEvent.id = action.payload.eventsWorkTimeInformations[0].eventId;
-        copy.currentEventInformation = res.get(copy.currentEvent.id) as EventInformation;
-        copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
+        //copy.currentEvent.id = action.payload.eventsWorkTimeInformations[0].eventId;
+        // copy.currentEventInformation = res.get(copy.currentEvent.id) as EventInformation;
+        // copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
         setWorkTimeHelper(copy);
         copy.recruiters = action.payload.recruiters;
         return { ...state, state: copy, getInformationPending: false, error: null };
@@ -246,10 +242,11 @@ const WorkDayReducer = (
     ) {
         return { ...state, changePending: false, changeError: action.payload.error };
     } else if (action.type === ActionTypes.CHANGE_EVENT) {
-        const copy = getCopy(state.state);
+        const copy = getCopy(state.state, true);
         copy.currentEvent = action.payload;
         copy.currentEventInformation = copy.eventsInformation.get(action.payload.id) as EventInformation;
         copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
+        copy.config.creatable = action.payload.id !== -1;
         setWorkTimeHelper(copy);
         return {
             ...state,
@@ -300,6 +297,7 @@ const WorkDayReducer = (
             state: copy,
         };
     } else if (action.type === ActionTypes.CHANGE_DATE) {
+        console.log("STATE___", state);
         const copy = getCopy(state.state);
         copy.currentDate = action.payload;
         setWorkTimeHelper(copy);

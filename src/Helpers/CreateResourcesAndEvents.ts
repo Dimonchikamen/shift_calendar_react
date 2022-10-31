@@ -69,13 +69,15 @@ export const createResourcesAndEvents = (
             });
         });
         r.freeWorkedTimes?.forEach(w => {
+            const formattedStart = moment(w.start).format(DATE_TIME_FORMAT);
+            const formattedEnd = moment(w.end).format(DATE_TIME_FORMAT);
             if (viewType && viewType === "edit")
                 events.push({
                     id: w.id,
-                    start: w.start,
-                    end: w.end,
+                    start: formattedStart,
+                    end: formattedEnd,
                     resourceId: String(r.id),
-                    title: createTitle(w.start, w.end),
+                    title: createTitle(formattedStart, formattedEnd),
                     resizable: false,
                     bgColor: "#CEC",
                     isFree: true,
