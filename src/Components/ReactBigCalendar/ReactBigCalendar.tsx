@@ -181,12 +181,18 @@ const ReactBigCalendar: FC = () => {
     };
 
     const changeView = (view: ViewTypeWorktime) => {
-        setSelectedEvent(null);
+        if (selectedEvent) {
+            selectedEvent.bgColor = "#D9EDF7";
+            setSelectedEvent(null);
+        }
         dispatch(setViewAction(view));
     };
 
     const changeMainEvent = () => {
-        setSelectedEvent(null);
+        if (selectedEvent) {
+            selectedEvent.bgColor = "#D9EDF7";
+            setSelectedEvent(null);
+        }
     };
 
     const prevClick = (schedulerData: SchedulerData) => {
@@ -205,6 +211,10 @@ const ReactBigCalendar: FC = () => {
     };
 
     const viewChange = (schedulerData: SchedulerData, view: any) => {
+        if (selectedEvent) {
+            selectedEvent.bgColor = "#D9EDF7";
+            setSelectedEvent(null);
+        }
         dispatch(changeCalendarViewTypeAction(view.viewType));
     };
 

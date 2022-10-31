@@ -70,15 +70,17 @@ const CalendarHeader: FC<ICalendarHeader> = ({ currentDate, onChangeEvent, onCha
     } else
         return (
             <>
-                {(role === "admin" || role === "coord") && (
+                {(role === "admin" || role === "coord" || role === "recruiter") && (
                     <div className={s.toggles}>
-                        <div className={s.change_view_container}>
-                            <ToggleViewButtons
-                                viewType={viewType}
-                                onChangeView={changeViewType}
-                                onChangeViewWorktime={onChangeView}
-                            />
-                        </div>
+                        {role !== "recruiter" && (
+                            <div className={s.change_view_container}>
+                                <ToggleViewButtons
+                                    viewType={viewType}
+                                    onChangeView={changeViewType}
+                                    onChangeViewWorktime={onChangeView}
+                                />
+                            </div>
+                        )}
 
                         <div className={s.change_view_container}>
                             <ToggleViewButtons
