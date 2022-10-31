@@ -6,6 +6,7 @@ import { getHour, getTimeFromHours } from "../../../../Helpers/DateTimeHelpers";
 import { useAppDispatch, useAppSelector } from "../../../../Redux/Hooks";
 import { Time } from "../../../../Types/Time";
 import { Event } from "../../../../Types/Event";
+import { ViewTypes } from "react-big-scheduler";
 import { getOptions } from "../../../../Helpers/GetOptions";
 import { changeInterviewTimeRequest } from "../../../../Redux/Actions/InterviewTimeActions/ChangeInterviewTimeActions";
 import { changeWorkTimeRequest } from "../../../../Redux/Actions/WorkTimeActions/WorkDayActions";
@@ -40,6 +41,7 @@ const CalendarHeader: FC<ICalendarHeader> = ({ currentDate, onChangeEvent, onCha
     const event = useAppSelector(state => state.workDayState.state.currentEvent);
     const role = useAppSelector(state => state.workDayState.state.role);
     const view = useAppSelector(state => state.workDayState.state.view);
+    const calendarViewType = useAppSelector(state => state.workDayState.state.calendarViewType);
     const dispatch = useAppDispatch();
 
     const changeViewType = (viewType: ViewType) => {
@@ -97,25 +99,27 @@ const CalendarHeader: FC<ICalendarHeader> = ({ currentDate, onChangeEvent, onCha
                     )}
                     {(role === "admin" || role === "coord") && currentEvent.id !== -1 && viewType === "edit" && (
                         <div className={s.admin_container}>
-                            <div className={s.select_work_time_container}>
-                                <span>Рабочее время</span>
-                                <span>c</span>
-                                <SelectItem
-                                    value={getTimeFromHours(min)}
-                                    options={hourOptions}
-                                    size="small"
-                                    optionDisableFunc={v => getHour(v) >= max}
-                                    onchange={changeMin}
-                                />
-                                <span>до</span>
-                                <SelectItem
-                                    value={getTimeFromHours(max)}
-                                    options={hourOptions}
-                                    size="small"
-                                    optionDisableFunc={v => getHour(v) <= min}
-                                    onchange={changeMax}
-                                />
-                            </div>
+                            {calendarViewType === ViewTypes.Day && (
+                                <div className={s.select_work_time_container}>
+                                    <span>Рабочее время</span>
+                                    <span>c</span>
+                                    <SelectItem
+                                        value={getTimeFromHours(min)}
+                                        options={hourOptions}
+                                        size="small"
+                                        optionDisableFunc={v => getHour(v) >= max}
+                                        onchange={changeMin}
+                                    />
+                                    <span>до</span>
+                                    <SelectItem
+                                        value={getTimeFromHours(max)}
+                                        options={hourOptions}
+                                        size="small"
+                                        optionDisableFunc={v => getHour(v) <= min}
+                                        onchange={changeMax}
+                                    />
+                                </div>
+                            )}
                             <div className={s.select_interview_time_container}>
                                 <span>Длительность собеседования</span>
                                 <SelectItem
