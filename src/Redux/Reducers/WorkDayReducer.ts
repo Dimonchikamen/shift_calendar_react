@@ -246,10 +246,11 @@ const WorkDayReducer = (
     ) {
         return { ...state, changePending: false, changeError: action.payload.error };
     } else if (action.type === ActionTypes.CHANGE_EVENT) {
-        const copy = getCopy(state.state);
+        const copy = getCopy(state.state, true);
         copy.currentEvent = action.payload;
         copy.currentEventInformation = copy.eventsInformation.get(action.payload.id) as EventInformation;
         copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
+        copy.config.creatable = action.payload.id !== -1;
         setWorkTimeHelper(copy);
         return {
             ...state,
