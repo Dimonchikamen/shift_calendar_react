@@ -44,9 +44,15 @@ export const editRecruiterWorkTimeRequest = (
     payload: { start, end, recruiterId, workTimeId, eventId },
 });
 
-export const editRecruiterWorkTimeSuccess = (payload: RecruiterWorkTimePayload): EditRecruiterWorkTimeSuccess => ({
+export const editRecruiterWorkTimeSuccess = (
+    start: Date,
+    end: Date,
+    recruiterId: number,
+    workTimeId: number,
+    eventId: number
+): EditRecruiterWorkTimeSuccess => ({
     type: ActionTypes.EDIT_RECRUITER_EVENT_SUCCESS,
-    payload,
+    payload: { start, end, recruiterId, workTimeId, eventId },
 });
 
 export const editRecruiterWorkTimeFailure = (payload: FailurePayload): EditRecruiterWorkTimeFailure => ({

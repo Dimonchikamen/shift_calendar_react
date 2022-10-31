@@ -27,7 +27,15 @@ function* editRecruiterWorkTime({
             workTimeId,
             eventId
         );
-        yield put(editRecruiterWorkTimeSuccess(response));
+        yield put(
+            editRecruiterWorkTimeSuccess(
+                response.start,
+                response.end,
+                Number(response.recruiterId),
+                Number(response.workTimeId),
+                eventId
+            )
+        );
     } catch (e) {
         yield put(editRecruiterWorkTimeFailure({ error: (e as Error).message }));
     }
