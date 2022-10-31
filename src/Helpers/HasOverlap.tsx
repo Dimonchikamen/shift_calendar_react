@@ -4,7 +4,7 @@ import { Time } from "../Types/Time";
 import { getHour, getMinutes, getTime } from "./DateTimeHelpers";
 
 export const hasOverlap = (ev: ScheduleEvent, elem: ScheduleEvent) => {
-    return hasOverlapDate(ev.start, ev.end, elem.start, elem.end) && ev.id !== elem.id;
+    return hasOverlapDate(ev.start, ev.end, elem.start, elem.end) && ev.id !== elem.id && !ev.isFree;
 };
 
 export const hasOverlapDate = (start1: FullDateTime, end1: FullDateTime, start2: FullDateTime, end2: FullDateTime) => {
