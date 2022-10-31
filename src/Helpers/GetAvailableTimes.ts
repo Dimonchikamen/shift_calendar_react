@@ -1,7 +1,7 @@
 import { ScheduleEvent } from "../Types/ScheduleEvent";
 import { Interview } from "../Types/Interview";
 import { createTitleFromHours } from "./CreateTitle";
-import { getHoursInAllDateTime, getMinutesInAllDateTime } from "./DateTimeHelpers";
+import { getHoursInAllDateTime, getMinutesInAllDateTime, getTime } from "./DateTimeHelpers";
 
 const getIntervals = (eventInfo: ScheduleEvent, interviewDuration: number) => {
     const minutes = ["00"];
@@ -19,6 +19,7 @@ const getIntervals = (eventInfo: ScheduleEvent, interviewDuration: number) => {
     for (let i = 0; i < hours.length; i++) {
         for (let j = startMinutesIndex; j < minutes.length; j++) {
             const start = `${hours[i]}:${minutes[j]}`;
+            if (getTime(eventInfo.end) === start) break;
             let end;
             if (j === minutes.length - 1) {
                 if (i !== hours.length - 1) {
