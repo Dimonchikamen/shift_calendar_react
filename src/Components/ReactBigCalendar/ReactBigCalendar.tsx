@@ -18,7 +18,7 @@ import Popover from "./Components/Popover/Popover";
 import { hasOverlap } from "../../Helpers/HasOverlap";
 import PopupError from "../../UiKit/Popup/ErrorPopup/ErrorPopup";
 import InfoPopup from "../../UiKit/Popup/InfoPopup/InfoPopup";
-import { CircularProgress } from "@mui/material";
+import { Alert, CircularProgress } from "@mui/material";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
 import { FullDateTime } from "../../Types/FullDateTime";
 import {
@@ -184,12 +184,18 @@ const ReactBigCalendar: FC = () => {
     };
 
     const changeView = (view: ViewTypeWorktime) => {
-        setSelectedEvent(null);
+        if (selectedEvent) {
+            selectedEvent.bgColor = "#D9EDF7";
+            setSelectedEvent(null);
+        }
         dispatch(setViewAction(view));
     };
 
     const changeMainEvent = () => {
-        setSelectedEvent(null);
+        if (selectedEvent) {
+            selectedEvent.bgColor = "#D9EDF7";
+            setSelectedEvent(null);
+        }
     };
 
     const prevClick = (schedulerData: SchedulerData) => {
@@ -208,6 +214,10 @@ const ReactBigCalendar: FC = () => {
     };
 
     const viewChange = (schedulerData: SchedulerData, view: any) => {
+        if (selectedEvent) {
+            selectedEvent.bgColor = "#D9EDF7";
+            setSelectedEvent(null);
+        }
         dispatch(changeCalendarViewTypeAction(view.viewType));
     };
 
@@ -385,6 +395,8 @@ const ReactBigCalendar: FC = () => {
 
     if (getInformationPending || allEventsPending) {
         return <CircularProgress />;
+    } else if (error) {
+        return <Alert severity="error">{error}</Alert>;
     } else {
         return (
             <>

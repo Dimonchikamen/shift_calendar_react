@@ -40,35 +40,35 @@ const Popover: FC<IPopoverProps> = ({
     editEvent,
     setEvent,
 }) => {
-    const dispatch = useAppDispatch();
+    // const dispatch = useAppDispatch();
 
-    const changeEvent = (event: Event) => {
-        dispatch(
-            changeEventAction({
-                id: event.id,
-                title: event.title,
-            })
-        );
-    };
+    // const changeEvent = (event: Event) => {
+    //     dispatch(
+    //         changeEventAction({
+    //             id: event.id,
+    //             title: event.title,
+    //         })
+    //     );
+    // };
 
-    if (eventItem.bgColor === "#EEE" && viewType === "edit" && eventItem.interviews.length > 0) {
-        const eventToChange = events.filter(ev => ev.id === eventItem.eventId)[0];
-        return (
-            <div className={s.Popover}>
-                <div>
-                    Это рабочее время для другого мероприятия.
-                    <br />
-                    Переключить его на <strong>{eventToChange.title}</strong>?
-                </div>
-                <Button
-                    onClick={() => changeEvent(eventToChange)}
-                    className={s.Button}
-                >
-                    Переключить
-                </Button>
-            </div>
-        );
-    }
+    // if (eventItem.bgColor === "#EEE" && viewType === "edit" && eventItem.interviews.length === 0) {
+    //     const eventToChange = events.filter(ev => ev.id === eventItem.eventId)[0];
+    //     return (
+    //         <div className={s.Popover}>
+    //             <div>
+    //                 Это рабочее время для другого мероприятия.
+    //                 <br />
+    //                 Переключить его на <strong>{eventToChange.title}</strong>?
+    //             </div>
+    //             <Button
+    //                 onClick={() => changeEvent(eventToChange)}
+    //                 className={s.Button}
+    //             >
+    //                 Переключить
+    //             </Button>
+    //         </div>
+    //     );
+    // }
 
     return (
         <div className={s.Popover}>
@@ -78,9 +78,12 @@ const Popover: FC<IPopoverProps> = ({
             >
                 {start.format(DATE_TIME_FORMAT).slice(-5)} - {end.format(DATE_TIME_FORMAT).slice(-5)}
             </span>
+            {!eventItem.isFree && currentEvent?.id === -1 && (
+                <span>{events.filter(e => eventItem.eventId === e.id)[0].title}</span>
+            )}
             {view === "worktime" && role === "admin" && viewType === "edit" && (
                 <>
-                    {!eventItem.isFree ? (
+                    {!eventItem.isFree && currentEvent?.id !== -1 ? (
                         <div className={s.btnswrapper}>
                             <Button
                                 onClick={() => deleteEvent(eventItem)}

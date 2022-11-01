@@ -44,7 +44,7 @@ const InformationContainer: FC<
                 <span className={s.font_size_18}>Рекрутёр:</span>
                 <span className={s.time}>{data.name}</span>
             </div>
-            {role === "admin" || role === "coord" ? (
+            {role === "admin" || role === "coord" || role === "recruiter" ? (
                 view === "interview" ? (
                     <AdminInterviewInformationPresentation
                         interview={data.interviews.filter(i => i.id === interview!.id)[0]}
