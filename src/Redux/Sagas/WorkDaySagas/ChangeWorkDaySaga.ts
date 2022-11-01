@@ -10,7 +10,7 @@ const changeWorkDayFetch = (eventId: number, date: Date, start: number, end: num
 function* changeWorkDay({ payload: { eventId, date, start, end } }: ChangeWorkTimeRequest) {
     try {
         const response: ChangeWorkTimePayload = yield call(changeWorkDayFetch, eventId, date, start, end);
-        yield put(changeWorkTimeSuccess(response));
+        yield put(changeWorkTimeSuccess({ start: Number(response.start), end: Number(response.end) }));
     } catch (e) {
         yield put(changeWorkTimeFailure({ error: (e as Error).message }));
     }
