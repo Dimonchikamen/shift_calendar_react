@@ -37,8 +37,10 @@ const EditInformation: FC<IEditInformationProps> = ({ data, eventEditing, onEdit
         const currentRecruiter = recruiters[index];
         const [, events] = createResourcesAndEvents([currentRecruiter]);
         let isOverlap = false;
+        eventEditing.start = eventEditing.start.split(" ")[0] + " " + workTimeStart;
+        eventEditing.end = eventEditing.end.split(" ")[0] + " " + workTimeEnd;
         events.forEach(e => {
-            if (e.id !== eventEditing.id && hasOverlap(e, eventEditing)) {
+            if (hasOverlap(e, eventEditing)) {
                 isOverlap = true;
             }
         });
