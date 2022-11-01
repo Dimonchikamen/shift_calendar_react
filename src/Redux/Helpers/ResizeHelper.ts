@@ -19,7 +19,6 @@ export const resize = (config: SchedulerDataConfig) => {
         newWidth = a.clientWidth * 0.8; //config.schedulerWidth! as number;
         if (window.innerWidth < 1400) newWidth = a.clientWidth - 1;
     }
-    console.log(newWidth);
     // newWidth = a.clientWidth * 0.8; //config.schedulerWidth! as number;
     let newResourceTableWidth = config.dayResourceTableWidth;
     //if (window.innerWidth < 1400) newWidth = a.clientWidth - 1;
