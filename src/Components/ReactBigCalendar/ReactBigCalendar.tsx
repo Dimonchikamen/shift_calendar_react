@@ -17,7 +17,7 @@ import { resizeAction } from "../../Redux/Actions/ResizeAction";
 import Popover from "./Components/Popover/Popover";
 import { hasOverlap } from "../../Helpers/HasOverlap";
 import PopupError from "../../UiKit/Popup/ErrorPopup/ErrorPopup";
-import { CircularProgress } from "@mui/material";
+import { Alert, CircularProgress } from "@mui/material";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
 import { FullDateTime } from "../../Types/FullDateTime";
 import {
@@ -389,6 +389,8 @@ const ReactBigCalendar: FC = () => {
 
     if (getInformationPending || allEventsPending) {
         return <CircularProgress />;
+    } else if (error) {
+        return <Alert severity="error">{error}</Alert>;
     } else {
         return (
             <>

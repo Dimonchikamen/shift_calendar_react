@@ -9,6 +9,7 @@ const getEventsFetch = (): Promise<Event[]> => ServerAPI.getEvents();
 function* getEvents() {
     try {
         const response: Event[] = yield call(getEventsFetch);
+        if (response.length === 0) throw Error("Мероприятий нет, попробуйте обновить страницу позже");
         yield put(getEventsSuccess(response));
     } catch (e) {
         yield put(getEventsFailure({ error: (e as Error).message }));

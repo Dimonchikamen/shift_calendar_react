@@ -139,8 +139,8 @@ const WorkDayReducer = (
         });
         copy.eventsInformation = res;
         //copy.currentEvent.id = action.payload.eventsWorkTimeInformations[0].eventId;
-        // copy.currentEventInformation = res.get(copy.currentEvent.id) as EventInformation;
-        // copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
+        copy.currentEventInformation = res.get(copy.currentEvent.id) as EventInformation;
+        copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
         setWorkTimeHelper(copy);
         copy.recruiters = action.payload.recruiters;
         return { ...state, state: copy, getInformationPending: false, error: null };
@@ -160,14 +160,12 @@ const WorkDayReducer = (
         const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
         copy.recruiters[index] = action.payload;
         return { ...state, state: copy, changePending: false, error: null };
-    } else if (action.type === ActionTypes.GET_EVENTS_FAILURE || action.type === ActionTypes.GET_INFORMATION_FAILURE) {
-        const getInformationPending =
-            action.type === ActionTypes.GET_INFORMATION_FAILURE ? false : state.getInformationPending;
-        const allEventsPending = action.type === ActionTypes.GET_EVENTS_FAILURE ? false : state.allEventsPending;
+    } else if (action.type === ActionTypes.GET_EVENTS_FAILURE) {
+        return { ...state, allEventsPending: false, error: action.payload.error };
+    } else if (action.type === ActionTypes.GET_INFORMATION_FAILURE) {
         return {
             ...state,
-            getInformationPending,
-            allEventsPending,
+            getInformationPending: false,
             error: action.payload.error,
             changeError: action.payload.error,
         };
@@ -297,7 +295,6 @@ const WorkDayReducer = (
             state: copy,
         };
     } else if (action.type === ActionTypes.CHANGE_DATE) {
-        console.log("STATE___", state);
         const copy = getCopy(state.state);
         copy.currentDate = action.payload;
         setWorkTimeHelper(copy);
