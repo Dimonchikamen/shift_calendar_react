@@ -17,12 +17,12 @@ import { resizeAction } from "../../Redux/Actions/ResizeAction";
 import Popover from "./Components/Popover/Popover";
 import { hasOverlap } from "../../Helpers/HasOverlap";
 import PopupError from "../../UiKit/Popup/ErrorPopup/ErrorPopup";
+import InfoPopup from "../../UiKit/Popup/InfoPopup/InfoPopup";
 import { CircularProgress } from "@mui/material";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
 import { FullDateTime } from "../../Types/FullDateTime";
 import {
     addRecruiterWorkTimeRequest,
-    addRecruiterWorkTimeSuccess,
     editRecruiterWorkTimeRequest,
     removeRecruiterWorkTimeRequest,
 } from "../../Redux/Actions/RecruitersActions/RecruiterWorkTimesActions";
@@ -78,6 +78,8 @@ const ReactBigCalendar: FC = () => {
     const events = state.events;
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [isOpenInfo, setIsOpenInfo] = useState<boolean>(false);
+    const [infoText, setInfoText] = useState<string>("");
     const [selectedFreeWorkTimeForAddNewWorkTime, setSelectedFreeWorkTimeForAddNewWorkTime] =
         useState<ScheduleEvent | null>(null);
     const [worktimeWeek, setWorktimeWeek] = useState<ScheduleEvent | null>(null);
@@ -227,14 +229,21 @@ const ReactBigCalendar: FC = () => {
     ) => {
         let ev = createSchedulerEvent(start, end, slotId);
         if (schedulerData.viewType === 1) {
-            const today = start.slice(0, 10);
-            start = today + " " + currentEventInformation.workTimes.get(today)?.start;
-            end = today + " " + currentEventInformation.workTimes.get(today)?.end;
-            const ints = scheduleEvents.filter(e => e.start.slice(0, 10) === today && e.resourceId === slotId);
-            const last = findLastInterval(ints, new Date(today), { start: getTime(start), end: getTime(end) });
+            const today = start.split(" ")[0];
+            const ints = scheduleEvents.filter(e => e.start.split(" ")[0] === today && e.resourceId === slotId);
+            const last = findLastInterval(ints, new Date(today), {
+                start: currentEventInformation!.workTimes.get(today)!.start,
+                end: currentEventInformation!.workTimes.get(today)!.end,
+            });
             start = today + " " + last.start;
             end = today + " " + last.end;
             ev = createSchedulerEvent(start, end, slotId);
+            if (ev.start === ev.end) {
+                setIsOpenInfo(true);
+                setInfoText("Не осталось свободных мест на этот день. Выберите другой.");
+                return;
+            }
+            setWorktimeWeek(ev);
         }
         let canAddEvent = true;
         scheduleEvents
@@ -248,9 +257,6 @@ const ReactBigCalendar: FC = () => {
             setIsOpen(true);
             setIsAdding(true);
             setEventAdding(ev);
-        }
-        if (schedulerData.viewType === 1 && ev.start !== ev.end) {
-            setWorktimeWeek(ev);
         }
     };
 
@@ -423,6 +429,12 @@ const ReactBigCalendar: FC = () => {
                     title={"Что-то пошло не так..."}
                     errorCode={error}
                     onCancel={() => dispatch(closeErrorWindowAction())}
+                />
+                <InfoPopup
+                    isOpen={isOpenInfo}
+                    title={"Внимание!"}
+                    text={infoText}
+                    onCancel={() => setIsOpenInfo(false)}
                 />
                 {selectedFreeWorkTimeForAddNewWorkTime && (
                     <AddWorkTimePopup

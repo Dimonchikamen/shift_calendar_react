@@ -139,8 +139,8 @@ const WorkDayReducer = (
         });
         copy.eventsInformation = res;
         //copy.currentEvent.id = action.payload.eventsWorkTimeInformations[0].eventId;
-        // copy.currentEventInformation = res.get(copy.currentEvent.id) as EventInformation;
-        // copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
+        copy.currentEventInformation = res.get(copy.currentEvent.id) as EventInformation;
+        copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
         setWorkTimeHelper(copy);
         copy.recruiters = action.payload.recruiters;
         return { ...state, state: copy, getInformationPending: false, error: null };
