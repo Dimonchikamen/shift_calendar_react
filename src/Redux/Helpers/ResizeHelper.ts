@@ -7,10 +7,11 @@ export const resize = (config: SchedulerDataConfig) => {
     let newWidth;
     if (a.parentElement?.classList.contains("modal-interview")) {
         const modal = document.getElementById("formSignUp")!;
-        if (modal.style.display === "none") {
+        if (modal.style.display === "" || modal.style.display === "none") {
+            const prevDisplay = modal.style.display;
             modal.style.display = "block";
             newWidth = a.clientWidth * 0.8;
-            modal.style.display = "none";
+            modal.style.display = prevDisplay;
         } else {
             newWidth = a.clientWidth * 0.8;
         }
