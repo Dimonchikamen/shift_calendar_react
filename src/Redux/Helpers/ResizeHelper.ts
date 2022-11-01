@@ -4,9 +4,24 @@ const getDiff = (min: number, max: number) => max - min + 1;
 
 export const resize = (config: SchedulerDataConfig) => {
     const a = document.querySelector("#root") as HTMLDivElement;
-    let newWidth = a.clientWidth * 0.8; //config.schedulerWidth! as number;
+    let newWidth;
+    if (a.parentElement?.classList.contains("modal-interview")) {
+        const modal = document.getElementById("formSignUp")!;
+        if (modal.style.display === "none") {
+            modal.style.display = "block";
+            newWidth = a.clientWidth * 0.8;
+            modal.style.display = "none";
+        } else {
+            newWidth = a.clientWidth * 0.8;
+        }
+    } else {
+        newWidth = a.clientWidth * 0.8; //config.schedulerWidth! as number;
+        if (window.innerWidth < 1400) newWidth = a.clientWidth - 1;
+    }
+    console.log(newWidth);
+    // newWidth = a.clientWidth * 0.8; //config.schedulerWidth! as number;
     let newResourceTableWidth = config.dayResourceTableWidth;
-    if (window.innerWidth < 1400) newWidth = a.clientWidth - 1;
+    //if (window.innerWidth < 1400) newWidth = a.clientWidth - 1;
 
     if (window.innerWidth <= 1024) {
         newResourceTableWidth = 140;
