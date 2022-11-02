@@ -20,7 +20,7 @@ export const resize = (config: SchedulerDataConfig) => {
         if (window.innerWidth < 1400) newWidth = a.clientWidth - 1;
     }
     // newWidth = a.clientWidth * 0.8; //config.schedulerWidth! as number;
-    let newResourceTableWidth = config.dayResourceTableWidth;
+    let newResourceTableWidth;
     //if (window.innerWidth < 1400) newWidth = a.clientWidth - 1;
 
     if (window.innerWidth <= 1024) {
@@ -34,15 +34,21 @@ export const resize = (config: SchedulerDataConfig) => {
     const min = config.dayStartFrom;
     const max = config.dayStopTo;
     const minuteStep = config.minuteStep;
-    const timeWidth = newWidth - newResourceTableWidth!;
+    const timeWidth = newWidth - newResourceTableWidth;
     const newDayCellWidth = timeWidth / (getDiff(min!, max!) * (60 / minuteStep!));
     const newWeekCellWidth = (newWidth - config.weekResourceTableWidth!) / 7;
     //config.eventItemLineHeight = 45;
+
+    // const table = a.querySelector(".scheduler-view");
+    // if (table?.clientHeight && config.schedulerMaxHeight && table.clientHeight === config.schedulerMaxHeight) {
+    //     // newWidth = newWidth + 20;
+    // }
+
     return {
         ...config,
         dayResourceTableWidth: newResourceTableWidth,
         //weekResourceTableWidth: newResourceTableWidth,
-        schedulerWidth: newWidth,
+        schedulerWidth: newWidth + 20,
         dayCellWidth: newDayCellWidth,
         weekCellWidth: newWeekCellWidth,
     };

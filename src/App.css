@@ -56,9 +56,15 @@
     display: none;
 }
 
-/*#root .overflow-text {*/
-/*    white-space: normal;*/
-/*}*/
+#root .overflow-text {
+    white-space: normal;
+}
+
+#root .slot-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .round-all.event-item {
     text-overflow: clip;

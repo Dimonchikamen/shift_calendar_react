@@ -49,6 +49,8 @@ const defaultState: GlobalState = {
             weekCellWidth: 1000 / 7,
             dayResourceTableWidth: 180,
             weekResourceTableWidth: 260,
+            eventItemLineHeight: 42,
+            schedulerMaxHeight: 500,
             schedulerWidth: 1000,
             startResizable: true,
             endResizable: true,

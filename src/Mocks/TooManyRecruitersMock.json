@@ -1,0 +1,345 @@
+{
+    "eventsWorkTimeInformations": [
+        {
+            "eventId": 1386,
+            "interviewDuration": 30,
+            "workTimes": [
+                { "date": "2022-10-23", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-10-24", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-10-25", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-10-26", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-10-27", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-10-28", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-11-01", "beginTime": "09:00", "endTime": "20:00" },
+                { "date": "2022-11-02", "beginTime": "09:00", "endTime": "20:00" },
+                { "date": "2022-11-03", "beginTime": "09:00", "endTime": "20:00" },
+                { "date": "2022-11-04", "beginTime": "09:00", "endTime": "20:00" }
+            ]
+        },
+        {
+            "eventId": 1401,
+            "interviewDuration": 30,
+            "workTimes": [
+                { "date": "2022-10-23", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-24", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-25", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-26", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-27", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-28", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-29", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-10-30", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-11-01", "beginTime": "9:00", "endTime": "20:00" },
+                { "date": "2022-11-02", "beginTime": "9:00", "endTime": "20:00" },
+                { "date": "2022-11-03", "beginTime": "9:00", "endTime": "20:00" },
+                { "date": "2022-11-04", "beginTime": "9:00", "endTime": "20:00" }
+            ]
+        },
+        {
+            "eventId": 1407,
+            "interviewDuration": 30,
+            "workTimes": [
+                { "date": "2022-10-23", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-24", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-25", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-26", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-27", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-28", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-29", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-10-30", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-11-01", "beginTime": "9:00", "endTime": "20:00" },
+                { "date": "2022-11-02", "beginTime": "9:00", "endTime": "20:00" },
+                { "date": "2022-11-03", "beginTime": "9:00", "endTime": "20:00" },
+                { "date": "2022-11-04", "beginTime": "9:00", "endTime": "20:00" }
+            ]
+        }
+    ],
+
+    "recruiters": [
+        {
+            "id": 16726,
+            "name": "Никифоров Никита Леонидович",
+            "freeWorkedTimes": [
+                {
+                    "id": 21,
+                    "start": "2022-10-28 09:00",
+                    "end": "2022-10-28 20:00"
+                }
+            ],
+            "workedTimes": [
+                {
+                    "id": 1,
+                    "eventId": 1386,
+                    "start": "2022-11-3 9:00",
+                    "end": "2022-11-3 20:00",
+                    "interviews": [
+                        {
+                            "id": 10011112312312,
+                            "userId": 5411,
+                            "name": "Анастасия Тарасинова",
+                            "role": "Роль",
+                            "phone": "+7900888888",
+                            "contacts": ["Telegram", "VK"],
+                            "start": "11:00",
+                            "end": "11:30"
+                        },
+                        {
+                            "id": 10011112312313,
+                            "userId": 541,
+                            "name": "Алена Попова",
+                            "role": "Роль_2",
+                            "phone": "+7900888888",
+                            "contacts": ["Telegram", "VK"],
+                            "start": "12:00",
+                            "end": "12:30"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 10000,
+            "name": "Иванов Иван Иванович",
+            "workedTimes": [
+                {
+                    "id": 3,
+                    "eventId": 1386,
+                    "start": "2022-11-3 09:00",
+                    "end": "2022-11-3 22:30",
+                    "interviews": [
+                        {
+                            "id": 111,
+                            "userId": 5421,
+                            "name": "Ольшанский Кирилл",
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "9:00",
+                            "end": "9:30"
+                        },
+                        {
+                            "id": 1211,
+                            "userId": 5141,
+                            "name": "Гошанский Курил",
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "10:00",
+                            "end": "10:30"
+                        },
+                        {
+                            "id": 12211,
+                            "userId": 5415,
+                            "name": "Дубровский Любил",
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "21:30",
+                            "end": "22:00"
+                        }
+                    ]
+                },
+                {
+                    "id": 53,
+                    "eventId": 1386,
+                    "start": "2022-11-3 09:00",
+                    "end": "2022-11-3 18:00",
+                    "interviews": [
+                        {
+                            "id": 17611,
+                            "userId": 54441,
+                            "name": "Ольшанский Кирилл",
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "9:00",
+                            "end": "9:30"
+                        },
+                        {
+                            "id": 1654211,
+                            "userId": 123541,
+                            "name": "Гошанский Курил",
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "10:00",
+                            "end": "10:30"
+                        },
+                        {
+                            "id": 122345211,
+                            "userId": 541111,
+                            "name": "Дубровский Любил",
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "17:30",
+                            "end": "18:00"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 12345,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": [
+                {
+                    "id": 4,
+                    "eventId": 1386,
+                    "start": "2022-11-01 08:00",
+                    "end": "2022-11-01 13:00",
+                    "interviews": []
+                },
+                {
+                    "id": 4987654,
+                    "eventId": 1386,
+                    "start": "2022-11-01 10:00",
+                    "end": "2022-11-01 13:00",
+                    "interviews": []
+                },
+                {
+                    "id": 444,
+                    "eventId": 1386,
+                    "start": "2022-10-28 15:00",
+                    "end": "2022-10-28 21:00",
+                    "interviews": [
+                        {
+                            "id": 87654,
+                            "userId": 1231541,
+                            "name": "Дубровский Любил",
+                            "role": "Тимлидер",
+                            "phone": "+7999999999",
+                            "contacts": ["Telegram"],
+                            "start": "17:30",
+                            "end": "18:00"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 12346,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12347,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12348,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12349,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12350,
+            "name": "Попова Алена Аewqeewewqевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12351,
+            "name": "Попова Алена qweqwee qwe qwe e we qwe Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12352,
+            "name": "Поповаqqqwe Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12353,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12354,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12355,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12356,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12357,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12358,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12359,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12360,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12361,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12362,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12363,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12364,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12365,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12366,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12367,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12368,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12369,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        },
+        {
+            "id": 12370,
+            "name": "Попова Алена Алексеевна",
+            "workedTimes": []
+        }
+    ]
+}
