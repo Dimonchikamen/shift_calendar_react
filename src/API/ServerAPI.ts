@@ -4,6 +4,7 @@ import moment from "moment";
 import { ChangeWorkTimePayload, GetWorkTimeSuccessPayload } from "../Redux/Types/WorkTimeTypes";
 import { DATE_FORMAT, DATE_TIME_FORMAT } from "../Constants";
 import { Event } from "../Types/Event";
+import emptyEvents from "../Mocks/EmptyEvents.json";
 import eventsMock from "../Mocks/Events2.json";
 import informationMock from "../Mocks/Response2.json";
 import informationForVolunteerMock from "../Mocks/ResponseForVolunteer.json";
@@ -68,7 +69,7 @@ export class ServerAPI {
         const url = `/event/${eventId}/set-interview-time`;
         const data = new FormData();
         data.append("newInterwviewTime", String(newInterviewTime));
-        return await axios.post(url, newInterviewTime).then(res => res.data);
+        return await axios.post(url, data).then(res => res.data);
     }
 
     static async changeWorkTime(
