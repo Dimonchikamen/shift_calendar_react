@@ -18,7 +18,7 @@ import { ViewTypeWorktime } from "../../../../Types/ViewTypeWorktime";
 import { changeViewTypeAction } from "../../../../Redux/Actions/ChangeViewTypeAction";
 import { setViewAction } from "../../../../Redux/Actions/SetViewAction";
 
-const interviewTimeOptions: Time[] = ["15:00", "30:00", "45:00", "60:00"];
+const interviewTimeOptions: Time[] = ["15:00", "30:00", "60:00"];
 const hourOptions: Time[] = getOptions(0, 23);
 
 interface ICalendarHeader {
