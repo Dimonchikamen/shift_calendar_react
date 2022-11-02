@@ -187,6 +187,7 @@ const ReactBigCalendar: FC = () => {
         if (selectedEvent) {
             selectedEvent.bgColor = "#D9EDF7";
             setSelectedEvent(null);
+            setData(null);
         }
         dispatch(setViewAction(view));
     };
@@ -195,6 +196,7 @@ const ReactBigCalendar: FC = () => {
         if (selectedEvent) {
             selectedEvent.bgColor = "#D9EDF7";
             setSelectedEvent(null);
+            setData(null);
         }
     };
 
@@ -217,6 +219,7 @@ const ReactBigCalendar: FC = () => {
         if (selectedEvent) {
             selectedEvent.bgColor = "#D9EDF7";
             setSelectedEvent(null);
+            setData(null);
         }
         dispatch(changeCalendarViewTypeAction(view.viewType));
     };
@@ -292,6 +295,7 @@ const ReactBigCalendar: FC = () => {
     const signUpHandler = (interviewEvent: ScheduleInterviewEvent) => {
         const roleId = Number((document.querySelector("#root") as HTMLDivElement).dataset.roleId);
         dispatch(signUpVolunteerRequest(interviewEvent.workTimeId, roleId, interviewEvent.start, interviewEvent.end));
+        setData(null);
     };
 
     const editingEvent = (eventEditing: ScheduleEvent, newEventStart: Time, newEventEnd: Time) => {
@@ -439,7 +443,7 @@ const ReactBigCalendar: FC = () => {
                 <PopupError
                     isOpen={Boolean(changeError)}
                     title={"Что-то пошло не так..."}
-                    errorCode={error}
+                    errorCode={changeError}
                     onCancel={() => dispatch(closeErrorWindowAction())}
                 />
                 <InfoPopup
