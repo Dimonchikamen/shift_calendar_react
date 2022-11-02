@@ -109,9 +109,9 @@ const ReactBigCalendar: FC = () => {
     };
 
     useEffect(() => {
+        dispatch(getEventsRequest());
         const [start, end] = getStartAndEndOfWeek(new Date(currentDate));
         dispatch(getInformationRequest(start, end));
-        dispatch(getEventsRequest());
         removePrevClick();
     }, []);
 

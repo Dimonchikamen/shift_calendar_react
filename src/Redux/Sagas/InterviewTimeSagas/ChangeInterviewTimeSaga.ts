@@ -13,7 +13,7 @@ const changeTime = (eventId: number, newTime: number): Promise<number> =>
 function* changeInterviewTime({ payload: { eventId, newTime } }: ChangeInterviewTimeRequest) {
     try {
         const response: number = yield call(changeTime, eventId, newTime);
-        yield put(changeInterviewTimeSuccess(response));
+        yield put(changeInterviewTimeSuccess(Number(response)));
     } catch (e) {
         yield put(changeInterviewTimeFailure({ error: (e as Error).message }));
     }
