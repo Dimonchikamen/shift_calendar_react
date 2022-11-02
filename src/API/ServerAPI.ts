@@ -68,7 +68,7 @@ export class ServerAPI {
     static async changeInterviewTime(eventId: number, newInterviewTime: number): Promise<number> {
         const url = `/event/${eventId}/set-interview-time`;
         const data = new FormData();
-        data.append("newInterwviewTime", String(newInterviewTime));
+        data.append("newInterviewTime", String(newInterviewTime));
         return await axios.post(url, data).then(res => res.data);
     }
 
