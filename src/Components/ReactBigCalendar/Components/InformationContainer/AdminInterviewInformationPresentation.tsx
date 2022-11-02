@@ -37,7 +37,7 @@ const AdminInterviewInformationPresentation: FC<IAdminInterviewInformationPresen
                 ))}
             </div>
             <div className={s.work_time}>
-                <a href={`/user/profile/${interview.userId}`}>
+                <a href={`/user/interview/${interview.userId}`}>
                     <span className={s.time}>Анкета волонтера</span>
                 </a>
             </div>
