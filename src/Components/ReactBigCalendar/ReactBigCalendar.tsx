@@ -40,6 +40,7 @@ import { ViewTypeWorktime } from "../../Types/ViewTypeWorktime";
 import { setViewAction } from "../../Redux/Actions/SetViewAction";
 import AddWorkTimePopup from "../../UiKit/Popup/AddWorkTimePopup/AddWorkTimePopup";
 import { findLastInterval } from "../../Helpers/FindLastInterval";
+import { isScheduleEvent } from "../../Helpers/instanceHelpers";
 
 moment.locale("ru-ru");
 
@@ -143,10 +144,6 @@ const ReactBigCalendar: FC = () => {
         });
         removePrevClick();
     }, [currentDateString, config, resources, scheduleEvents, calendarViewType, behaviours, view]);
-
-    function isScheduleEvent(event: ScheduleEvent | ScheduleInterviewEvent): event is ScheduleEvent {
-        return (event as ScheduleEvent).interviews !== undefined;
-    }
 
     const unselectEvent = () => {
         if (selectedEvent) {

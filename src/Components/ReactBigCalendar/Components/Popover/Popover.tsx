@@ -8,10 +8,12 @@ import { DATE_TIME_FORMAT } from "../../../../Constants";
 import { changeEventAction } from "../../../../Redux/Actions/ChangeEventAction";
 import { Event } from "../../../../Types/Event";
 import { ViewType } from "../../../../Types/ViewType";
+import { ScheduleInterviewEvent } from "../../../../Types/ScheduleInterviewEvent";
+import { isScheduleEvent } from "../../../../Helpers/instanceHelpers";
 
 interface IPopoverProps {
     schedulerData: SchedulerData;
-    eventItem: ScheduleEvent;
+    eventItem: ScheduleEvent | ScheduleInterviewEvent;
     title: string;
     start: any;
     end: any;
@@ -69,7 +71,6 @@ const Popover: FC<IPopoverProps> = ({
     //         </div>
     //     );
     // }
-
     return (
         <div className={s.Popover}>
             <span
@@ -79,11 +80,12 @@ const Popover: FC<IPopoverProps> = ({
                 {start.format(DATE_TIME_FORMAT).slice(-5)} - {end.format(DATE_TIME_FORMAT).slice(-5)}
             </span>
             {role !== "" &&
+                isScheduleEvent(eventItem) &&
                 !eventItem.isFree &&
                 (currentEvent?.id === -1 || currentEvent?.id !== eventItem.eventId) && (
                     <span>{events.filter(e => eventItem.eventId === e.id)[0].title}</span>
                 )}
-            {view === "worktime" && role === "admin" && viewType === "edit" && (
+            {isScheduleEvent(eventItem) && view === "worktime" && role === "admin" && viewType === "edit" && (
                 <>
                     {!eventItem.isFree && currentEvent?.id !== -1 ? (
                         <div className={s.btnswrapper}>
