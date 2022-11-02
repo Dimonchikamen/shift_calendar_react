@@ -148,6 +148,14 @@ const ReactBigCalendar: FC = () => {
         return (event as ScheduleEvent).interviews !== undefined;
     }
 
+    const unselectEvent = () => {
+        if (selectedEvent) {
+            selectedEvent.bgColor = "#D9EDF7";
+            setSelectedEvent(null);
+            setData(null);
+        }
+    };
+
     const createData = (schedulerData: SchedulerData, event: ScheduleEvent | ScheduleInterviewEvent): RecruiterInfo => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -184,18 +192,12 @@ const ReactBigCalendar: FC = () => {
     };
 
     const changeView = (view: ViewTypeWorktime) => {
-        if (selectedEvent) {
-            selectedEvent.bgColor = "#D9EDF7";
-            setSelectedEvent(null);
-        }
+        unselectEvent();
         dispatch(setViewAction(view));
     };
 
     const changeMainEvent = () => {
-        if (selectedEvent) {
-            selectedEvent.bgColor = "#D9EDF7";
-            setSelectedEvent(null);
-        }
+        unselectEvent();
     };
 
     const prevClick = (schedulerData: SchedulerData) => {
@@ -214,10 +216,7 @@ const ReactBigCalendar: FC = () => {
     };
 
     const viewChange = (schedulerData: SchedulerData, view: any) => {
-        if (selectedEvent) {
-            selectedEvent.bgColor = "#D9EDF7";
-            setSelectedEvent(null);
-        }
+        unselectEvent();
         dispatch(changeCalendarViewTypeAction(view.viewType));
     };
 
@@ -292,6 +291,7 @@ const ReactBigCalendar: FC = () => {
     const signUpHandler = (interviewEvent: ScheduleInterviewEvent) => {
         const roleId = Number((document.querySelector("#root") as HTMLDivElement).dataset.roleId);
         dispatch(signUpVolunteerRequest(interviewEvent.workTimeId, roleId, interviewEvent.start, interviewEvent.end));
+        unselectEvent();
     };
 
     const editingEvent = (eventEditing: ScheduleEvent, newEventStart: Time, newEventEnd: Time) => {
@@ -439,7 +439,7 @@ const ReactBigCalendar: FC = () => {
                 <PopupError
                     isOpen={Boolean(changeError)}
                     title={"Что-то пошло не так..."}
-                    errorCode={error}
+                    errorCode={changeError}
                     onCancel={() => dispatch(closeErrorWindowAction())}
                 />
                 <InfoPopup

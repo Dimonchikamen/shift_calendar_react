@@ -78,9 +78,11 @@ const Popover: FC<IPopoverProps> = ({
             >
                 {start.format(DATE_TIME_FORMAT).slice(-5)} - {end.format(DATE_TIME_FORMAT).slice(-5)}
             </span>
-            {!eventItem.isFree && currentEvent?.id === -1 && (
-                <span>{events.filter(e => eventItem.eventId === e.id)[0].title}</span>
-            )}
+            {role !== "" &&
+                !eventItem.isFree &&
+                (currentEvent?.id === -1 || currentEvent?.id !== eventItem.eventId) && (
+                    <span>{events.filter(e => eventItem.eventId === e.id)[0].title}</span>
+                )}
             {view === "worktime" && role === "admin" && viewType === "edit" && (
                 <>
                     {!eventItem.isFree && currentEvent?.id !== -1 ? (

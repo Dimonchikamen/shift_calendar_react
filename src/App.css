@@ -3,6 +3,7 @@
     text-align: center;
     max-width: 1900px;
     display: flex;
+    justify-content: center;
 }
 
 .wrapper {
@@ -71,9 +72,22 @@
     margin-left: 0 !important;
 }
 
+/*#root .resource-view div::-webkit-scrollbar {*/
+/*    !*height: 10px;  ширина scrollbar *!*/
+/*}*/
+
+/*#root .resource-view div::-webkit-scrollbar-track {*/
+/*    background: white; !* цвет дорожки *!*/
+/*}*/
+
+/*#root .resource-view div::-webkit-scrollbar-thumb {*/
+/*     background-color: rgb(172, 172, 172, 0.4); !* цвет плашки *!*/
+/*     border-radius: 20px; !* закругления плашки *!*/
+/*}*/
+
+
 @media (max-width: 1024px) {
     #root .slot-text {
         font-size: 12px;
     }
-
 }
