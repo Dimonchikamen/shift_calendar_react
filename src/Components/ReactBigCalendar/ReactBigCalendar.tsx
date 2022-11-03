@@ -347,8 +347,28 @@ const ReactBigCalendar: FC = () => {
     };
 
     const addWorkTimeFromFreeWorkTime = (ev: ScheduleEvent, newStart: Date, newEnd: Date) => {
-        setSelectedFreeWorkTimeForAddNewWorkTime(null);
-        dispatch(addRecruiterWorkTimeRequest(newStart, newEnd, Number(ev.resourceId), currentEvent.id));
+        const toDelete: ScheduleEvent[] = [];
+        const even = createSchedulerEvent(
+            moment(newStart).format(DATE_TIME_FORMAT),
+            moment(newEnd).format(DATE_TIME_FORMAT),
+            ev.resourceId
+        );
+        scheduleEvents
+            .filter(event => event.resourceId === even.resourceId)
+            .forEach(elem => {
+                if (hasOverlap(elem, even)) {
+                    toDelete.push(elem);
+                }
+            });
+
+        if (toDelete.length) {
+            const evs = toDelete.map(e => getTime(e.start) + " - " + getTime(e.end));
+            setInfoText(`Пересечение со сменами: ${evs.join(", ")}`);
+            setIsOpenInfo(true);
+        } else {
+            setSelectedFreeWorkTimeForAddNewWorkTime(null);
+            dispatch(addRecruiterWorkTimeRequest(newStart, newEnd, Number(ev.resourceId), currentEvent.id));
+        }
     };
 
     const cancelSetWorkTimeFromFreeWorkTime = () => {
