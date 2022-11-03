@@ -160,8 +160,15 @@ const WorkDayReducer = (
         };
     } else if (action.type === ActionTypes.SIGN_UP_VOLUNTEER_SUCCESS) {
         const copy = getCopy(state.state, false, true);
-        const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
-        copy.recruiters[index] = action.payload;
+        const a = action.payload;
+        const recruiterIndex = copy.recruiters.findIndex(r => r.workedTimes?.some(w => w.id === a.recruiterWorkTimeId));
+        const workTimeIndex = copy.recruiters[recruiterIndex].workedTimes?.findIndex(
+            w => w.id === a.recruiterWorkTimeId
+        );
+        const interviewIndex = copy.recruiters[recruiterIndex].workedTimes?.[workTimeIndex!].interviews.findIndex(
+            i => i.start === a.start
+        );
+        copy.recruiters[recruiterIndex].workedTimes![workTimeIndex!].interviews[interviewIndex!].isActive = true;
         return { ...state, state: copy, changePending: false, error: null };
     } else if (action.type === ActionTypes.GET_EVENTS_FAILURE) {
         return { ...state, allEventsPending: false, error: action.payload.error };

@@ -48,7 +48,8 @@ export const createResourcesAndEvents = (
                     resourceId: String(r.id),
                     title: interview.start,
                     resizable: false,
-                    bgColor: "#D9EDF7",
+                    bgColor: interview.isActive ? "#EEE" : "#D9EDF7",
+                    isActive: interview.isActive ?? false,
                     workTimeId: workedTime.id,
                 });
             });
@@ -121,6 +122,10 @@ export const createResourcesAndEvents = (
             }
         });
     });
+    const activeInterviewIndex = interviews.findIndex(i => i.isActive);
+    if (activeInterviewIndex !== -1) {
+        freeInts.push(interviews[activeInterviewIndex]);
+    }
 
     const freeInterviews = freeInts.sort((a, b) => compareFullDateTime(a.start, b.start));
     return [

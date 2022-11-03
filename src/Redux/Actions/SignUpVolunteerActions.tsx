@@ -1,4 +1,9 @@
-import { FailurePayload, SignUpVolunteerRequest, SignUpVolunteerSuccess } from "../Types/SignUpVolunteerTypes";
+import {
+    FailurePayload,
+    SignUpVolunteerRequest,
+    SignUpVolunteerRequestPayload,
+    SignUpVolunteerSuccess,
+} from "../Types/SignUpVolunteerTypes";
 import { ActionTypes } from "../ActionTypes";
 import { FullDateTime } from "../../Types/FullDateTime";
 import { Recruiter } from "../../Types/Recruiter";
@@ -13,7 +18,7 @@ export const signUpVolunteerRequest = (
     payload: { recruiterWorkTimeId, roleId, start, end },
 });
 
-export const signUpVolunteerSuccess = (payload: Recruiter): SignUpVolunteerSuccess => ({
+export const signUpVolunteerSuccess = (payload: SignUpVolunteerRequestPayload): SignUpVolunteerSuccess => ({
     type: ActionTypes.SIGN_UP_VOLUNTEER_SUCCESS,
     payload,
 });

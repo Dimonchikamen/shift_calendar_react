@@ -9,4 +9,5 @@ export type Interview = {
     contacts: string[]; // список контактов (Telegram, WhatsApp, Vk и т.д.)
     start: Time; // Начало собеседования. формат H:mm. Например: 9:00 или 14:00
     end: Time; // Конец собеседования. формат как у начала
+    isActive?: boolean;
 };

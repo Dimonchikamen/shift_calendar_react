@@ -20,7 +20,7 @@ export type SignUpVolunteerRequest = {
 
 export type SignUpVolunteerSuccess = {
     type: ActionTypes.SIGN_UP_VOLUNTEER_SUCCESS;
-    payload: Recruiter;
+    payload: SignUpVolunteerRequestPayload;
 };
 
 export type SignUpVolunteerFailure = {
