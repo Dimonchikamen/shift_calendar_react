@@ -17,6 +17,7 @@ import { setWorkTimeHelper } from "../Helpers/SetWorkTimeHelper";
 import { SignUpVolunteerTypes } from "../Types/SignUpVolunteerTypes";
 import { DATE_TIME_FORMAT } from "../../Constants";
 import moment from "moment";
+import { getTime } from "../../Helpers/DateTimeHelpers";
 
 const defaultState: GlobalState = {
     rolePending: false,
@@ -166,7 +167,7 @@ const WorkDayReducer = (
             w => w.id === Number(a.workTimeId)
         );
         const interviewIndex = copy.recruiters[recruiterIndex].workedTimes?.[workTimeIndex!].interviews.findIndex(
-            i => i.start === a.start
+            i => i.start === getTime(a.start)
         );
         copy.recruiters[recruiterIndex].workedTimes![workTimeIndex!].interviews[interviewIndex!].isActive = true;
         return { ...state, state: copy, changePending: false, error: null };
