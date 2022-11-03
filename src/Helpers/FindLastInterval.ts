@@ -43,7 +43,7 @@ export const findLastInterval = (events: WorkTime[], date: Date, worktime = { st
             break;
         }
     }
-    if (todayEvents.length <= 1) {
+    if (todayEvents.length === 1) {
         lastInterval.start = worktime.start;
         lastInterval.end = intervals[intervals.length - 1][0];
     }

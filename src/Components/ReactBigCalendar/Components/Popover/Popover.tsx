@@ -3,9 +3,7 @@ import { ScheduleEvent } from "../../../../Types/ScheduleEvent";
 import { SchedulerData } from "react-big-scheduler";
 import Button from "antd/lib/button";
 import s from "../Popover/Popover.module.css";
-import { useAppDispatch } from "../../../../Redux/Hooks";
 import { DATE_TIME_FORMAT } from "../../../../Constants";
-import { changeEventAction } from "../../../../Redux/Actions/ChangeEventAction";
 import { Event } from "../../../../Types/Event";
 import { ViewType } from "../../../../Types/ViewType";
 import { ScheduleInterviewEvent } from "../../../../Types/ScheduleInterviewEvent";
@@ -42,35 +40,6 @@ const Popover: FC<IPopoverProps> = ({
     editEvent,
     setEvent,
 }) => {
-    // const dispatch = useAppDispatch();
-
-    // const changeEvent = (event: Event) => {
-    //     dispatch(
-    //         changeEventAction({
-    //             id: event.id,
-    //             title: event.title,
-    //         })
-    //     );
-    // };
-
-    // if (eventItem.bgColor === "#EEE" && viewType === "edit" && eventItem.interviews.length === 0) {
-    //     const eventToChange = events.filter(ev => ev.id === eventItem.eventId)[0];
-    //     return (
-    //         <div className={s.Popover}>
-    //             <div>
-    //                 Это рабочее время для другого мероприятия.
-    //                 <br />
-    //                 Переключить его на <strong>{eventToChange.title}</strong>?
-    //             </div>
-    //             <Button
-    //                 onClick={() => changeEvent(eventToChange)}
-    //                 className={s.Button}
-    //             >
-    //                 Переключить
-    //             </Button>
-    //         </div>
-    //     );
-    // }
     return (
         <div className={s.Popover}>
             <span
