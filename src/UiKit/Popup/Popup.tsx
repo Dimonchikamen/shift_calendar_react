@@ -32,6 +32,9 @@ const BootstrapDialogTitle: FC<DialogTitleProps> = ({ children, onClose }) => {
 };
 
 interface IProps {
+    className?: string;
+    fullWidth?: boolean;
+    maxWidth?: "xs" | "sm" | "md" | "lg" | "xl";
     children?: ReactNode | ReactNode[];
     title: string;
     isOpen: boolean;
@@ -39,13 +42,25 @@ interface IProps {
     onClose?: () => void;
 }
 
-const Popup: FC<IProps> = ({ isOpen, title, children, onCancel, onClose }) => {
+const Popup: FC<IProps> = ({
+    className,
+    fullWidth = false,
+    maxWidth = "sm",
+    isOpen,
+    title,
+    children,
+    onCancel,
+    onClose,
+}) => {
     const cancelActionHandler = () => {
         onCancel();
     };
 
     return (
         <Dialog
+            className={className}
+            fullWidth={fullWidth}
+            maxWidth={maxWidth}
             onClose={cancelActionHandler}
             open={isOpen}
         >

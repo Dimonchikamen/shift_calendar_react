@@ -288,7 +288,15 @@ const ReactBigCalendar: FC = () => {
 
     const signUpHandler = (interviewEvent: ScheduleInterviewEvent) => {
         const roleId = Number((document.querySelector("#root") as HTMLDivElement).dataset.roleId);
-        dispatch(signUpVolunteerRequest(interviewEvent.workTimeId, roleId, interviewEvent.start, interviewEvent.end));
+        dispatch(
+            signUpVolunteerRequest({
+                currentInterviewId: interviewEvent.id,
+                workTimeId: interviewEvent.workTimeId,
+                roleId,
+                start: interviewEvent.start,
+                end: interviewEvent.end,
+            })
+        );
         unselectEvent();
     };
 
@@ -402,6 +410,12 @@ const ReactBigCalendar: FC = () => {
         );
     };
 
+    const closeErrorPopup = () => {
+        dispatch(closeErrorWindowAction());
+        const [start, end] = getStartAndEndOfWeek(new Date(currentDate));
+        dispatch(getInformationRequest(start, end));
+    };
+
     if (getInformationPending || allEventsPending) {
         return <CircularProgress />;
     } else if (error) {
@@ -449,8 +463,8 @@ const ReactBigCalendar: FC = () => {
                 <PopupError
                     isOpen={Boolean(changeError)}
                     title={"Что-то пошло не так..."}
-                    errorCode={changeError}
-                    onCancel={() => dispatch(closeErrorWindowAction())}
+                    text={changeError}
+                    onCancel={closeErrorPopup}
                 />
                 <InfoPopup
                     isOpen={isOpenInfo}

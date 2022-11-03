@@ -8,23 +8,22 @@ import Popup from "../Popup";
 interface IProps {
     isOpen: boolean;
     title: string;
-    errorCode: string | null;
+    text: string | null;
     onCancel: () => void;
 }
 
-const ErrorPopup: FC<IProps> = ({ isOpen, title, errorCode, onCancel }) => {
+const ErrorPopup: FC<IProps> = ({ isOpen, title, text, onCancel }) => {
     return (
         <Popup
+            fullWidth={true}
+            maxWidth={"xs"}
             title={title}
             isOpen={isOpen}
             onCancel={onCancel}
             onClose={onCancel}
         >
             <DialogContent>
-                <DialogContentText id="error-dialog-description">
-                    Проверьте подключение к интернету или повторите попытку позже.
-                </DialogContentText>
-                <DialogContentText>Код ошибки: {errorCode}</DialogContentText>
+                <DialogContentText>{text}</DialogContentText>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onCancel}>ОК</Button>

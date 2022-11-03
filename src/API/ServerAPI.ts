@@ -1,6 +1,6 @@
 import axios from "axios";
 import moment from "moment";
-import { ChangeWorkTimePayload, GetWorkTimeSuccessPayload } from "../Redux/Types/WorkTimeTypes";
+import { ChangeWorkTimePayload } from "../Redux/Types/WorkTimeTypes";
 import { DATE_FORMAT, DATE_TIME_FORMAT } from "../Constants";
 import { Event } from "../Types/Event";
 import emptyEvents from "../Mocks/EmptyEvents.json";
@@ -9,10 +9,11 @@ import informationMock from "../Mocks/Response2.json";
 import informationTooManyRecruitersMock from "../Mocks/TooManyRecruitersMock.json";
 import informationForVolunteerMock from "../Mocks/ResponseForVolunteer.json";
 import informationForRecruiterMock from "../Mocks/ResponseForRecruiter.json";
+import informationRealvolunteerMock from "../Mocks/RealCaseVolunteerMock.json";
 import { GetInformationResponse } from "../Types/GetInformationResponse";
 import { FullDateTime } from "../Types/FullDateTime";
 import { RecruiterWorkTimePayload } from "../Redux/Types/RecruitersTypes";
-import { SignUpVolunteerRequestPayload } from "../Redux/Types/SignUpVolunteerTypes";
+import { SignVolunteerResponsePayload } from "../Redux/Types/SignUpVolunteerTypes";
 
 export class ServerAPI {
     static async getInformation(startDate: Date, endDate: Date): Promise<GetInformationResponse> {
@@ -93,7 +94,7 @@ export class ServerAPI {
         roleId: number,
         start: FullDateTime,
         end: FullDateTime
-    ): Promise<SignUpVolunteerRequestPayload> {
+    ): Promise<SignVolunteerResponsePayload> {
         const url = "/events/set-interview";
         const data = new FormData();
         data.append("workTimeId", String(recruiterWorkTimeId));

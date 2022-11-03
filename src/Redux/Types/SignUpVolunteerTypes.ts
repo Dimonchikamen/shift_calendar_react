@@ -1,6 +1,5 @@
 import { ActionTypes } from "../ActionTypes";
 import { FullDateTime } from "../../Types/FullDateTime";
-import { Recruiter } from "../../Types/Recruiter";
 
 export interface SignUpVolunteerRequestPayload {
     workTimeId: number;
@@ -9,18 +8,31 @@ export interface SignUpVolunteerRequestPayload {
     end: FullDateTime;
 }
 
+export interface SignVolunteerResponsePayload extends SignUpVolunteerRequestPayload {
+    interviewId: number;
+}
+
+export interface SignUpVolunteerPayload extends SignUpVolunteerRequestPayload {
+    currentInterviewId: number;
+}
+
+export interface SignVolunteerSuccessPayload extends SignUpVolunteerRequestPayload {
+    interviewId: number;
+    currentInterviewId: number;
+}
+
 export interface FailurePayload {
     error: string;
 }
 
 export type SignUpVolunteerRequest = {
     type: ActionTypes.SIGN_UP_VOLUNTEER_REQUEST;
-    payload: SignUpVolunteerRequestPayload;
+    payload: SignUpVolunteerPayload;
 };
 
 export type SignUpVolunteerSuccess = {
     type: ActionTypes.SIGN_UP_VOLUNTEER_SUCCESS;
-    payload: SignUpVolunteerRequestPayload;
+    payload: SignVolunteerSuccessPayload;
 };
 
 export type SignUpVolunteerFailure = {

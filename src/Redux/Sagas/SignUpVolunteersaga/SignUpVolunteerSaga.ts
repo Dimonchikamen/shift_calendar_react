@@ -2,28 +2,27 @@ import { ServerAPI } from "../../../API/ServerAPI";
 import { call, put, takeLatest } from "redux-saga/effects";
 import { ActionTypes } from "../../ActionTypes";
 import { FullDateTime } from "../../../Types/FullDateTime";
-import { SignUpVolunteerRequest, SignUpVolunteerRequestPayload } from "../../Types/SignUpVolunteerTypes";
+import { SignUpVolunteerRequest, SignVolunteerResponsePayload } from "../../Types/SignUpVolunteerTypes";
 import { signUpVolunteerFailure, signUpVolunteerSuccess } from "../../Actions/SignUpVolunteerActions";
+import { AxiosError } from "axios";
 
 const signUpVolunteerFetch = (
-    recruiterWorkTimeId: number,
+    workTimeId: number,
     roleId: number,
     start: FullDateTime,
     end: FullDateTime
-): Promise<SignUpVolunteerRequestPayload> => ServerAPI.singUpVolunteer(recruiterWorkTimeId, roleId, start, end);
+): Promise<SignVolunteerResponsePayload> => ServerAPI.singUpVolunteer(workTimeId, roleId, start, end);
 
-function* signUpVolunteer({ payload: { workTimeId, roleId, start, end } }: SignUpVolunteerRequest) {
+function* signUpVolunteer({ payload: { currentInterviewId, workTimeId, roleId, start, end } }: SignUpVolunteerRequest) {
     try {
-        const response: SignUpVolunteerRequestPayload = yield call(
-            signUpVolunteerFetch,
-            workTimeId,
-            roleId,
-            start,
-            end
-        );
-        yield put(signUpVolunteerSuccess(response));
+        const response: SignVolunteerResponsePayload = yield call(signUpVolunteerFetch, workTimeId, roleId, start, end);
+        yield put(signUpVolunteerSuccess({ ...response, currentInterviewId }));
     } catch (e) {
-        yield put(signUpVolunteerFailure({ error: (e as Error).message }));
+        if ((e as AxiosError).response?.status === 409) {
+            yield put(signUpVolunteerFailure({ error: "Данное время уже занято" }));
+        } else {
+            yield put(signUpVolunteerFailure({ error: (e as Error).message }));
+        }
     }
 }
 
