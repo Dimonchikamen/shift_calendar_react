@@ -17,6 +17,7 @@ import { setWorkTimeHelper } from "../Helpers/SetWorkTimeHelper";
 import { SignUpVolunteerTypes } from "../Types/SignUpVolunteerTypes";
 import { DATE_TIME_FORMAT } from "../../Constants";
 import moment from "moment";
+import { getTime } from "../../Helpers/DateTimeHelpers";
 
 const defaultState: GlobalState = {
     rolePending: false,
@@ -160,8 +161,15 @@ const WorkDayReducer = (
         };
     } else if (action.type === ActionTypes.SIGN_UP_VOLUNTEER_SUCCESS) {
         const copy = getCopy(state.state, false, true);
-        const index = copy.recruiters.findIndex(r => r.id === action.payload.id);
-        copy.recruiters[index] = action.payload;
+        const a = action.payload;
+        const recruiterIndex = copy.recruiters.findIndex(r => r.workedTimes?.some(w => w.id === Number(a.workTimeId)));
+        const workTimeIndex = copy.recruiters[recruiterIndex].workedTimes?.findIndex(
+            w => w.id === Number(a.workTimeId)
+        );
+        const interviewIndex = copy.recruiters[recruiterIndex].workedTimes?.[workTimeIndex!].interviews.findIndex(
+            i => i.start === getTime(a.start)
+        );
+        copy.recruiters[recruiterIndex].workedTimes![workTimeIndex!].interviews[interviewIndex!].isActive = true;
         return { ...state, state: copy, changePending: false, error: null };
     } else if (action.type === ActionTypes.GET_EVENTS_FAILURE) {
         return { ...state, allEventsPending: false, error: action.payload.error };

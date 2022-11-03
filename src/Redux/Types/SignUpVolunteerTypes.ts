@@ -3,7 +3,7 @@ import { FullDateTime } from "../../Types/FullDateTime";
 import { Recruiter } from "../../Types/Recruiter";
 
 export interface SignUpVolunteerRequestPayload {
-    recruiterWorkTimeId: number;
+    workTimeId: number;
     roleId: number;
     start: FullDateTime;
     end: FullDateTime;
@@ -20,7 +20,7 @@ export type SignUpVolunteerRequest = {
 
 export type SignUpVolunteerSuccess = {
     type: ActionTypes.SIGN_UP_VOLUNTEER_SUCCESS;
-    payload: Recruiter;
+    payload: SignUpVolunteerRequestPayload;
 };
 
 export type SignUpVolunteerFailure = {

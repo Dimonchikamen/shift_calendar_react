@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useMemo, useState } from "react";
+import { CSSProperties, FC, memo, useEffect, useMemo, useState } from "react";
 import Scheduler, { Resource, SchedulerData } from "react-big-scheduler";
 import "react-big-scheduler/lib/css/style.css";
 import moment from "moment";
@@ -41,6 +41,7 @@ import { setViewAction } from "../../Redux/Actions/SetViewAction";
 import AddWorkTimePopup from "../../UiKit/Popup/AddWorkTimePopup/AddWorkTimePopup";
 import { findLastInterval } from "../../Helpers/FindLastInterval";
 import { isScheduleEvent } from "../../Helpers/instanceHelpers";
+import CellHeaderTemplate from "./Components/CellHeaderTemplate/CellHeaderTemplate";
 
 moment.locale("ru-ru");
 
@@ -410,6 +411,17 @@ const ReactBigCalendar: FC = () => {
         );
     };
 
+    const customHeader = (schedulerData: SchedulerData, item: any, formattedDateItems: any, style: CSSProperties) => {
+        return (
+            <CellHeaderTemplate
+                schedulerData={schedulerData}
+                item={item}
+                formattedDateItems={formattedDateItems}
+                style={style}
+            />
+        );
+    };
+
     if (getInformationPending || allEventsPending) {
         return <CircularProgress />;
     } else if (error) {
@@ -436,6 +448,7 @@ const ReactBigCalendar: FC = () => {
                                 // @ts-ignore
                                 newEvent={addingEvent}
                                 eventItemPopoverTemplateResolver={customPopover}
+                                nonAgendaCellHeaderTemplateResolver={customHeader}
                             />
                         </div>
                         {selectedEvent && selectData && (
