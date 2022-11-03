@@ -123,6 +123,7 @@ const WorkDayReducer = (
     } else if (action.type === ActionTypes.CHANGE_INTERVIEW_TIME_SUCCESS) {
         const copy = getCopy(state.state, true);
         copy.currentEventInformation.interviewDuration = action.payload;
+        copy.currentInterviewDuration = action.payload;
         copy.config.minuteStep = action.payload;
         copy.config = resize(copy.config);
         return {
