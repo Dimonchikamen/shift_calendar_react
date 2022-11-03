@@ -3,7 +3,7 @@ import { FullDateTime } from "../../Types/FullDateTime";
 import { Recruiter } from "../../Types/Recruiter";
 
 export interface SignUpVolunteerRequestPayload {
-    recruiterWorkTimeId: number;
+    workTimeId: number;
     roleId: number;
     start: FullDateTime;
     end: FullDateTime;

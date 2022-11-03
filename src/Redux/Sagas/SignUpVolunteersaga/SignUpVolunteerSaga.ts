@@ -12,11 +12,11 @@ const signUpVolunteerFetch = (
     end: FullDateTime
 ): Promise<SignUpVolunteerRequestPayload> => ServerAPI.singUpVolunteer(recruiterWorkTimeId, roleId, start, end);
 
-function* signUpVolunteer({ payload: { recruiterWorkTimeId, roleId, start, end } }: SignUpVolunteerRequest) {
+function* signUpVolunteer({ payload: { workTimeId, roleId, start, end } }: SignUpVolunteerRequest) {
     try {
         const response: SignUpVolunteerRequestPayload = yield call(
             signUpVolunteerFetch,
-            recruiterWorkTimeId,
+            workTimeId,
             roleId,
             start,
             end

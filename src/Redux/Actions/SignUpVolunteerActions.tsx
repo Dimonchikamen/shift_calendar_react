@@ -6,7 +6,6 @@ import {
 } from "../Types/SignUpVolunteerTypes";
 import { ActionTypes } from "../ActionTypes";
 import { FullDateTime } from "../../Types/FullDateTime";
-import { Recruiter } from "../../Types/Recruiter";
 
 export const signUpVolunteerRequest = (
     recruiterWorkTimeId: number,
@@ -15,7 +14,7 @@ export const signUpVolunteerRequest = (
     end: FullDateTime
 ): SignUpVolunteerRequest => ({
     type: ActionTypes.SIGN_UP_VOLUNTEER_REQUEST,
-    payload: { recruiterWorkTimeId, roleId, start, end },
+    payload: { workTimeId: recruiterWorkTimeId, roleId, start, end },
 });
 
 export const signUpVolunteerSuccess = (payload: SignUpVolunteerRequestPayload): SignUpVolunteerSuccess => ({

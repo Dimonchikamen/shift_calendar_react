@@ -161,9 +161,9 @@ const WorkDayReducer = (
     } else if (action.type === ActionTypes.SIGN_UP_VOLUNTEER_SUCCESS) {
         const copy = getCopy(state.state, false, true);
         const a = action.payload;
-        const recruiterIndex = copy.recruiters.findIndex(r => r.workedTimes?.some(w => w.id === a.recruiterWorkTimeId));
+        const recruiterIndex = copy.recruiters.findIndex(r => r.workedTimes?.some(w => w.id === Number(a.workTimeId)));
         const workTimeIndex = copy.recruiters[recruiterIndex].workedTimes?.findIndex(
-            w => w.id === a.recruiterWorkTimeId
+            w => w.id === Number(a.workTimeId)
         );
         const interviewIndex = copy.recruiters[recruiterIndex].workedTimes?.[workTimeIndex!].interviews.findIndex(
             i => i.start === a.start
