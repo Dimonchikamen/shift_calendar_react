@@ -18,6 +18,7 @@ import { SignUpVolunteerTypes } from "../Types/SignUpVolunteerTypes";
 import { DATE_TIME_FORMAT } from "../../Constants";
 import moment from "moment";
 import { getTime } from "../../Helpers/DateTimeHelpers";
+import { Interview } from "../../Types/Interview";
 
 const defaultState: GlobalState = {
     rolePending: false,
@@ -166,19 +167,20 @@ const WorkDayReducer = (
         const a = action.payload;
         const currentRecruiter = copy.recruiters[0];
         const oldWorkTimeIndex = currentRecruiter.workedTimes?.findIndex(w => w.interviews.some(i => i.isActive));
-        const oldInterviewIndex = currentRecruiter.workedTimes![oldWorkTimeIndex!].interviews.findIndex(
-            i => i.isActive
-        );
-        const oldInterview = currentRecruiter.workedTimes![oldWorkTimeIndex!].interviews[oldInterviewIndex];
-        currentRecruiter.workedTimes![oldWorkTimeIndex!].interviews.splice(oldInterviewIndex, 1);
+        if (oldWorkTimeIndex !== -1) {
+            const oldInterviewIndex = currentRecruiter.workedTimes![oldWorkTimeIndex!].interviews.findIndex(
+                i => i.isActive
+            );
+            currentRecruiter.workedTimes![oldWorkTimeIndex!].interviews.splice(oldInterviewIndex, 1);
+        }
+
         const workTimeIndex = currentRecruiter.workedTimes?.findIndex(w => w.id === Number(a.workTimeId));
         currentRecruiter.workedTimes![workTimeIndex!].interviews.push({
-            ...oldInterview,
             id: Number(a.interviewId),
             start: getTime(a.start),
             end: getTime(a.end),
             isActive: true,
-        });
+        } as Interview);
         return { ...state, state: copy, changePending: false, error: null };
     } else if (action.type === ActionTypes.GET_EVENTS_FAILURE) {
         return { ...state, allEventsPending: false, error: action.payload.error };
