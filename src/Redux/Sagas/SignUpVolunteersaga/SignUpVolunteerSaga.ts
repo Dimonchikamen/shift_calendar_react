@@ -7,16 +7,18 @@ import { signUpVolunteerFailure, signUpVolunteerSuccess } from "../../Actions/Si
 import { AxiosError } from "axios";
 
 const signUpVolunteerFetch = (
-    workTimeId: number,
     roleId: number,
     start: FullDateTime,
     end: FullDateTime
-): Promise<SignVolunteerResponsePayload> => ServerAPI.singUpVolunteer(workTimeId, roleId, start, end);
+): Promise<SignVolunteerResponsePayload> => ServerAPI.singUpVolunteer(roleId, start, end);
 
 function* signUpVolunteer({ payload: { currentInterviewId, workTimeId, roleId, start, end } }: SignUpVolunteerRequest) {
     try {
-        const response: SignVolunteerResponsePayload = yield call(signUpVolunteerFetch, workTimeId, roleId, start, end);
-        yield put(signUpVolunteerSuccess({ ...response, currentInterviewId }));
+        const response: SignVolunteerResponsePayload = yield call(signUpVolunteerFetch, roleId, start, end);
+        if (response.error) {
+            throw new Error(response.error);
+        }
+        yield put(signUpVolunteerSuccess({ ...response, currentInterviewId, workTimeId }));
     } catch (e) {
         if ((e as AxiosError).response?.status === 409) {
             yield put(signUpVolunteerFailure({ error: "Данное время уже занято" }));

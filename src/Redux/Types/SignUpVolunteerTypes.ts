@@ -2,7 +2,6 @@ import { ActionTypes } from "../ActionTypes";
 import { FullDateTime } from "../../Types/FullDateTime";
 
 export interface SignUpVolunteerRequestPayload {
-    workTimeId: number;
     roleId: number;
     start: FullDateTime;
     end: FullDateTime;
@@ -10,13 +9,16 @@ export interface SignUpVolunteerRequestPayload {
 
 export interface SignVolunteerResponsePayload extends SignUpVolunteerRequestPayload {
     interviewId: number;
+    error?: string;
 }
 
 export interface SignUpVolunteerPayload extends SignUpVolunteerRequestPayload {
+    workTimeId: number;
     currentInterviewId: number;
 }
 
 export interface SignVolunteerSuccessPayload extends SignUpVolunteerRequestPayload {
+    workTimeId: number;
     interviewId: number;
     currentInterviewId: number;
 }

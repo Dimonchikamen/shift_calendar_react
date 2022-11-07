@@ -90,14 +90,12 @@ export class ServerAPI {
     }
 
     static async singUpVolunteer(
-        recruiterWorkTimeId: number,
         roleId: number,
         start: FullDateTime,
         end: FullDateTime
     ): Promise<SignVolunteerResponsePayload> {
         const url = "/events/set-interview";
         const data = new FormData();
-        data.append("workTimeId", String(recruiterWorkTimeId));
         data.append("roleId", String(roleId));
         data.append("start", start);
         data.append("end", end);
