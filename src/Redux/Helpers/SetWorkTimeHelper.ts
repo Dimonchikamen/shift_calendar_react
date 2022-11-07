@@ -9,7 +9,6 @@ export const setWorkTimeHelper = (calendarState: CalendarState): void => {
     const a = calendarState.currentEventInformation.workTimes.get(
         moment(calendarState.currentDate).format(DATE_FORMAT)
     ) as WorkTime;
-    console.log("SET_WORKTIME_HELPER", calendarState);
     calendarState.currentInformation = a ? { start: getHour(a.start), end: getHour(a.end) } : { start: 8, end: 22 };
     calendarState.config.dayStartFrom = calendarState.currentInformation?.start;
     calendarState.config.dayStopTo = calendarState.currentInformation?.end - 1;

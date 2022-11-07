@@ -45,7 +45,6 @@ export const resize = (config: SchedulerDataConfig, resizeResourceWidth = true) 
     // if (table?.clientHeight && config.schedulerMaxHeight && table.clientHeight === config.schedulerMaxHeight) {
     //     // newWidth = newWidth + 20;
     // }
-    console.log(newResourceTableWidth);
 
     return {
         ...config,
