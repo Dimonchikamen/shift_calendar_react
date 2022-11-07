@@ -48,6 +48,7 @@ const Popover: FC<IPopoverProps> = ({
             >
                 {start.format(DATE_TIME_FORMAT).slice(-5)} - {end.format(DATE_TIME_FORMAT).slice(-5)}
             </span>
+            {role === "" && eventItem.bgColor === "#EEE" && <span>Вы записаны на собеседование в это время</span>}
             {role !== "" &&
                 isScheduleEvent(eventItem) &&
                 !eventItem.isFree &&
