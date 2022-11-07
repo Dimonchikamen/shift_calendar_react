@@ -7,6 +7,7 @@ import store from "./Redux/Store";
 
 const rootElement = document.getElementById("root") as HTMLElement;
 const root = ReactDOM.createRoot(rootElement);
+
 root.render(
     <React.StrictMode>
         <Provider store={store}>
@@ -17,7 +18,7 @@ root.render(
                         ? "worktime"
                         : "interview"
                 }
-                isWidget={rootElement.dataset.roleId === ""}
+                isWidget={rootElement.dataset.roleId !== undefined}
             />
         </Provider>
     </React.StrictMode>

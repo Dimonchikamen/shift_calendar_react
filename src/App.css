@@ -66,6 +66,10 @@
     align-items: center;
 }
 
+#root .widget .resource-view {
+    display: none;
+}
+
 .round-all.event-item {
     text-overflow: clip;
     padding: 0 !important;

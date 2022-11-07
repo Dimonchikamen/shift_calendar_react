@@ -126,7 +126,7 @@ const WorkDayReducer = (
         copy.currentEventInformation.interviewDuration = action.payload;
         copy.currentInterviewDuration = action.payload;
         copy.config.minuteStep = action.payload;
-        copy.config = resize(copy.config);
+        copy.config = resize(copy.config, !state.state.isWidget);
         return {
             ...state,
             state: copy,
@@ -293,13 +293,17 @@ const WorkDayReducer = (
         copy.view = action.payload;
         return { ...state, state: copy };
     } else if (action.type === ActionTypes.SET_IS_WIDGET) {
-        const copy = getCopy(state.state);
+        const copy = getCopy(state.state, true);
         copy.isWidget = action.payload;
         if (copy.isWidget) {
             copy.role = "";
             copy.viewType = "read";
             copy.view = "interview";
             copy.config.creatable = false;
+            copy.config.dayResourceTableWidth = 0;
+            copy.config.weekResourceTableWidth = 0;
+            copy.config.eventItemLineHeight = 24;
+            copy.config = resize(copy.config, false);
         }
         return { ...state, state: copy };
     } else if (action.type === ActionTypes.CHANGE_CALENDAR_VIEW_TYPE) {
@@ -311,7 +315,7 @@ const WorkDayReducer = (
         };
     } else if (action.type === ActionTypes.RESIZE) {
         const copy = getCopy(state.state, true);
-        copy.config = resize(copy.config);
+        copy.config = resize(copy.config, !state.state.isWidget);
         return {
             ...state,
             state: copy,

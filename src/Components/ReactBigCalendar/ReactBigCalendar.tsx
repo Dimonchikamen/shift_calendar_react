@@ -64,6 +64,7 @@ const ReactBigCalendar: FC = () => {
     const config = state.config;
     const role = state.role;
     const view = state.view;
+    const isWidget = state.isWidget;
     const [resources, scheduleEvents, interviews] = useMemo(
         () =>
             createResourcesAndEvents(
@@ -443,7 +444,7 @@ const ReactBigCalendar: FC = () => {
     } else {
         return (
             <>
-                <div className={s.table_container}>
+                <div className={`${s.table_container} ${isWidget ? "widget" : ""}`}>
                     <CalendarHeader
                         currentDate={new Date(currentDate)}
                         onChangeEvent={changeMainEvent}

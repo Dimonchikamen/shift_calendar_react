@@ -2,7 +2,7 @@ import { SchedulerDataConfig } from "react-big-scheduler";
 
 const getDiff = (min: number, max: number) => max - min + 1;
 
-export const resize = (config: SchedulerDataConfig) => {
+export const resize = (config: SchedulerDataConfig, resizeResourceWidth = true) => {
     const a = document.querySelector("#root") as HTMLDivElement;
     let newWidth;
     if (a.parentElement?.classList.contains("modal-interview")) {
@@ -20,14 +20,16 @@ export const resize = (config: SchedulerDataConfig) => {
         if (window.innerWidth < 1400) newWidth = a.clientWidth - 1;
     }
     // newWidth = a.clientWidth * 0.8; //config.schedulerWidth! as number;
-    let newResourceTableWidth;
+    let newResourceTableWidth = config.dayResourceTableWidth!;
     //if (window.innerWidth < 1400) newWidth = a.clientWidth - 1;
-
-    if (window.innerWidth <= 1024) {
-        newResourceTableWidth = 140;
-    } else {
-        newResourceTableWidth = 200;
+    if (resizeResourceWidth) {
+        if (window.innerWidth <= 1024) {
+            newResourceTableWidth = 140;
+        } else {
+            newResourceTableWidth = 200;
+        }
     }
+
     // if (window.innerWidth < 1200) {
     //     newResourceTableWidth = 200;
     // }
@@ -43,11 +45,12 @@ export const resize = (config: SchedulerDataConfig) => {
     // if (table?.clientHeight && config.schedulerMaxHeight && table.clientHeight === config.schedulerMaxHeight) {
     //     // newWidth = newWidth + 20;
     // }
+    console.log(newResourceTableWidth);
 
     return {
         ...config,
         dayResourceTableWidth: newResourceTableWidth,
-        //weekResourceTableWidth: newResourceTableWidth,
+        weekResourceTableWidth: newResourceTableWidth,
         schedulerWidth: newWidth + 20,
         dayCellWidth: newDayCellWidth,
         weekCellWidth: newWeekCellWidth,
