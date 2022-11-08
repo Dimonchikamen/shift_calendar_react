@@ -109,7 +109,7 @@ const WorkDayReducer = (
         return { ...state, changePending: true };
     } else if (action.type === ActionTypes.CHANGE_WORK_TIME_SUCCESS) {
         const copy = getCopy(state.state, true);
-        setWorkTimeHelper(copy);
+        setWorkTimeHelper(copy, action.payload);
         // copy.config.dayStartFrom = action.payload?.start ?? 9;
         // copy.config.dayStopTo = action.payload?.end ?? 19;
         // copy.currentInformation = { start: action.payload?.start, end: action.payload?.end };

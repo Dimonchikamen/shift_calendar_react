@@ -5,6 +5,7 @@ import { EventInformation } from "./EventInformation";
 import { WorkTimeInformation } from "./WorkTimeInformation";
 import { ViewType } from "./ViewType";
 import { ViewTypeWorktime } from "./ViewTypeWorktime";
+import { WorkTime } from "./WorkTime";
 
 export type CalendarState = {
     role: string;
@@ -19,6 +20,7 @@ export type CalendarState = {
     currentEvent: Event;
     currentInformation: WorkTimeInformation | undefined;
     currentInterviewDuration: number;
+    currentWorkTime: WorkTime;
 
     config: SchedulerDataConfig;
     calendarViewType: ViewTypes;
