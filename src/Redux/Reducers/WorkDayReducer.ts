@@ -19,6 +19,7 @@ import { DATE_TIME_FORMAT } from "../../Constants";
 import moment from "moment";
 import { getTime } from "../../Helpers/DateTimeHelpers";
 import { Interview } from "../../Types/Interview";
+import { ChangeRecruiterForInterviewTypes } from "../Types/ChangeRecruiterForInterviewTypes";
 
 const defaultState: GlobalState = {
     rolePending: false,
@@ -94,6 +95,7 @@ const WorkDayReducer = (
         | RecruitersTypes
         | GetInformationTypes
         | SignUpVolunteerTypes
+        | ChangeRecruiterForInterviewTypes
         | RoleTypes
         | ViewType
 ): GlobalState => {

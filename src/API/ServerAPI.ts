@@ -25,7 +25,7 @@ export class ServerAPI {
 
     static async getEvents(): Promise<Event[]> {
         const url = "/events/get-list";
-        return await axios.get(url).then(response => response.data);
+        return await axios.get(url).then(res => res.data);
     }
 
     static async addRecruiterWorkTime(
@@ -67,7 +67,7 @@ export class ServerAPI {
         return await axios.post(url, data).then(response => response.data);
     }
 
-    static async changeInterviewTime(eventId: number, newInterviewTime: number): Promise<number> {
+    static async changeInterviewTime(eventId: number, newInterviewTime: number): Promise<number | { error: string }> {
         const url = `/event/${eventId}/set-interview-time`;
         const data = new FormData();
         data.append("newInterviewTime", String(newInterviewTime));
@@ -100,5 +100,10 @@ export class ServerAPI {
         data.append("start", start);
         data.append("end", end);
         return await axios.post(url, data).then(res => res.data);
+    }
+
+    static async changeRecruiterForInterview() {
+        const url = "/";
+        return await axios.post(url).then(res => res.data);
     }
 }

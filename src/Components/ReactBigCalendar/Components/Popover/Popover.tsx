@@ -7,7 +7,7 @@ import { DATE_TIME_FORMAT } from "../../../../Constants";
 import { Event } from "../../../../Types/Event";
 import { ViewType } from "../../../../Types/ViewType";
 import { ScheduleInterviewEvent } from "../../../../Types/ScheduleInterviewEvent";
-import { isScheduleEvent } from "../../../../Helpers/instanceHelpers";
+import { isInterviewEvent, isScheduleEvent } from "../../../../Helpers/instanceHelpers";
 
 interface IPopoverProps {
     schedulerData: SchedulerData;
@@ -23,6 +23,7 @@ interface IPopoverProps {
     deleteEvent: (eventItem: ScheduleEvent) => void;
     editEvent: (schedulerData: SchedulerData, eventItem: ScheduleEvent) => void;
     setEvent: (schedulerData: SchedulerData, eventItem: ScheduleEvent) => void;
+    onChangeInterviewRecruiter: (eventItem: ScheduleInterviewEvent) => void;
 }
 
 const Popover: FC<IPopoverProps> = ({
@@ -39,6 +40,7 @@ const Popover: FC<IPopoverProps> = ({
     deleteEvent,
     editEvent,
     setEvent,
+    onChangeInterviewRecruiter,
 }) => {
     return (
         <div className={s.Popover}>
@@ -48,13 +50,21 @@ const Popover: FC<IPopoverProps> = ({
             >
                 {start.format(DATE_TIME_FORMAT).slice(-5)} - {end.format(DATE_TIME_FORMAT).slice(-5)}
             </span>
-            {role === "" && eventItem.bgColor === "#EEE" && <span>Вы записаны на собеседование в это время</span>}
-            {role !== "" &&
+            {!role && eventItem.bgColor === "#EEE" && <span>Вы записаны на собеседование в это время</span>}
+            {role &&
                 isScheduleEvent(eventItem) &&
                 !eventItem.isFree &&
                 (currentEvent?.id === -1 || currentEvent?.id !== eventItem.eventId) && (
                     <span>{events.filter(e => eventItem.eventId === e.id)[0].title}</span>
                 )}
+            {/*{role && isInterviewEvent(eventItem) && (*/}
+            {/*    <Button*/}
+            {/*        className={s.Button}*/}
+            {/*        onClick={() => onChangeInterviewRecruiter(eventItem)}*/}
+            {/*    >*/}
+            {/*        Назначить на другого рекрутёра*/}
+            {/*    </Button>*/}
+            {/*)}*/}
             {isScheduleEvent(eventItem) && view === "worktime" && role === "admin" && viewType === "edit" && (
                 <>
                     {!eventItem.isFree && currentEvent?.id !== -1 ? (

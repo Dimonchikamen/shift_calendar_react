@@ -7,6 +7,7 @@ export interface FailurePayload {
 
 export type GetEventsRequest = {
     type: ActionTypes.GET_EVENTS_REQUEST;
+    payload: Date;
 };
 
 export type GetEventsSuccess = {

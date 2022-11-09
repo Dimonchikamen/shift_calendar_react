@@ -6,13 +6,23 @@ import {
     changeInterviewTimeFailure,
     changeInterviewTimeSuccess,
 } from "../../Actions/InterviewTimeActions/ChangeInterviewTimeActions";
+import { GetInformationResponse } from "../../../Types/GetInformationResponse";
+import { getStartAndEndOfWeek } from "../../../Helpers/GetStartAndEndOfWeek";
+import { getInformationSuccess } from "../../Actions/GetInformationActions";
 
-const changeTime = (eventId: number, newTime: number): Promise<number> =>
+const changeTime = (eventId: number, newTime: number): Promise<number | { error: string }> =>
     ServerAPI.changeInterviewTime(eventId, newTime);
 
-function* changeInterviewTime({ payload: { eventId, newTime } }: ChangeInterviewTimeRequest) {
+const getInformation = (start: Date, end: Date): Promise<GetInformationResponse> =>
+    ServerAPI.getInformation(start, end);
+
+function* changeInterviewTime({ payload: { eventId, newTime, currentDate } }: ChangeInterviewTimeRequest) {
     try {
-        const response: number = yield call(changeTime, eventId, newTime);
+        const response: number | { error: string } = yield call(changeTime, eventId, newTime);
+        if ((response as { error: string }).error) throw new Error((response as { error: string }).error);
+        const [start, end] = getStartAndEndOfWeek(currentDate);
+        const informationResponse: GetInformationResponse = yield call(getInformation, start, end);
+        yield put(getInformationSuccess(informationResponse));
         yield put(changeInterviewTimeSuccess(Number(response)));
     } catch (e) {
         yield put(changeInterviewTimeFailure({ error: (e as Error).message }));

@@ -3,6 +3,7 @@ import { ActionTypes } from "../ActionTypes";
 export interface ChangeInterviewTimeRequestPayload {
     eventId: number;
     newTime: number;
+    currentDate: Date;
 }
 
 export interface FailurePayload {

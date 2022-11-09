@@ -42,6 +42,10 @@ import AddWorkTimePopup from "../../UiKit/Popup/AddWorkTimePopup/AddWorkTimePopu
 import { findLastInterval } from "../../Helpers/FindLastInterval";
 import { isScheduleEvent } from "../../Helpers/instanceHelpers";
 import CellHeaderTemplate from "./Components/CellHeaderTemplate/CellHeaderTemplate";
+import { createTitle } from "../../Helpers/CreateTitle";
+import { compareFullDateTime } from "../../Helpers/Compare";
+import { Recruiter } from "../../Types/Recruiter";
+import ChangeRecruiterForInterviewPopup from "./Components/ChangeRecruiterForInterviewPopup/ChangeRecruiterForInterviewPopup";
 
 moment.locale("ru-ru");
 
@@ -85,6 +89,8 @@ const ReactBigCalendar: FC = () => {
     const [infoText, setInfoText] = useState<string>("");
     const [selectedFreeWorkTimeForAddNewWorkTime, setSelectedFreeWorkTimeForAddNewWorkTime] =
         useState<ScheduleEvent | null>(null);
+    const [changeRecruiterForInterviewOpen, setChangeRecruiterForInterviewOpen] = useState<boolean>(false);
+    const [availableRecruitersForInterview, setAvailableRecruitersForInterview] = useState<Recruiter[]>([]);
     const [worktimeWeek, setWorktimeWeek] = useState<ScheduleEvent | null>(null);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
     const [isAdding, setIsAdding] = useState<boolean>(true);
@@ -112,9 +118,7 @@ const ReactBigCalendar: FC = () => {
     };
 
     useEffect(() => {
-        dispatch(getEventsRequest());
-        const [start, end] = getStartAndEndOfWeek(new Date(currentDate));
-        dispatch(getInformationRequest(start, end));
+        dispatch(getEventsRequest(new Date(currentDate)));
         removePrevClick();
     }, []);
 
@@ -394,6 +398,35 @@ const ReactBigCalendar: FC = () => {
         setWorktimeWeek(null);
     };
 
+    const changeInterviewRecruiterHandler = (event: ScheduleInterviewEvent) => {
+        const resultRecruiters = recruiters.filter(r => {
+            return (
+                r.id !== Number(event.resourceId) &&
+                scheduleEvents.some(e => {
+                    return (
+                        r.id === Number(e.resourceId) &&
+                        getDate(e.start).getTime() === getDate(event.start).getTime() &&
+                        getAvailableTimes(e, e.interviews, currentInterviewDuration).some(
+                            t => t === createTitle(event.start, event.end)
+                        )
+                    );
+                })
+            );
+        });
+        setAvailableRecruitersForInterview(resultRecruiters);
+        setChangeRecruiterForInterviewOpen(true);
+    };
+
+    const cancelChangeRecruiterForInterviewHandler = () => {
+        setChangeRecruiterForInterviewOpen(false);
+        setAvailableRecruitersForInterview([]);
+    };
+
+    const submitChangeRecruiterForInterviewHandler = (recruiter: Recruiter) => {
+        setChangeRecruiterForInterviewOpen(false);
+        //console.log(recruiter);
+    };
+
     const customPopover = (
         schedulerData: SchedulerData,
         eventItem: ScheduleEvent,
@@ -416,6 +449,7 @@ const ReactBigCalendar: FC = () => {
                 deleteEvent={deleteEvent}
                 editEvent={editEvent}
                 setEvent={setEvent}
+                onChangeInterviewRecruiter={changeInterviewRecruiterHandler}
             />
         );
     };
@@ -433,8 +467,10 @@ const ReactBigCalendar: FC = () => {
 
     const closeErrorPopup = () => {
         dispatch(closeErrorWindowAction());
-        const [start, end] = getStartAndEndOfWeek(new Date(currentDate));
-        dispatch(getInformationRequest(start, end));
+        if (isWidget) {
+            const [start, end] = getStartAndEndOfWeek(new Date(currentDate));
+            dispatch(getInformationRequest(start, end));
+        }
     };
 
     if (getInformationPending || allEventsPending) {
@@ -515,6 +551,12 @@ const ReactBigCalendar: FC = () => {
                         onCancel={cancelSetWorkTimeFromWeek}
                     />
                 )}
+                <ChangeRecruiterForInterviewPopup
+                    isOpen={changeRecruiterForInterviewOpen}
+                    availableRecruiters={availableRecruitersForInterview}
+                    onSubmit={submitChangeRecruiterForInterviewHandler}
+                    onCancel={cancelChangeRecruiterForInterviewHandler}
+                />
                 <PopUp
                     isOpen={isOpen}
                     event={eventAdding!}

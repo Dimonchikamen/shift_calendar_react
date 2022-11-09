@@ -6,9 +6,13 @@ import {
 } from "../../Types/InterviewTimeTypes";
 import { ActionTypes } from "../../ActionTypes";
 
-export const changeInterviewTimeRequest = (eventId: number, newTime: number): ChangeInterviewTimeRequest => ({
+export const changeInterviewTimeRequest = (
+    eventId: number,
+    newTime: number,
+    currentDate: Date
+): ChangeInterviewTimeRequest => ({
     type: ActionTypes.CHANGE_INTERVIEW_TIME_REQUEST,
-    payload: { eventId, newTime },
+    payload: { eventId, newTime, currentDate },
 });
 
 export const changeInterviewTimeSuccess = (payload: number): ChangeInterviewTimeSuccess => ({

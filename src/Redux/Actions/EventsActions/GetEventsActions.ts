@@ -2,8 +2,9 @@ import { ActionTypes } from "../../ActionTypes";
 import { Event } from "../../../Types/Event";
 import { GetEventsFailure, GetEventsRequest, GetEventsSuccess, FailurePayload } from "../../Types/EventsTypes";
 
-export const getEventsRequest = (): GetEventsRequest => ({
+export const getEventsRequest = (payload: Date): GetEventsRequest => ({
     type: ActionTypes.GET_EVENTS_REQUEST,
+    payload,
 });
 
 export const getEventsSuccess = (payload: Event[]): GetEventsSuccess => ({
