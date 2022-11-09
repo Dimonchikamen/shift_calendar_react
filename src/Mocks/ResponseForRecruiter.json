@@ -4,39 +4,39 @@
             "eventId": 1386,
             "interviewDuration": 30,
             "workTimes": [
-                { "date": "2022-10-13", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-14", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-15", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-16", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-17", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-18", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-19", "beginTime": "09:00", "endTime": "22:00" }
+                { "date": "2022-11-03", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-11-04", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-11-05", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-11-06", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-11-07", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-11-08", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2022-11-09", "beginTime": "09:00", "endTime": "22:00" }
             ]
         },
         {
             "eventId": 1401,
             "interviewDuration": 30,
             "workTimes": [
-                { "date": "2022-10-13", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-14", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-15", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-16", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-17", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-18", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-19", "beginTime": "09:00", "endTime": "19:00" }
+                { "date": "2022-11-03", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-11-04", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-11-05", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-11-06", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-11-07", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-11-08", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2022-11-09", "beginTime": "09:00", "endTime": "19:00" }
             ]
         },
         {
             "eventId": 1407,
             "interviewDuration": 30,
             "workTimes": [
-                { "date": "2022-10-13", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-14", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-15", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-16", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-17", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-18", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-19", "beginTime": "10:00", "endTime": "19:00" }
+                { "date": "2022-11-03", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-11-04", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-11-05", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-11-06", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-11-07", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-11-08", "beginTime": "10:00", "endTime": "19:00" },
+                { "date": "2022-11-09", "beginTime": "10:00", "endTime": "19:00" }
             ]
         }
     ],
