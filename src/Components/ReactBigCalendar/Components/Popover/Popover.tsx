@@ -54,13 +54,12 @@ const Popover: FC<IPopoverProps> = ({
             </span>
             {!role && eventItem.bgColor === "#EEE" && <span>Вы записаны на собеседование в это время</span>}
             {role &&
-                recruiters.length > 1 &&
                 isScheduleEvent(eventItem) &&
                 !eventItem.isFree &&
                 (currentEvent?.id === -1 || currentEvent?.id !== eventItem.eventId) && (
                     <span>{events.filter(e => eventItem.eventId === e.id)[0].title}</span>
                 )}
-            {role && isInterviewEvent(eventItem) && (
+            {role && recruiters.length > 1 && isInterviewEvent(eventItem) && (
                 <Button
                     className={s.Button}
                     onClick={() => onChangeInterviewRecruiter(eventItem)}
