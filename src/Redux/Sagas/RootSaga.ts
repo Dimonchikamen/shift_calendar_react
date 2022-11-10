@@ -7,6 +7,7 @@ import EditRecruiterWorkTimeSaga from "./RecruitersSagas/EditRecruiterWorkTimeSa
 import ChangeWorkDaySaga from "./WorkDaySagas/ChangeWorkDaySaga";
 import GetInformationSaga from "./GetInformationSaga/GetInformationSaga";
 import SignUpVolunteerSaga from "./SignUpVolunteersaga/SignUpVolunteerSaga";
+import ChangeRecruiterForInterviewSaga from "./RecruitersSagas/ChangeRecruiterForInterviewSaga";
 
 export function* rootSaga() {
     yield all([
@@ -18,5 +19,6 @@ export function* rootSaga() {
         call(RemoveRecruiterWorkTimeSaga),
         call(EditRecruiterWorkTimeSaga),
         call(SignUpVolunteerSaga),
+        call(ChangeRecruiterForInterviewSaga),
     ]);
 }

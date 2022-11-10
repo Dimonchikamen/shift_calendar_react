@@ -14,6 +14,7 @@ import { GetInformationResponse } from "../Types/GetInformationResponse";
 import { FullDateTime } from "../Types/FullDateTime";
 import { RecruiterWorkTimePayload } from "../Redux/Types/RecruitersTypes";
 import { SignVolunteerResponsePayload } from "../Redux/Types/SignUpVolunteerTypes";
+import { ChangeRecruiterForInterviewResponse } from "../Redux/Types/ChangeRecruiterForInterviewTypes";
 
 export class ServerAPI {
     static async getInformation(startDate: Date, endDate: Date): Promise<GetInformationResponse> {
@@ -102,8 +103,8 @@ export class ServerAPI {
         return await axios.post(url, data).then(res => res.data);
     }
 
-    static async changeRecruiterForInterview() {
-        const url = "/";
-        return await axios.post(url).then(res => res.data);
+    static async changeRecruiterForInterview(data: FormData): Promise<ChangeRecruiterForInterviewResponse> {
+        const url = "/events/set-recruiter";
+        return await axios.post(url, data).then(res => res.data);
     }
 }

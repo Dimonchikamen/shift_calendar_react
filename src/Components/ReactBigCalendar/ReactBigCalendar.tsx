@@ -43,9 +43,10 @@ import { findLastInterval } from "../../Helpers/FindLastInterval";
 import { isScheduleEvent } from "../../Helpers/instanceHelpers";
 import CellHeaderTemplate from "./Components/CellHeaderTemplate/CellHeaderTemplate";
 import { createTitle } from "../../Helpers/CreateTitle";
-import { compareFullDateTime } from "../../Helpers/Compare";
 import { Recruiter } from "../../Types/Recruiter";
 import ChangeRecruiterForInterviewPopup from "./Components/ChangeRecruiterForInterviewPopup/ChangeRecruiterForInterviewPopup";
+import { changeRecruiterForInterviewRequest } from "../../Redux/Actions/ChangeRecruiterForInterviewActions";
+import { RecruiterWorkTime } from "../../Types/RecruiterWorkTime";
 
 moment.locale("ru-ru");
 
@@ -91,6 +92,9 @@ const ReactBigCalendar: FC = () => {
         useState<ScheduleEvent | null>(null);
     const [changeRecruiterForInterviewOpen, setChangeRecruiterForInterviewOpen] = useState<boolean>(false);
     const [availableRecruitersForInterview, setAvailableRecruitersForInterview] = useState<Recruiter[]>([]);
+    const [availableRecruiterWorkTimesForChangeInterview, setavailableRecruiterWorkTimesForChangeInterview] = useState<
+        ScheduleEvent[]
+    >([]);
     const [worktimeWeek, setWorktimeWeek] = useState<ScheduleEvent | null>(null);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
     const [isAdding, setIsAdding] = useState<boolean>(true);
@@ -399,6 +403,22 @@ const ReactBigCalendar: FC = () => {
     };
 
     const changeInterviewRecruiterHandler = (event: ScheduleInterviewEvent) => {
+        const availableWorkTimes: ScheduleEvent[] = [];
+        recruiters.forEach(r => {
+            if (r.id !== Number(event.resourceId)) {
+                scheduleEvents.forEach(e => {
+                    if (
+                        r.id === Number(e.resourceId) &&
+                        getDate(e.start).getTime() === getDate(event.start).getTime() &&
+                        getAvailableTimes(e, e.interviews, currentInterviewDuration).some(
+                            t => t === createTitle(event.start, event.end)
+                        )
+                    ) {
+                        availableWorkTimes.push(e);
+                    }
+                });
+            }
+        });
         const resultRecruiters = recruiters.filter(r => {
             return (
                 r.id !== Number(event.resourceId) &&
@@ -413,18 +433,37 @@ const ReactBigCalendar: FC = () => {
                 })
             );
         });
+        setSelectedEvent(event);
         setAvailableRecruitersForInterview(resultRecruiters);
+        setavailableRecruiterWorkTimesForChangeInterview(availableWorkTimes);
         setChangeRecruiterForInterviewOpen(true);
     };
 
     const cancelChangeRecruiterForInterviewHandler = () => {
         setChangeRecruiterForInterviewOpen(false);
         setAvailableRecruitersForInterview([]);
+        setSelectedEvent(null);
     };
 
     const submitChangeRecruiterForInterviewHandler = (recruiter: Recruiter) => {
         setChangeRecruiterForInterviewOpen(false);
-        //console.log(recruiter);
+        setSelectedEvent(null);
+        const index = availableRecruiterWorkTimesForChangeInterview.findIndex(
+            e => Number(e.resourceId) === recruiter.id
+        );
+        const workTime = availableRecruiterWorkTimesForChangeInterview[index];
+        const oldWorkTimeIndex = scheduleEvents.findIndex(e => e.interviews.some(i => i.id === selectedEvent!.id));
+        const oldWorkTimeId = scheduleEvents[oldWorkTimeIndex].id;
+        const oldRecruiterId = Number(scheduleEvents[oldWorkTimeIndex].resourceId);
+        dispatch(
+            changeRecruiterForInterviewRequest({
+                workTimeId: workTime.id,
+                interviewId: selectedEvent!.id,
+                newRecruiterId: recruiter.id,
+                oldWorkTimeId,
+                oldRecruiterId,
+            })
+        );
     };
 
     const customPopover = (

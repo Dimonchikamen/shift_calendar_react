@@ -106,7 +106,8 @@ const WorkDayReducer = (
     } else if (
         action.type === ActionTypes.CHANGE_WORK_TIME_REQUEST ||
         action.type === ActionTypes.CHANGE_INTERVIEW_TIME_REQUEST ||
-        action.type === ActionTypes.SIGN_UP_VOLUNTEER_REQUEST
+        action.type === ActionTypes.SIGN_UP_VOLUNTEER_REQUEST ||
+        action.type === ActionTypes.CHANGE_RECRUITER_FOR_INTERVIEW_REQUEST
     ) {
         return { ...state, changePending: true };
     } else if (action.type === ActionTypes.CHANGE_WORK_TIME_SUCCESS) {
@@ -184,6 +185,24 @@ const WorkDayReducer = (
             isActive: true,
         } as Interview);
         return { ...state, state: copy, changePending: false, error: null };
+    } else if (action.type === ActionTypes.CHANGE_RECRUITER_FOR_INTERVIEW_SUCCESS) {
+        const copy = getCopy(state.state, false, true, true);
+        const oldRecruiterIndex = copy.recruiters.findIndex(r => r.id === action.payload.oldRecruiterId);
+        const oldWorkTimeIndex = copy.recruiters[oldRecruiterIndex].workedTimes?.findIndex(
+            w => w.id === action.payload.oldWorkTimeId
+        );
+        const interviewIndex = copy.recruiters[oldRecruiterIndex].workedTimes?.[oldWorkTimeIndex!].interviews.findIndex(
+            i => i.id === action.payload.interviewId
+        );
+        const interview =
+            copy.recruiters[oldRecruiterIndex].workedTimes?.[oldWorkTimeIndex!].interviews[interviewIndex!];
+        copy.recruiters[oldRecruiterIndex].workedTimes?.[oldWorkTimeIndex!].interviews.splice(interviewIndex!, 1);
+        const newRecruiterIndex = copy.recruiters.findIndex(r => r.id === action.payload.newRecruiterId);
+        const newWorkTimeIndex = copy.recruiters[newRecruiterIndex].workedTimes?.findIndex(
+            w => w.id === action.payload.workTimeId
+        );
+        copy.recruiters[newRecruiterIndex].workedTimes?.[newWorkTimeIndex!].interviews.push(interview!);
+        return { ...state, state: copy, changePending: false, changeError: null };
     } else if (action.type === ActionTypes.GET_EVENTS_FAILURE) {
         return { ...state, allEventsPending: false, error: action.payload.error };
     } else if (action.type === ActionTypes.GET_INFORMATION_FAILURE) {
@@ -196,7 +215,8 @@ const WorkDayReducer = (
     } else if (
         action.type === ActionTypes.CHANGE_WORK_TIME_FAILURE ||
         action.type === ActionTypes.CHANGE_INTERVIEW_TIME_FAILURE ||
-        action.type === ActionTypes.SIGN_UP_VOLUNTEER_FAILURE
+        action.type === ActionTypes.SIGN_UP_VOLUNTEER_FAILURE ||
+        action.type === ActionTypes.CHANGE_RECRUITER_FOR_INTERVIEW_FAILURE
     ) {
         return {
             ...state,
