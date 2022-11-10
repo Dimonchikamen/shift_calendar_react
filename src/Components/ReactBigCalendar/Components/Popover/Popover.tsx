@@ -8,6 +8,7 @@ import { Event } from "../../../../Types/Event";
 import { ViewType } from "../../../../Types/ViewType";
 import { ScheduleInterviewEvent } from "../../../../Types/ScheduleInterviewEvent";
 import { isInterviewEvent, isScheduleEvent } from "../../../../Helpers/instanceHelpers";
+import { useAppSelector } from "../../../../Redux/Hooks";
 
 interface IPopoverProps {
     schedulerData: SchedulerData;
@@ -42,6 +43,7 @@ const Popover: FC<IPopoverProps> = ({
     setEvent,
     onChangeInterviewRecruiter,
 }) => {
+    const recruiters = useAppSelector(state => state.workDayState.state.recruiters);
     return (
         <div className={s.Popover}>
             <span
@@ -52,6 +54,7 @@ const Popover: FC<IPopoverProps> = ({
             </span>
             {!role && eventItem.bgColor === "#EEE" && <span>Вы записаны на собеседование в это время</span>}
             {role &&
+                recruiters.length > 1 &&
                 isScheduleEvent(eventItem) &&
                 !eventItem.isFree &&
                 (currentEvent?.id === -1 || currentEvent?.id !== eventItem.eventId) && (
