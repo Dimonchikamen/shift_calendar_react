@@ -5,14 +5,14 @@ import { Interview } from "../../../../Types/Interview";
 import { createTitleFromHours } from "../../../../Helpers/CreateTitle";
 
 const mergeInterviewsInfo = (interviews: Interview[]) => {
-    const res: { id: number; name: string; bookedTimes: string[] }[] = [];
+    const res: { id: number; userId: number; name: string; bookedTimes: string[] }[] = [];
     interviews.forEach(interview => {
         const index = res.findIndex(r => r.name === interview.name);
         const bookedTime = createTitleFromHours(interview.start, interview.end);
         if (index !== -1) {
             res[index].bookedTimes.push(bookedTime);
         } else {
-            res.push({ id: interview.id, name: interview.name, bookedTimes: [bookedTime] });
+            res.push({ id: interview.id, userId: interview.userId, name: interview.name, bookedTimes: [bookedTime] });
         }
     });
     return res;
@@ -45,7 +45,9 @@ const AdminInformationPresentation: FC<IAdminInformationPresentationProps> = ({ 
                         key={`interview_${interview.id}`}
                         className={s.interview}
                     >
-                        <span>{interview.name}</span>
+                        <a href={`/user/profile/${interview.userId}`}>
+                            <span>{interview.name}</span>
+                        </a>
                         <div className={s.interview_times}>
                             {interview.bookedTimes.map((t, i) => (
                                 <span
