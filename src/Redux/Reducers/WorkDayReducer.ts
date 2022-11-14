@@ -148,7 +148,6 @@ const WorkDayReducer = (
             res.set(e.eventId, { interviewDuration: Number(e.interviewDuration), workTimes });
         });
         copy.eventsInformation = res;
-        //copy.currentEvent.id = action.payload.eventsWorkTimeInformations[0].eventId;
         copy.currentEventInformation = res.get(copy.currentEvent.id) as EventInformation;
         copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
         setWorkTimeHelper(copy);
