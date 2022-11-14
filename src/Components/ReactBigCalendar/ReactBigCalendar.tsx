@@ -18,7 +18,7 @@ import Popover from "./Components/Popover/Popover";
 import { hasOverlap } from "../../Helpers/HasOverlap";
 import PopupError from "../../UiKit/Popup/ErrorPopup/ErrorPopup";
 import InfoPopup from "../../UiKit/Popup/InfoPopup/InfoPopup";
-import { Alert, CircularProgress } from "@mui/material";
+import { Alert, CircularProgress, Snackbar } from "@mui/material";
 import { closeErrorWindowAction } from "../../Redux/Actions/CloseErrorWindowAction";
 import { FullDateTime } from "../../Types/FullDateTime";
 import {
@@ -47,10 +47,12 @@ import { Recruiter } from "../../Types/Recruiter";
 import ChangeRecruiterForInterviewPopup from "./Components/ChangeRecruiterForInterviewPopup/ChangeRecruiterForInterviewPopup";
 import { changeRecruiterForInterviewRequest } from "../../Redux/Actions/ChangeRecruiterForInterviewActions";
 import { RecruiterWorkTime } from "../../Types/RecruiterWorkTime";
+import { closeSnackBar } from "../../Redux/Reducers/SnackBarReducer/Actions";
 
 moment.locale("ru-ru");
 
 const ReactBigCalendar: FC = () => {
+    const { snackBarOpen } = useAppSelector(state => state.snackBarState);
     const { getInformationPending, allEventsPending, changePending, state, error, changeError } = useAppSelector(
         state => state.workDayState
     );
@@ -512,6 +514,10 @@ const ReactBigCalendar: FC = () => {
         }
     };
 
+    const closeSnackBarHandler = () => {
+        dispatch(closeSnackBar());
+    };
+
     if (getInformationPending || allEventsPending) {
         return <CircularProgress />;
     } else if (error) {
@@ -604,6 +610,21 @@ const ReactBigCalendar: FC = () => {
                     onEventSubmit={eventSubmit}
                     onCancel={() => setIsOpen(false)}
                 />
+                <Snackbar
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    open={snackBarOpen}
+                    autoHideDuration={3000}
+                    onClose={closeSnackBarHandler}
+                    message="Запись была выполнена успешно!"
+                >
+                    <Alert
+                        onClose={closeSnackBarHandler}
+                        severity="success"
+                        sx={{ width: "100%" }}
+                    >
+                        Запись была выполнена успешно!
+                    </Alert>
+                </Snackbar>
             </>
         );
     }

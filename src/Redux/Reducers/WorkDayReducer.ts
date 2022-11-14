@@ -178,6 +178,11 @@ const WorkDayReducer = (
         }
 
         const workTimeIndex = currentRecruiter.workedTimes?.findIndex(w => w.id === Number(a.workTimeId));
+        console.log(workTimeIndex);
+        if (!currentRecruiter.workedTimes![workTimeIndex!].interviews) {
+            currentRecruiter.workedTimes![workTimeIndex!].interviews = [];
+        }
+
         currentRecruiter.workedTimes![workTimeIndex!].interviews.push({
             id: Number(a.interviewId),
             start: getTime(a.start),
