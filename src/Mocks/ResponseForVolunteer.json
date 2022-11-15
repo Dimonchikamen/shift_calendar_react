@@ -12,32 +12,6 @@
                 { "date": "2022-10-18", "beginTime": "09:00", "endTime": "22:00" },
                 { "date": "2022-10-19", "beginTime": "09:00", "endTime": "22:00" }
             ]
-        },
-        {
-            "eventId": 1401,
-            "interviewDuration": 30,
-            "workTimes": [
-                { "date": "2022-10-13", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-14", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-15", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-16", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-17", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-18", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-19", "beginTime": "09:00", "endTime": "19:00" }
-            ]
-        },
-        {
-            "eventId": 1407,
-            "interviewDuration": 30,
-            "workTimes": [
-                { "date": "2022-10-13", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-14", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-15", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-16", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-17", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-18", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-19", "beginTime": "10:00", "endTime": "19:00" }
-            ]
         }
     ],
 
@@ -49,8 +23,8 @@
                 {
                     "id": 1,
                     "eventId": 1386,
-                    "start": "2022-11-03 10:30",
-                    "end": "2022-11-03 12:30",
+                    "start": "2022-11-15 10:30",
+                    "end": "2022-11-15 12:30",
                     "interviews": [
                         {
                             "id": 10011112312312,
@@ -68,21 +42,8 @@
                 {
                     "id": 2,
                     "eventId": 1386,
-                    "start": "2022-11-01 12:30",
-                    "end": "2022-11-01 14:30",
-                    "interviews": []
-                }
-            ]
-        },
-        {
-            "id": 12345,
-            "name": "Попова Алена Алексеевна",
-            "workedTimes": [
-                {
-                    "id": 4,
-                    "eventId": 1386,
-                    "start": "2022-11-02 11:00",
-                    "end": "2022-11-02 15:00",
+                    "start": "2022-11-15 12:30",
+                    "end": "2022-11-15 14:30",
                     "interviews": []
                 }
             ]

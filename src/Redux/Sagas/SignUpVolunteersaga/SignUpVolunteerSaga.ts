@@ -5,6 +5,7 @@ import { FullDateTime } from "../../../Types/FullDateTime";
 import { SignUpVolunteerRequest, SignVolunteerResponsePayload } from "../../Types/SignUpVolunteerTypes";
 import { signUpVolunteerFailure, signUpVolunteerSuccess } from "../../Actions/SignUpVolunteerActions";
 import { AxiosError } from "axios";
+import { openSnackBar } from "../../Reducers/SnackBarReducer/Actions";
 
 const signUpVolunteerFetch = (
     roleId: number,
@@ -38,6 +39,7 @@ function* signUpVolunteer({
             throw new Error(response.error);
         }
         yield put(signUpVolunteerSuccess({ ...response, currentInterviewId, workTimeId }));
+        yield put(openSnackBar());
     } catch (e) {
         if ((e as AxiosError).response?.status === 409) {
             yield put(signUpVolunteerFailure({ error: "Данное время уже занято" }));
