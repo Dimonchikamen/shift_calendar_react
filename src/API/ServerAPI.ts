@@ -21,15 +21,13 @@ export class ServerAPI {
     static async getInformation(startDate: Date, endDate: Date): Promise<GetInformationResponse> {
         const start = moment(startDate).format(DATE_FORMAT);
         const end = moment(endDate).format(DATE_FORMAT);
-        const url = `/`; //events/get-information?start=${start}&end=${end}`;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        return await axios.get(url).then(res => informationRealvolunteerMock); //res.data);
+        const url = `/events/get-information?start=${start}&end=${end}`;
+        return await axios.get(url).then(res => res.data);
     }
 
     static async getEvents(): Promise<Event[]> {
-        const url = "/"; //events/get-list";
-        return await axios.get(url).then(response => eventsMock); //response.data);
+        const url = "/events/get-list";
+        return await axios.get(url).then(response => response.data);
     }
 
     static async addRecruiterWorkTime(
@@ -75,7 +73,7 @@ export class ServerAPI {
         const url = `/event/${eventId}/set-interview-time`;
         const data = new FormData();
         data.append("newInterviewTime", String(newInterviewTime));
-        return await axios.get(url).then(res => 15); //res.data);
+        return await axios.get(url).then(res => res.data);
     }
 
     static async changeWorkTime(
@@ -84,13 +82,13 @@ export class ServerAPI {
         newStart: number,
         newEnd: number
     ): Promise<ChangeWorkTimePayload> {
-        const url = `/`; //event/${eventId}/set-day-worktime/${moment(date).format(DATE_FORMAT)}`;
+        const url = `/event/${eventId}/set-day-worktime/${moment(date).format(DATE_FORMAT)}`;
         const data = new FormData();
         data.append("start", String(newStart));
         data.append("end", String(newEnd));
         data.append("date", moment(date).format(DATE_TIME_FORMAT));
         data.append("eventId", String(eventId));
-        return await axios.get(url).then(res => ({ start: newStart, end: newEnd })); //res.data);
+        return await axios.get(url).then(res => res.data);
     }
 
     static async singUpVolunteer(data: FormData): Promise<SignVolunteerResponsePayload> {
