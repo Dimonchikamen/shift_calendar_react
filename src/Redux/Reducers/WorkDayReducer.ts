@@ -20,6 +20,7 @@ import moment from "moment";
 import { getTime } from "../../Helpers/DateTimeHelpers";
 import { Interview } from "../../Types/Interview";
 import { ChangeRecruiterForInterviewTypes } from "../Types/ChangeRecruiterForInterviewTypes";
+import { InterviewRoleTypes } from "../Types/InterviewRoleTypes";
 
 const defaultState: GlobalState = {
     rolePending: false,
@@ -80,6 +81,8 @@ const defaultState: GlobalState = {
         currentRecruiters: [],
         interviews: [],
         currentInterviews: [],
+        interviewRole: "",
+        userInfo: { id: 1, phone: "", name: "" },
     },
     error: null,
     changeError: null,
@@ -98,6 +101,7 @@ const WorkDayReducer = (
         | ChangeRecruiterForInterviewTypes
         | RoleTypes
         | ViewType
+        | InterviewRoleTypes
 ): GlobalState => {
     if (action.type === ActionTypes.GET_EVENTS_REQUEST) {
         return { ...state, allEventsPending: true };
@@ -153,6 +157,7 @@ const WorkDayReducer = (
         copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
         setWorkTimeHelper(copy);
         copy.recruiters = action.payload.recruiters;
+        if (action.payload.userInfo) copy.userInfo = action.payload.userInfo;
         return { ...state, state: copy, getInformationPending: false, error: null };
     } else if (action.type === ActionTypes.GET_EVENTS_SUCCESS) {
         const copy = getCopy(state.state);
@@ -313,6 +318,10 @@ const WorkDayReducer = (
         const copy = getCopy(state.state, true);
         copy.config.creatable = copy.viewType === "edit" && action.payload === "worktime";
         copy.view = action.payload;
+        return { ...state, state: copy };
+    } else if (action.type === ActionTypes.SET_INTERVIEW_ROLE) {
+        const copy = getCopy(state.state, true);
+        copy.interviewRole = action.payload;
         return { ...state, state: copy };
     } else if (action.type === ActionTypes.SET_IS_WIDGET) {
         const copy = getCopy(state.state, true);

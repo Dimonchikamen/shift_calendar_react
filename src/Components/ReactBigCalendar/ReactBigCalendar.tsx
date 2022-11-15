@@ -47,6 +47,8 @@ import { Recruiter } from "../../Types/Recruiter";
 import ChangeRecruiterForInterviewPopup from "./Components/ChangeRecruiterForInterviewPopup/ChangeRecruiterForInterviewPopup";
 import { changeRecruiterForInterviewRequest } from "../../Redux/Actions/ChangeRecruiterForInterviewActions";
 import { RecruiterWorkTime } from "../../Types/RecruiterWorkTime";
+import ModalForm from "./Components/ModalForm/ModalForm";
+import { Interview } from "../../Types/Interview";
 
 moment.locale("ru-ru");
 
@@ -84,9 +86,12 @@ const ReactBigCalendar: FC = () => {
     );
     const dispatch = useAppDispatch();
     const events = state.events;
+    const interviewRole = state.interviewRole;
+    const userInfo = state.userInfo;
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isOpenInfo, setIsOpenInfo] = useState<boolean>(false);
+    const [isOpenWidgetModal, setIsOpenWidgetModal] = useState<boolean>(false);
     const [infoText, setInfoText] = useState<string>("");
     const [selectedFreeWorkTimeForAddNewWorkTime, setSelectedFreeWorkTimeForAddNewWorkTime] =
         useState<ScheduleEvent | null>(null);
@@ -295,7 +300,7 @@ const ReactBigCalendar: FC = () => {
         setIsEditing(true);
     };
 
-    const signUpHandler = (interviewEvent: ScheduleInterviewEvent) => {
+    const signUpHandler = (interviewEvent: ScheduleInterviewEvent, info: Interview) => {
         const roleId = Number((document.querySelector("#root") as HTMLDivElement).dataset.roleId);
         dispatch(
             signUpVolunteerRequest({
@@ -304,8 +309,11 @@ const ReactBigCalendar: FC = () => {
                 roleId,
                 start: interviewEvent.start,
                 end: interviewEvent.end,
+                phone: info.phone,
+                contacts: info.contacts,
             })
         );
+        setIsOpenWidgetModal(false);
         unselectEvent();
     };
 
@@ -550,7 +558,7 @@ const ReactBigCalendar: FC = () => {
                                 isEditing={isEditing}
                                 eventEditing={eventAdding!}
                                 onEditEvent={editingEvent}
-                                onSignUp={signUpHandler}
+                                onSignUp={() => setIsOpenWidgetModal(true)}
                             />
                         )}
                     </div>
@@ -567,6 +575,14 @@ const ReactBigCalendar: FC = () => {
                     title={"Внимание!"}
                     text={infoText}
                     onCancel={() => setIsOpenInfo(false)}
+                />
+                <ModalForm
+                    isOpen={isOpenWidgetModal}
+                    interview={selectedEvent as ScheduleInterviewEvent}
+                    userInfo={userInfo}
+                    interviewRole={interviewRole}
+                    onSubmitSignUp={signUpHandler}
+                    onCancel={() => setIsOpenWidgetModal(false)}
                 />
                 {selectedFreeWorkTimeForAddNewWorkTime && (
                     <AddWorkTimePopup

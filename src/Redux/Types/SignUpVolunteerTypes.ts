@@ -15,6 +15,8 @@ export interface SignVolunteerResponsePayload extends SignUpVolunteerRequestPayl
 export interface SignUpVolunteerPayload extends SignUpVolunteerRequestPayload {
     workTimeId: number;
     currentInterviewId: number;
+    phone: string;
+    contacts: string[];
 }
 
 export interface SignVolunteerSuccessPayload extends SignUpVolunteerRequestPayload {

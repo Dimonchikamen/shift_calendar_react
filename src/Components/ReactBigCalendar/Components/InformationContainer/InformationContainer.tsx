@@ -16,7 +16,7 @@ interface IInformationContainerProps {
     data: RecruiterInfo;
     interview?: ScheduleInterviewEvent;
     eventEditing?: ScheduleEvent;
-    onSignUp?: (interview: ScheduleInterviewEvent) => void;
+    onSignUp?: () => void;
     onEditEvent?: (eventEditing: ScheduleEvent, dayStart: string, dayEnd: string) => void;
 }
 
@@ -32,7 +32,7 @@ interface IAdminInterviewInformationPresentationProps extends IInformationContai
 
 interface IVolunteerInterviewInformationProps extends IInformationContainerProps {
     interview: ScheduleInterviewEvent;
-    onSignUp: (interview: ScheduleInterviewEvent) => void;
+    onSignUp: () => void;
 }
 
 const InformationContainer: FC<

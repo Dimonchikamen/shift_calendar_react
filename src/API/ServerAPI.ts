@@ -9,6 +9,7 @@ import informationMock from "../Mocks/Response2.json";
 import informationTooManyRecruitersMock from "../Mocks/TooManyRecruitersMock.json";
 import informationForVolunteerMock from "../Mocks/ResponseForVolunteer.json";
 import informationForRecruiterMock from "../Mocks/ResponseForRecruiter.json";
+import tooManyRecs from "../Mocks/TooManyRecruitersMock.json";
 import informationRealvolunteerMock from "../Mocks/RealCaseVolunteerMock.json";
 import { GetInformationResponse } from "../Types/GetInformationResponse";
 import { FullDateTime } from "../Types/FullDateTime";
@@ -20,13 +21,15 @@ export class ServerAPI {
     static async getInformation(startDate: Date, endDate: Date): Promise<GetInformationResponse> {
         const start = moment(startDate).format(DATE_FORMAT);
         const end = moment(endDate).format(DATE_FORMAT);
-        const url = `/events/get-information?start=${start}&end=${end}`;
-        return await axios.get(url).then(res => res.data);
+        const url = `/`; //events/get-information?start=${start}&end=${end}`;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return await axios.get(url).then(res => informationRealvolunteerMock); //res.data);
     }
 
     static async getEvents(): Promise<Event[]> {
-        const url = "/events/get-list";
-        return await axios.get(url).then(res => res.data);
+        const url = "/"; //events/get-list";
+        return await axios.get(url).then(response => eventsMock); //response.data);
     }
 
     static async addRecruiterWorkTime(
@@ -72,7 +75,7 @@ export class ServerAPI {
         const url = `/event/${eventId}/set-interview-time`;
         const data = new FormData();
         data.append("newInterviewTime", String(newInterviewTime));
-        return await axios.post(url, data).then(res => res.data);
+        return await axios.get(url).then(res => 15); //res.data);
     }
 
     static async changeWorkTime(
@@ -81,25 +84,17 @@ export class ServerAPI {
         newStart: number,
         newEnd: number
     ): Promise<ChangeWorkTimePayload> {
-        const url = `/event/${eventId}/set-day-worktime/${moment(date).format(DATE_FORMAT)}`;
+        const url = `/`; //event/${eventId}/set-day-worktime/${moment(date).format(DATE_FORMAT)}`;
         const data = new FormData();
         data.append("start", String(newStart));
         data.append("end", String(newEnd));
         data.append("date", moment(date).format(DATE_TIME_FORMAT));
         data.append("eventId", String(eventId));
-        return await axios.post(url, data).then(res => res.data);
+        return await axios.get(url).then(res => ({ start: newStart, end: newEnd })); //res.data);
     }
 
-    static async singUpVolunteer(
-        roleId: number,
-        start: FullDateTime,
-        end: FullDateTime
-    ): Promise<SignVolunteerResponsePayload> {
+    static async singUpVolunteer(data: FormData): Promise<SignVolunteerResponsePayload> {
         const url = "/events/set-interview";
-        const data = new FormData();
-        data.append("roleId", String(roleId));
-        data.append("start", start);
-        data.append("end", end);
         return await axios.post(url, data).then(res => res.data);
     }
 

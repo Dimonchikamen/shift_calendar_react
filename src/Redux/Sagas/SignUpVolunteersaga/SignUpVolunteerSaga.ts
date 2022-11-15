@@ -9,12 +9,31 @@ import { AxiosError } from "axios";
 const signUpVolunteerFetch = (
     roleId: number,
     start: FullDateTime,
-    end: FullDateTime
-): Promise<SignVolunteerResponsePayload> => ServerAPI.singUpVolunteer(roleId, start, end);
+    end: FullDateTime,
+    phone: string,
+    contacts: string[]
+): Promise<SignVolunteerResponsePayload> => {
+    const data = new FormData();
+    data.append("roleId", String(roleId));
+    data.append("start", start);
+    data.append("end", end);
+    data.append("phone", phone);
+    data.append("contacts", JSON.stringify(contacts));
+    return ServerAPI.singUpVolunteer(data);
+};
 
-function* signUpVolunteer({ payload: { currentInterviewId, workTimeId, roleId, start, end } }: SignUpVolunteerRequest) {
+function* signUpVolunteer({
+    payload: { currentInterviewId, workTimeId, roleId, start, end, phone, contacts },
+}: SignUpVolunteerRequest) {
     try {
-        const response: SignVolunteerResponsePayload = yield call(signUpVolunteerFetch, roleId, start, end);
+        const response: SignVolunteerResponsePayload = yield call(
+            signUpVolunteerFetch,
+            roleId,
+            start,
+            end,
+            phone,
+            contacts
+        );
         if (response.error) {
             throw new Error(response.error);
         }

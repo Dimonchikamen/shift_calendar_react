@@ -6,6 +6,7 @@ import { WorkTimeInformation } from "./WorkTimeInformation";
 import { ViewType } from "./ViewType";
 import { ViewTypeWorktime } from "./ViewTypeWorktime";
 import { WorkTime } from "./WorkTime";
+import { UserInfo } from "./UserInfo";
 
 export type CalendarState = {
     role: string;
@@ -26,4 +27,6 @@ export type CalendarState = {
     calendarViewType: ViewTypes;
     behaviours: object;
     recruiters: Recruiter[];
+    interviewRole: string;
+    userInfo: UserInfo;
 };

@@ -1,0 +1,11 @@
+.form {
+    margin: 1.2em;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.checkboxes {
+    display: flex;
+    flex-direction: row;
+}

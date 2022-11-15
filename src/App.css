@@ -49,10 +49,10 @@
     font-weight: 700;
 }
 
-.MuiOutlinedInput-root > fieldset {
+:not(.MuiTextField-root) > .MuiOutlinedInput-root > fieldset {
     top: 0;
 }
-.MuiOutlinedInput-root > fieldset > legend {
+:not(.MuiTextField-root) > .MuiOutlinedInput-root > fieldset > legend {
     display: none;
 }
 
@@ -94,7 +94,6 @@
 /*     background-color: rgb(172, 172, 172, 0.4); !* цвет плашки *!*/
 /*     border-radius: 20px; !* закругления плашки *!*/
 /*}*/
-
 
 @media (max-width: 1024px) {
     #root .slot-text {

@@ -6,7 +6,7 @@ import { getTime } from "../../../../Helpers/DateTimeHelpers";
 
 interface IVolunteerInterviewInformationProps {
     interview: ScheduleInterviewEvent;
-    onSignUp: (interview: ScheduleInterviewEvent) => void;
+    onSignUp: () => void;
 }
 
 const VolunteerInterviewInformation: FC<IVolunteerInterviewInformationProps> = ({ interview, onSignUp }) => {
@@ -18,7 +18,7 @@ const VolunteerInterviewInformation: FC<IVolunteerInterviewInformationProps> = (
             </div>
             <Button
                 className={s.save_btn}
-                onClick={() => onSignUp(interview)}
+                onClick={onSignUp}
                 variant={"contained"}
             >
                 Записаться
