@@ -156,7 +156,10 @@ const WorkDayReducer = (
         copy.currentInterviewDuration = Number(copy.currentEventInformation.interviewDuration);
         setWorkTimeHelper(copy);
         copy.recruiters = action.payload.recruiters;
-        if (action.payload.userInfo) copy.userInfo = action.payload.userInfo;
+        if (action.payload.userInfo) {
+            copy.userInfo = action.payload.userInfo;
+            if (action.payload.userInfo.contacts === null) copy.userInfo.contacts = [];
+        }
         return { ...state, state: copy, getInformationPending: false, error: null };
     } else if (action.type === ActionTypes.GET_EVENTS_SUCCESS) {
         const copy = getCopy(state.state);
