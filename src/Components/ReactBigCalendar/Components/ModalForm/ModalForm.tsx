@@ -31,9 +31,7 @@ const ModalForm: FC<IModalProps> = ({ isOpen, interview, userInfo, interviewRole
         const checkInputs: HTMLInputElement[] = Array.from(e.target.form.getElementsByTagName("input"));
         const chosenInputs: string[] = checkInputs
             .filter((el: HTMLInputElement) => el.id.slice(0, 5) === "form-")
-            .map((elem: HTMLInputElement) =>
-                elem.checked ? (elem.labels as NodeListOf<HTMLLabelElement>)[0].innerText : ""
-            )
+            .map((elem: HTMLInputElement) => (elem.checked ? elem.id.replace("form-", "") : ""))
             .filter((name: string) => name !== "");
         setContacts(chosenInputs);
     };
@@ -107,9 +105,9 @@ const ModalForm: FC<IModalProps> = ({ isOpen, interview, userInfo, interviewRole
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        defaultChecked
+                                        defaultChecked={userInfo.contacts.includes("tg")}
                                         size="small"
-                                        id="form-tlg"
+                                        id="form-tg"
                                         onChange={contactsHandler}
                                     />
                                 }
@@ -118,7 +116,8 @@ const ModalForm: FC<IModalProps> = ({ isOpen, interview, userInfo, interviewRole
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        id="form-wap"
+                                        defaultChecked={userInfo.contacts.includes("wa")}
+                                        id="form-wa"
                                         size="small"
                                         onChange={contactsHandler}
                                     />
@@ -128,7 +127,8 @@ const ModalForm: FC<IModalProps> = ({ isOpen, interview, userInfo, interviewRole
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        id="form-cal"
+                                        defaultChecked={userInfo.contacts.includes("ph")}
+                                        id="form-ph"
                                         size="small"
                                         onChange={contactsHandler}
                                     />
@@ -138,6 +138,7 @@ const ModalForm: FC<IModalProps> = ({ isOpen, interview, userInfo, interviewRole
                             <FormControlLabel
                                 control={
                                     <Checkbox
+                                        defaultChecked={userInfo.contacts.includes("sms")}
                                         id="form-sms"
                                         size="small"
                                         onChange={contactsHandler}

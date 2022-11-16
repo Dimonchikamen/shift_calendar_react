@@ -82,7 +82,7 @@ const defaultState: GlobalState = {
         interviews: [],
         currentInterviews: [],
         interviewRole: "",
-        userInfo: { id: 1, phone: "", name: "" },
+        userInfo: { id: 1, phone: "", name: "", contacts: [] },
     },
     error: null,
     changeError: null,
