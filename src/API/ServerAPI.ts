@@ -12,7 +12,6 @@ import informationForRecruiterMock from "../Mocks/ResponseForRecruiter.json";
 import tooManyRecs from "../Mocks/TooManyRecruitersMock.json";
 import informationRealvolunteerMock from "../Mocks/RealCaseVolunteerMock.json";
 import { GetInformationResponse } from "../Types/GetInformationResponse";
-import { FullDateTime } from "../Types/FullDateTime";
 import { RecruiterWorkTimePayload } from "../Redux/Types/RecruitersTypes";
 import { SignVolunteerResponsePayload } from "../Redux/Types/SignUpVolunteerTypes";
 import { ChangeRecruiterForInterviewResponse } from "../Redux/Types/ChangeRecruiterForInterviewTypes";
@@ -27,7 +26,7 @@ export class ServerAPI {
 
     static async getEvents(): Promise<Event[]> {
         const url = "/events/get-list";
-        return await axios.get(url).then(response => response.data);
+        return await axios.get(url).then(res => res.data);
     }
 
     static async addRecruiterWorkTime(
