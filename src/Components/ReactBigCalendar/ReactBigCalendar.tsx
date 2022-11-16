@@ -582,14 +582,16 @@ const ReactBigCalendar: FC = () => {
                     text={infoText}
                     onCancel={() => setIsOpenInfo(false)}
                 />
-                <ModalForm
-                    isOpen={isOpenWidgetModal}
-                    interview={selectedEvent as ScheduleInterviewEvent}
-                    userInfo={userInfo}
-                    interviewRole={interviewRole}
-                    onSubmitSignUp={signUpHandler}
-                    onCancel={() => setIsOpenWidgetModal(false)}
-                />
+                {isWidget && userInfo && (
+                    <ModalForm
+                        isOpen={isOpenWidgetModal}
+                        interview={selectedEvent as ScheduleInterviewEvent}
+                        userInfo={userInfo}
+                        interviewRole={interviewRole}
+                        onSubmitSignUp={signUpHandler}
+                        onCancel={() => setIsOpenWidgetModal(false)}
+                    />
+                )}
                 {selectedFreeWorkTimeForAddNewWorkTime && (
                     <AddWorkTimePopup
                         title="Назначить рабочее время"
