@@ -46,10 +46,10 @@ import { createTitle } from "../../Helpers/CreateTitle";
 import { Recruiter } from "../../Types/Recruiter";
 import ChangeRecruiterForInterviewPopup from "./Components/ChangeRecruiterForInterviewPopup/ChangeRecruiterForInterviewPopup";
 import { changeRecruiterForInterviewRequest } from "../../Redux/Actions/ChangeRecruiterForInterviewActions";
-import { RecruiterWorkTime } from "../../Types/RecruiterWorkTime";
 import ModalForm from "./Components/ModalForm/ModalForm";
 import { Interview } from "../../Types/Interview";
 import { closeSnackBar } from "../../Redux/Reducers/SnackBarReducer/Actions";
+import { setInterviewRoleAction } from "../../Redux/Actions/SetInterviewRoleAction";
 
 moment.locale("ru-ru");
 
@@ -132,6 +132,10 @@ const ReactBigCalendar: FC = () => {
         dispatch(getEventsRequest(new Date(currentDate)));
         removePrevClick();
     }, []);
+
+    useEffect(() => {
+        dispatch(setInterviewRoleAction(document.getElementById("root")?.getAttribute("data-role-name") ?? ""));
+    }, [isOpenWidgetModal]);
 
     useEffect(() => {
         if (currentInformation === undefined) {
