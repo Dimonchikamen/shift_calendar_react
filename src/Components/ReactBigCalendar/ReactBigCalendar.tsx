@@ -121,7 +121,7 @@ const ReactBigCalendar: FC = () => {
     const removePrevClick = () => {
         const di = document.querySelector("i.anticon.anticon-left.icon-nav") as HTMLDivElement | null;
         const a = new Date();
-        if (di && role !== "admin" && role !== "coord" && currentDate <= a) {
+        if (di && role !== "admin" && role !== "coord" && role !== "recruiter" && currentDate <= a) {
             di.style.display = "none";
         } else if (di) {
             di.style.display = "inline";
@@ -537,7 +537,7 @@ const ReactBigCalendar: FC = () => {
     } else {
         return (
             <>
-                <div className={`${s.table_container} ${isWidget ? "widget" : ""}`}>
+                <div className={`${isWidget ? "widget" : ""}`}>
                     <CalendarHeader
                         currentDate={new Date(currentDate)}
                         onChangeEvent={changeMainEvent}
