@@ -48,7 +48,7 @@ export const createResourcesAndEvents = (
                     resourceId: String(r.id),
                     title: interview.start,
                     resizable: false,
-                    bgColor: interview.isActive ? "#EEE" : "#D9EDF7",
+                    bgColor: interview.isActive && role === "" ? "#EEE" : "#D9EDF7",
                     isActive: interview.isActive ?? false,
                     workTimeId: workedTime.id,
                 });
