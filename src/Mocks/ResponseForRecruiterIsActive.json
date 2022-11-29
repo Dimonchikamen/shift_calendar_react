@@ -57,6 +57,7 @@
                             "userId": 5411,
                             "name": "Анастасия Тарасинова",
                             "role": "Роль",
+                            "isActive": true,
                             "phone": "+7900888888",
                             "contacts": ["Telegram", "VK"],
                             "start": "11:00",
