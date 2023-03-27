@@ -4,13 +4,16 @@
             "eventId": 1386,
             "interviewDuration": 30,
             "workTimes": [
-                { "date": "2022-10-13", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-14", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-15", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-16", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-17", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-18", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-19", "beginTime": "09:00", "endTime": "22:00" }
+                { "date": "2023-03-23", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-24", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-25", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-26", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-27", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-28", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-29", "beginTime": "09:00", "endTime": "20:00" },
+                { "date": "2023-03-30", "beginTime": "09:00", "endTime": "20:00" },
+                { "date": "2023-03-31", "beginTime": "09:00", "endTime": "20:00" },
+                { "date": "2023-04-01", "beginTime": "09:00", "endTime": "20:00" }
             ]
         }
     ],
@@ -23,8 +26,8 @@
                 {
                     "id": 1,
                     "eventId": 1386,
-                    "start": "2022-11-15 10:30",
-                    "end": "2022-11-15 12:30",
+                    "start": "2023-03-23 10:30",
+                    "end": "2023-03-23 12:30",
                     "interviews": [
                         {
                             "id": 10011112312312,
@@ -42,8 +45,8 @@
                 {
                     "id": 2,
                     "eventId": 1386,
-                    "start": "2022-11-15 12:30",
-                    "end": "2022-11-15 14:30",
+                    "start": "2023-03-23 12:30",
+                    "end": "2023-03-23 14:30",
                     "interviews": []
                 }
             ]

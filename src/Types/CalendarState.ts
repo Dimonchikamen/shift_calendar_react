@@ -5,8 +5,10 @@ import { EventInformation } from "./EventInformation";
 import { WorkTimeInformation } from "./WorkTimeInformation";
 import { ViewType } from "./ViewType";
 import { ViewTypeWorktime } from "./ViewTypeWorktime";
-import { WorkTime } from "./WorkTime";
 import { UserInfo } from "./UserInfo";
+import { RecruiterInfo } from "./RecruiterInfo";
+import { ScheduleInterviewEvent } from "./ScheduleInterviewEvent";
+import { ScheduleEvent } from "./ScheduleEvent";
 
 export type CalendarState = {
     role: string;
@@ -17,12 +19,13 @@ export type CalendarState = {
     eventsInformation: Map<number, EventInformation>;
     currentEventInformation: EventInformation;
 
+    selectedEvent: ScheduleEvent | ScheduleInterviewEvent | null;
+    selectedData: RecruiterInfo | null;
+
     currentDate: Date;
     currentEvent: Event;
     currentInformation: WorkTimeInformation | undefined;
     currentInterviewDuration: number;
-    currentWorkTime: WorkTime;
-
     config: SchedulerDataConfig;
     calendarViewType: ViewTypes;
     behaviours: object;

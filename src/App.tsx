@@ -2,11 +2,11 @@ import "./App.css";
 import { FC, memo, useEffect } from "react";
 import ReactBigCalendar from "./Components/ReactBigCalendar/ReactBigCalendar";
 import { useAppDispatch } from "./Redux/Hooks";
-import { setRoleAction } from "./Redux/Actions/SetRoleAction";
-import { setViewAction } from "./Redux/Actions/SetViewAction";
+import { setRoleAction } from "./Redux/Actions/SetActions/SetRoleAction";
+import { setViewAction } from "./Redux/Actions/SetActions/SetViewAction";
 import { ViewTypeWorktime } from "./Types/ViewTypeWorktime";
-import { setIsWidgetAction } from "./Redux/Actions/SetIsWidgetAction";
-import { setInterviewRoleAction } from "./Redux/Actions/SetInterviewRoleAction";
+import { setIsWidgetAction } from "./Redux/Actions/SetActions/SetIsWidgetAction";
+import { setInterviewRoleAction } from "./Redux/Actions/SetActions/SetInterviewRoleAction";
 
 interface IAppProps {
     role: string;

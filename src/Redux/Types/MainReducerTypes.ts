@@ -1,6 +1,19 @@
 import { ActionTypes } from "../ActionTypes";
 import { ViewTypes } from "react-big-scheduler";
 import { ViewType } from "../../Types/ViewType";
+import { ScheduleEvent } from "../../Types/ScheduleEvent";
+import { ScheduleInterviewEvent } from "../../Types/ScheduleInterviewEvent";
+import { RecruiterInfo } from "../../Types/RecruiterInfo";
+
+export type SetSelectedEvent = {
+    type: ActionTypes.SET_SELECTED_EVENT;
+    payload: ScheduleEvent | ScheduleInterviewEvent | null;
+};
+
+export type SetSelectedData = {
+    type: ActionTypes.SET_SELECTED_DATA;
+    payload: RecruiterInfo | null;
+};
 
 export type ChangeDate = {
     type: ActionTypes.CHANGE_DATE;
@@ -31,6 +44,8 @@ export type CloseErrorWindow = {
 };
 
 export type MainActions =
+    | SetSelectedEvent
+    | SetSelectedData
     | ChangeDate
     | ChangeViewType
     | ChangeCalendarViewType

@@ -1,17 +1,32 @@
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import s from "./InformationContainer.module.css";
 import { Interview } from "../../../../Types/Interview";
+import { Button } from "@mui/material";
 
 interface IAdminInterviewInformationPresentationProps {
     interview: Interview;
+    onClickChangeInterviewTime: () => void;
 }
 
-const AdminInterviewInformationPresentation: FC<IAdminInterviewInformationPresentationProps> = ({ interview }) => {
+const AdminInterviewInformationPresentation: FC<IAdminInterviewInformationPresentationProps> = ({
+    interview,
+    onClickChangeInterviewTime,
+}) => {
     return (
         <>
             <div className={s.work_time}>
                 <span className={s.font_size_18}>Время собеседования:</span>
-                <span className={s.time}>{interview.start + " - " + interview.end}</span>
+                <div className={s.work_time__time}>
+                    <span className={s.time}>{interview.start + " - " + interview.end}</span>
+                    <Button
+                        className={s.change_time_interview__button}
+                        size={"small"}
+                        variant={"contained"}
+                        onClick={onClickChangeInterviewTime}
+                    >
+                        Перенести
+                    </Button>
+                </div>
             </div>
             <div className={s.work_time}>
                 <span className={s.font_size_18}>Волонтер:</span>

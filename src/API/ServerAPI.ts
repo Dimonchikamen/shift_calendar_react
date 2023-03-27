@@ -7,7 +7,6 @@ import emptyEvents from "../Mocks/EmptyEvents.json";
 import eventsMock from "../Mocks/Events2.json";
 import informationMock from "../Mocks/Response2.json";
 import informationTooManyRecruitersMock from "../Mocks/TooManyRecruitersMock.json";
-import informationForVolunteerMock from "../Mocks/ResponseForVolunteer.json";
 import informationForRecruiterMock from "../Mocks/ResponseForRecruiter.json";
 import tooManyRecs from "../Mocks/TooManyRecruitersMock.json";
 import informationRealvolunteerMock from "../Mocks/RealCaseVolunteerMock.json";
@@ -97,6 +96,11 @@ export class ServerAPI {
 
     static async changeRecruiterForInterview(data: FormData): Promise<ChangeRecruiterForInterviewResponse> {
         const url = "/events/set-recruiter";
+        return await axios.post(url, data).then(res => res.data);
+    }
+
+    static async replaceInterviewTime(data: FormData): Promise<any> {
+        const url = "/events/replace-inteview";
         return await axios.post(url, data).then(res => res.data);
     }
 }

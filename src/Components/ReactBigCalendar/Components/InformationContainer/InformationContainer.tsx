@@ -18,6 +18,7 @@ interface IInformationContainerProps {
     eventEditing?: ScheduleEvent;
     onSignUp?: () => void;
     onEditEvent?: (eventEditing: ScheduleEvent, dayStart: string, dayEnd: string) => void;
+    onClickChangeInterviewTime?: () => void;
 }
 
 interface IEditInformationProps extends IInformationContainerProps {
@@ -28,6 +29,7 @@ interface IEditInformationProps extends IInformationContainerProps {
 
 interface IAdminInterviewInformationPresentationProps extends IInformationContainerProps {
     interview: ScheduleInterviewEvent;
+    onClickChangeInterviewTime: () => void;
 }
 
 interface IVolunteerInterviewInformationProps extends IInformationContainerProps {
@@ -37,7 +39,9 @@ interface IVolunteerInterviewInformationProps extends IInformationContainerProps
 
 const InformationContainer: FC<
     IEditInformationProps | IAdminInterviewInformationPresentationProps | IVolunteerInterviewInformationProps
-> = ({ role, view, isEditing, data, interview, eventEditing, onSignUp, onEditEvent }) => {
+> = props => {
+    const { role, view, isEditing, data, interview, eventEditing, onSignUp, onEditEvent, onClickChangeInterviewTime } =
+        props;
     return (
         <div className={s.requiter_info}>
             <div className={s.requiter}>
@@ -48,6 +52,7 @@ const InformationContainer: FC<
                 view === "interview" ? (
                     <AdminInterviewInformationPresentation
                         interview={data.interviews.filter(i => i.id === interview!.id)[0]}
+                        onClickChangeInterviewTime={onClickChangeInterviewTime!}
                     />
                 ) : isEditing ? (
                     <EditInformation

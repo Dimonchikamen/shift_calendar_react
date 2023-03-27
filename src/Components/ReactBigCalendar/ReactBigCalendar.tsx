@@ -1,4 +1,4 @@
-import { CSSProperties, FC, memo, useEffect, useMemo, useState } from "react";
+import { CSSProperties, FC, memo, useCallback, useEffect, useMemo, useState } from "react";
 import Scheduler, { Resource, SchedulerData } from "react-big-scheduler";
 import "react-big-scheduler/lib/css/style.css";
 import moment from "moment";
@@ -8,7 +8,7 @@ import CalendarHeader from "./Components/CalendarHeader/CalendarHeader";
 import { ScheduleEvent } from "../../Types/ScheduleEvent";
 import InformationContainer from "./Components/InformationContainer/InformationContainer";
 import { RecruiterInfo } from "../../Types/RecruiterInfo";
-import { getAvailableTimes } from "../../Helpers/GetAvailableTimes";
+import { getAvailableTimes, getFreeDates } from "../../Helpers/GetAvailableTimes";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hooks";
 import { changeCalendarViewTypeAction } from "../../Redux/Actions/ChangeCalendarViewTypeAction";
 import PopUp from "../../UiKit/Popup/AlertDialog/AlertDialog";
@@ -37,10 +37,10 @@ import { getEventsRequest } from "../../Redux/Actions/EventsActions/GetEventsAct
 import { ScheduleInterviewEvent } from "../../Types/ScheduleInterviewEvent";
 import { signUpVolunteerRequest } from "../../Redux/Actions/SignUpVolunteerActions";
 import { ViewTypeWorktime } from "../../Types/ViewTypeWorktime";
-import { setViewAction } from "../../Redux/Actions/SetViewAction";
+import { setViewAction } from "../../Redux/Actions/SetActions/SetViewAction";
 import AddWorkTimePopup from "../../UiKit/Popup/AddWorkTimePopup/AddWorkTimePopup";
 import { findLastInterval } from "../../Helpers/FindLastInterval";
-import { isScheduleEvent } from "../../Helpers/instanceHelpers";
+import { isInterviewEvent, isScheduleEvent } from "../../Helpers/instanceHelpers";
 import CellHeaderTemplate from "./Components/CellHeaderTemplate/CellHeaderTemplate";
 import { createTitle } from "../../Helpers/CreateTitle";
 import { Recruiter } from "../../Types/Recruiter";
@@ -49,7 +49,11 @@ import { changeRecruiterForInterviewRequest } from "../../Redux/Actions/ChangeRe
 import ModalForm from "./Components/ModalForm/ModalForm";
 import { Interview } from "../../Types/Interview";
 import { closeSnackBar } from "../../Redux/Reducers/SnackBarReducer/Actions";
-import { setInterviewRoleAction } from "../../Redux/Actions/SetInterviewRoleAction";
+import { setInterviewRoleAction } from "../../Redux/Actions/SetActions/SetInterviewRoleAction";
+import ReplaceInterviewTimeModal from "./Components/ReplaceInterviewTimeModal/ReplaceInterviewTimeModal";
+import { replaceInterviewTimeRequest } from "../../Redux/Actions/InterviewTimeActions/ReplaceInterviewTimeActions";
+import { setSelectedEvent } from "../../Redux/Actions/SetActions/SetSelectedEvent";
+import { setSelectedData } from "../../Redux/Actions/SetActions/SetSelectedData";
 
 moment.locale("ru-ru");
 
@@ -62,6 +66,8 @@ const ReactBigCalendar: FC = () => {
     const recruiters = state.recruiters;
     const behaviours = state.behaviours;
 
+    const selectedEvent = state.selectedEvent;
+    const selectedData = state.selectedData;
     const currentDate = state.currentDate;
     const viewType = state.viewType;
     const currentDateString = moment(currentDate).format(DATE_TIME_FORMAT);
@@ -82,9 +88,10 @@ const ReactBigCalendar: FC = () => {
                 role,
                 state.isWidget,
                 viewType,
-                currentInterviewDuration
+                currentInterviewDuration,
+                selectedEvent?.id
             ),
-        [recruiters, currentEvent, viewType]
+        [recruiters, currentEvent, viewType, selectedEvent?.id]
     );
     const dispatch = useAppDispatch();
     const events = state.events;
@@ -98,6 +105,7 @@ const ReactBigCalendar: FC = () => {
     const [selectedFreeWorkTimeForAddNewWorkTime, setSelectedFreeWorkTimeForAddNewWorkTime] =
         useState<ScheduleEvent | null>(null);
     const [changeRecruiterForInterviewOpen, setChangeRecruiterForInterviewOpen] = useState<boolean>(false);
+    const [changeInterviewTimeModalOpen, setChangeInterviewTimeModalOpen] = useState<boolean>(false);
     const [availableRecruitersForInterview, setAvailableRecruitersForInterview] = useState<Recruiter[]>([]);
     const [availableRecruiterWorkTimesForChangeInterview, setavailableRecruiterWorkTimesForChangeInterview] = useState<
         ScheduleEvent[]
@@ -105,8 +113,6 @@ const ReactBigCalendar: FC = () => {
     const [worktimeWeek, setWorktimeWeek] = useState<ScheduleEvent | null>(null);
     const [eventAdding, setEventAdding] = useState<ScheduleEvent | null>(null);
     const [isAdding, setIsAdding] = useState<boolean>(true);
-    const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | ScheduleInterviewEvent | null>(null);
-    const [selectData, setData] = useState<RecruiterInfo | null>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [viewModel, setView] = useState<{ data: SchedulerData }>(() => {
         const data = new SchedulerData(currentDateString, calendarViewType, false, false, config, behaviours);
@@ -169,8 +175,8 @@ const ReactBigCalendar: FC = () => {
     const unselectEvent = () => {
         if (selectedEvent) {
             selectedEvent.bgColor = "#D9EDF7";
-            setSelectedEvent(null);
-            setData(null);
+            dispatch(setSelectedEvent(null));
+            dispatch(setSelectedData(null));
         }
     };
 
@@ -240,11 +246,11 @@ const ReactBigCalendar: FC = () => {
 
     const eventItemClick = (schedulerData: SchedulerData, event: ScheduleEvent | ScheduleInterviewEvent) => {
         if (event.bgColor === "#EEE" || (event as ScheduleEvent).isFree) return;
-        setData(createData(schedulerData, event));
+        dispatch(setSelectedData(createData(schedulerData, event)));
         event.bgColor = "#1890ff";
         if (selectedEvent && event !== selectedEvent) selectedEvent.bgColor = "#D9EDF7";
         setIsEditing(false);
-        setSelectedEvent(event);
+        dispatch(setSelectedEvent(event));
     };
 
     const addingEvent = (
@@ -291,7 +297,7 @@ const ReactBigCalendar: FC = () => {
         setIsOpen(true);
         setEventAdding(event);
         setIsAdding(false);
-        setSelectedEvent(event);
+        dispatch(setSelectedEvent(event));
     };
 
     const setEvent = (schedulerData: SchedulerData, event: ScheduleEvent) => {
@@ -299,8 +305,8 @@ const ReactBigCalendar: FC = () => {
     };
 
     const editEvent = (schedulerData: SchedulerData, event: ScheduleEvent) => {
-        setData(createData(schedulerData, event));
-        setSelectedEvent(event);
+        dispatch(setSelectedData(createData(schedulerData, event)));
+        dispatch(setSelectedEvent(event));
         setEventAdding(event);
         eventItemClick(schedulerData, event);
         setIsEditing(true);
@@ -343,7 +349,7 @@ const ReactBigCalendar: FC = () => {
             editRecruiterWorkTimeRequest(start, end, Number(eventEditing.resourceId), eventEditing.id, currentEvent.id)
         );
         eventEditing.bgColor = "#D9EDF7";
-        setSelectedEvent(null);
+        dispatch(setSelectedEvent(null));
         setIsEditing(false);
     };
 
@@ -447,7 +453,7 @@ const ReactBigCalendar: FC = () => {
                 })
             );
         });
-        setSelectedEvent(event);
+        dispatch(setSelectedEvent(event));
         setAvailableRecruitersForInterview(resultRecruiters);
         setavailableRecruiterWorkTimesForChangeInterview(availableWorkTimes);
         setChangeRecruiterForInterviewOpen(true);
@@ -456,12 +462,12 @@ const ReactBigCalendar: FC = () => {
     const cancelChangeRecruiterForInterviewHandler = () => {
         setChangeRecruiterForInterviewOpen(false);
         setAvailableRecruitersForInterview([]);
-        setSelectedEvent(null);
+        dispatch(setSelectedEvent(null));
     };
 
     const submitChangeRecruiterForInterviewHandler = (recruiter: Recruiter) => {
         setChangeRecruiterForInterviewOpen(false);
-        setSelectedEvent(null);
+        dispatch(setSelectedEvent(null));
         const index = availableRecruiterWorkTimesForChangeInterview.findIndex(
             e => Number(e.resourceId) === recruiter.id
         );
@@ -479,6 +485,14 @@ const ReactBigCalendar: FC = () => {
             })
         );
     };
+
+    const replaceInterviewTimeHandler = useCallback(
+        (interviewId: number, workTimeId: number, newInterviewTime: FullDateTime) => {
+            dispatch(replaceInterviewTimeRequest(interviewId, workTimeId, newInterviewTime));
+            setChangeInterviewTimeModalOpen(false);
+        },
+        []
+    );
 
     const customPopover = (
         schedulerData: SchedulerData,
@@ -559,9 +573,9 @@ const ReactBigCalendar: FC = () => {
                                 nonAgendaCellHeaderTemplateResolver={customHeader}
                             />
                         </div>
-                        {selectedEvent && selectData && (
+                        {selectedEvent && selectedData && (
                             <InformationContainer
-                                data={selectData}
+                                data={selectedData}
                                 interview={selectedEvent as ScheduleInterviewEvent}
                                 view={view}
                                 role={role}
@@ -569,6 +583,7 @@ const ReactBigCalendar: FC = () => {
                                 eventEditing={eventAdding!}
                                 onEditEvent={editingEvent}
                                 onSignUp={() => setIsOpenWidgetModal(true)}
+                                onClickChangeInterviewTime={() => setChangeInterviewTimeModalOpen(true)}
                             />
                         )}
                     </div>
@@ -596,6 +611,24 @@ const ReactBigCalendar: FC = () => {
                         onCancel={() => setIsOpenWidgetModal(false)}
                     />
                 )}
+                {!isWidget &&
+                    selectedEvent &&
+                    isInterviewEvent(selectedEvent) &&
+                    selectedData &&
+                    changeInterviewTimeModalOpen && (
+                        <ReplaceInterviewTimeModal
+                            isOpen={changeInterviewTimeModalOpen}
+                            recruiterInfo={selectedData}
+                            interview={selectedEvent}
+                            availableTimes={getFreeDates(
+                                recruiters.filter(r => r.workedTimes?.some(w => w.id === selectedEvent.workTimeId))[0],
+                                currentInterviewDuration,
+                                currentEvent.id
+                            )}
+                            onSubmitReplaceInterviewTime={replaceInterviewTimeHandler}
+                            onCancel={() => setChangeInterviewTimeModalOpen(false)}
+                        />
+                    )}
                 {selectedFreeWorkTimeForAddNewWorkTime && (
                     <AddWorkTimePopup
                         title="Назначить рабочее время"

@@ -1,9 +1,24 @@
 import { ScheduleEvent } from "../Types/ScheduleEvent";
 import { Interview } from "../Types/Interview";
 import { createTitleFromHours } from "./CreateTitle";
-import { getHoursInAllDateTime, getMinutesInAllDateTime, getTime } from "./DateTimeHelpers";
+import {
+    getDate,
+    getHour,
+    getHoursInAllDateTime,
+    getMinutes,
+    getMinutesInAllDateTime,
+    getTime,
+} from "./DateTimeHelpers";
+import { Recruiter } from "../Types/Recruiter";
+import { FullDateTime } from "../Types/FullDateTime";
+import { IsDateInside } from "./IsDateInside";
+import moment from "moment";
+import { DATE_FORMAT } from "../Constants";
 
-const getIntervals = (eventInfo: ScheduleEvent, interviewDuration: number) => {
+const getIntervals = <T extends { start: FullDateTime; end: FullDateTime }>(
+    eventInfo: T,
+    interviewDuration: number
+) => {
     const minutes = ["00"];
     for (let i = 1; i < 60 / interviewDuration; i++) {
         minutes.push(`${i * interviewDuration}`);
@@ -37,7 +52,11 @@ const getIntervals = (eventInfo: ScheduleEvent, interviewDuration: number) => {
     return res;
 };
 
-export const getAvailableTimes = (eventInfo: ScheduleEvent, interviews: Interview[], interviewDuration: number) => {
+export const getAvailableTimes = <T extends { start: FullDateTime; end: FullDateTime }>(
+    eventInfo: T,
+    interviews: Interview[],
+    interviewDuration: number
+) => {
     const res = getIntervals(eventInfo, interviewDuration);
     interviews.forEach(interview => {
         const title = createTitleFromHours(interview.start, interview.end);
@@ -47,4 +66,34 @@ export const getAvailableTimes = (eventInfo: ScheduleEvent, interviews: Intervie
         }
     });
     return res;
+};
+
+export const getFreeDates = (recruiter: Recruiter, interviewDuration: number, eventId: number): string[] => {
+    const currentDate = new Date();
+    const res: string[][] | undefined = recruiter.workedTimes
+        ?.filter(w => w.eventId === eventId)
+        ?.filter(w => {
+            const end = getDate(w.end);
+            return currentDate < end;
+        })
+        ?.map(w => {
+            const start = getDate(w.start);
+            const end = getDate(w.end);
+            const availableTimes = getAvailableTimes(w, w.interviews, interviewDuration).filter(t => {
+                const hours = getHour(t);
+                const minutes = getMinutes(t);
+                return (
+                    currentDate < start ||
+                    (currentDate >= start && currentDate <= end && currentDate.getHours() < hours) ||
+                    (currentDate >= start &&
+                        currentDate <= end &&
+                        currentDate.getHours() === hours &&
+                        currentDate.getMinutes() < minutes)
+                );
+            });
+            return availableTimes.map(t => `${moment(start).format(DATE_FORMAT)} ${t}`);
+        });
+    const result: string[] = [];
+    res?.forEach(r => r.forEach(s => result.push(s)));
+    return result;
 };

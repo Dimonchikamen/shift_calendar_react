@@ -19,6 +19,16 @@
     align-items: flex-start;
 }
 
+.work_time__time {
+    display: flex;
+    gap: 5px;
+}
+
+.change_time_interview__button {
+    font-size: 11px;
+    padding: 3px 10px;
+}
+
 .available_interviews {
     display: flex;
     flex-direction: column;
@@ -62,19 +72,24 @@ a {
 .select_work_time_container {
     text-align: left;
 }
+
 .work_time_selector {
     margin-left: 5px;
     background-color: #fff;
 }
+
 .work_time_selector > div {
     padding: 2px 7px;
 }
+
 .work_time_selector > fieldset > legend {
     display: none;
 }
+
 .work_time_selector > fieldset {
     top: 0;
 }
+
 .selector_container {
     display: flex;
     align-items: center;

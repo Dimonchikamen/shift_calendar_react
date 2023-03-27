@@ -4,52 +4,48 @@
             "eventId": 1386,
             "interviewDuration": 30,
             "workTimes": [
-                { "date": "2022-10-23", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-24", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-25", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-26", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-27", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-10-28", "beginTime": "09:00", "endTime": "22:00" },
-                { "date": "2022-11-08", "beginTime": "09:00", "endTime": "20:00" },
-                { "date": "2022-11-09", "beginTime": "09:00", "endTime": "20:00" },
-                { "date": "2022-11-10", "beginTime": "09:00", "endTime": "20:00" },
-                { "date": "2022-11-11", "beginTime": "09:00", "endTime": "20:00" }
+                { "date": "2023-03-23", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-24", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-25", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-26", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-27", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-28", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-29", "beginTime": "09:00", "endTime": "20:00" },
+                { "date": "2023-03-30", "beginTime": "09:00", "endTime": "20:00" },
+                { "date": "2023-03-31", "beginTime": "09:00", "endTime": "20:00" },
+                { "date": "2023-04-01", "beginTime": "09:00", "endTime": "20:00" }
             ]
         },
         {
             "eventId": 1401,
             "interviewDuration": 30,
             "workTimes": [
-                { "date": "2022-10-23", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-24", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-25", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-26", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-27", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-28", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-29", "beginTime": "09:00", "endTime": "19:00" },
-                { "date": "2022-10-30", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-11-08", "beginTime": "9:00", "endTime": "20:00" },
-                { "date": "2022-11-09", "beginTime": "9:00", "endTime": "20:00" },
-                { "date": "2022-11-10", "beginTime": "9:00", "endTime": "20:00" },
-                { "date": "2022-11-11", "beginTime": "9:00", "endTime": "20:00" }
+                { "date": "2023-03-23", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-24", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-25", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-26", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-27", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-28", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-29", "beginTime": "09:00", "endTime": "20:00" },
+                { "date": "2023-03-30", "beginTime": "09:00", "endTime": "20:00" },
+                { "date": "2023-03-31", "beginTime": "09:00", "endTime": "20:00" },
+                { "date": "2023-04-01", "beginTime": "09:00", "endTime": "20:00" }
             ]
         },
         {
             "eventId": 1407,
             "interviewDuration": 30,
             "workTimes": [
-                { "date": "2022-10-23", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-24", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-25", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-26", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-27", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-28", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-29", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-10-30", "beginTime": "10:00", "endTime": "19:00" },
-                { "date": "2022-11-08", "beginTime": "9:00", "endTime": "20:00" },
-                { "date": "2022-11-09", "beginTime": "9:00", "endTime": "20:00" },
-                { "date": "2022-11-10", "beginTime": "9:00", "endTime": "20:00" },
-                { "date": "2022-11-11", "beginTime": "9:00", "endTime": "20:00" }
+                { "date": "2023-03-23", "beginTime": "09:00", "endTime": "19:00" },
+                { "date": "2023-03-24", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-25", "beginTime": "10:00", "endTime": "22:00" },
+                { "date": "2023-03-26", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-27", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-28", "beginTime": "09:00", "endTime": "22:00" },
+                { "date": "2023-03-29", "beginTime": "08:00", "endTime": "20:00" },
+                { "date": "2023-03-30", "beginTime": "09:00", "endTime": "18:00" },
+                { "date": "2023-03-31", "beginTime": "09:00", "endTime": "20:00" },
+                { "date": "2023-04-01", "beginTime": "07:00", "endTime": "16:00" }
             ]
         }
     ],
@@ -61,16 +57,16 @@
             "freeWorkedTimes": [
                 {
                     "id": 21,
-                    "start": "2022-10-9 09:00",
-                    "end": "2022-10-09 20:00"
+                    "start": "2023-03-23 09:00",
+                    "end": "2023-03-23 20:00"
                 }
             ],
             "workedTimes": [
                 {
                     "id": 1,
                     "eventId": 1386,
-                    "start": "2022-11-10 9:00",
-                    "end": "2022-11-10 20:00",
+                    "start": "2023-03-24 9:00",
+                    "end": "2023-03-24 20:00",
                     "interviews": [
                         {
                             "id": 10011112312312,
@@ -103,8 +99,8 @@
                 {
                     "id": 3,
                     "eventId": 1386,
-                    "start": "2022-10-9 09:00",
-                    "end": "2022-10-9 22:30",
+                    "start": "2023-03-23 09:00",
+                    "end": "2023-03-23 22:30",
                     "interviews": [
                         {
                             "id": 111,
@@ -141,8 +137,8 @@
                 {
                     "id": 53,
                     "eventId": 1386,
-                    "start": "2022-10-10 09:00",
-                    "end": "2022-10-10 18:00",
+                    "start": "2023-03-24 09:00",
+                    "end": "2023-03-24 18:00",
                     "interviews": [
                         {
                             "id": 17611,
@@ -184,23 +180,23 @@
             "freeWorkedTimes": [
                 {
                     "id": 411111,
-                    "start": "2022-11-09 09:00",
-                    "end": "2022-11-09 13:00"
+                    "start": "2023-03-23 09:00",
+                    "end": "2023-03-23 13:00"
                 }
             ],
             "workedTimes": [
                 {
                     "id": 4987654,
                     "eventId": 1386,
-                    "start": "2022-11-10 10:00",
-                    "end": "2022-11-10 13:00",
+                    "start": "2023-03-24 10:00",
+                    "end": "2023-03-24 13:00",
                     "interviews": []
                 },
                 {
                     "id": 444,
                     "eventId": 1386,
-                    "start": "2022-10-11 15:00",
-                    "end": "2022-10-11 21:00",
+                    "start": "2023-03-24 15:00",
+                    "end": "2023-03-24 21:00",
                     "interviews": [
                         {
                             "id": 87654,

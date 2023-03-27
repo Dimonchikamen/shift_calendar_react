@@ -16,3 +16,8 @@
     margin: 0;
 }
 
+.select_new_interview_time__container {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}

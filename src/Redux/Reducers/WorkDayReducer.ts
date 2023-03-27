@@ -17,7 +17,7 @@ import { setWorkTimeHelper } from "../Helpers/SetWorkTimeHelper";
 import { SignUpVolunteerTypes } from "../Types/SignUpVolunteerTypes";
 import { DATE_TIME_FORMAT } from "../../Constants";
 import moment from "moment";
-import { getTime } from "../../Helpers/DateTimeHelpers";
+import { getDate, getTime } from "../../Helpers/DateTimeHelpers";
 import { Interview } from "../../Types/Interview";
 import { ChangeRecruiterForInterviewTypes } from "../Types/ChangeRecruiterForInterviewTypes";
 import { InterviewRoleTypes } from "../Types/InterviewRoleTypes";
@@ -43,11 +43,9 @@ const defaultState: GlobalState = {
         currentEvent: { id: -1, title: "Все мероприятия" },
         currentInformation: { start: 9, end: 19 },
         currentInterviewDuration: 30,
+        selectedEvent: null,
+        selectedData: null,
 
-        currentWorkTime: { start: "9:00", end: "19:00" },
-        currentInterviewTime: "",
-        currentDayStart: "",
-        currentDayEnd: "",
         config: {
             dayCellWidth: 50,
             weekCellWidth: 1000 / 7,
@@ -111,16 +109,13 @@ const WorkDayReducer = (
         action.type === ActionTypes.CHANGE_WORK_TIME_REQUEST ||
         action.type === ActionTypes.CHANGE_INTERVIEW_TIME_REQUEST ||
         action.type === ActionTypes.SIGN_UP_VOLUNTEER_REQUEST ||
-        action.type === ActionTypes.CHANGE_RECRUITER_FOR_INTERVIEW_REQUEST
+        action.type === ActionTypes.CHANGE_RECRUITER_FOR_INTERVIEW_REQUEST ||
+        action.type === ActionTypes.REPLACE_INTERVIEW_TIME_REQUEST
     ) {
         return { ...state, changePending: true };
     } else if (action.type === ActionTypes.CHANGE_WORK_TIME_SUCCESS) {
         const copy = getCopy(state.state, true);
         setWorkTimeHelper(copy, action.payload);
-        // copy.config.dayStartFrom = action.payload?.start ?? 9;
-        // copy.config.dayStopTo = action.payload?.end ?? 19;
-        // copy.currentInformation = { start: action.payload?.start, end: action.payload?.end };
-        // copy.config = resize(copy.config);
         return {
             ...state,
             changePending: false,
@@ -185,7 +180,6 @@ const WorkDayReducer = (
         }
 
         const workTimeIndex = currentRecruiter.workedTimes?.findIndex(w => w.id === Number(a.workTimeId));
-        console.log(workTimeIndex);
         if (!currentRecruiter.workedTimes![workTimeIndex!].interviews) {
             currentRecruiter.workedTimes![workTimeIndex!].interviews = [];
         }
@@ -215,6 +209,41 @@ const WorkDayReducer = (
         );
         copy.recruiters[newRecruiterIndex].workedTimes?.[newWorkTimeIndex!].interviews.push(interview!);
         return { ...state, state: copy, changePending: false, changeError: null };
+    } else if (action.type === ActionTypes.REPLACE_INTERVIEW_TIME_SUCCESS) {
+        const copy = getCopy(state.state, true, true, true);
+        const recruiterIndex = copy.recruiters.findIndex(r =>
+            r.workedTimes?.some(w => w.id === action.payload.workTimeId)
+        );
+        const workTimeIndex = copy.recruiters[recruiterIndex].workedTimes?.findIndex(
+            w => w.id === action.payload.workTimeId
+        );
+        const interviewIndex = copy.recruiters[recruiterIndex].workedTimes?.[workTimeIndex!].interviews.findIndex(
+            i => i.id === action.payload.interviewId
+        );
+        const interview = copy.recruiters[recruiterIndex].workedTimes?.[workTimeIndex!].interviews[interviewIndex!];
+        const startTime = getTime(action.payload.newDate);
+        const separate = action.payload.newDate.split(" ");
+        const endTime = separate[separate.length - 1];
+        interview!.start = startTime;
+        interview!.end = endTime;
+        state.state.selectedEvent!.start = startTime;
+        state.state.selectedEvent!.end = endTime;
+        copy.recruiters[recruiterIndex].workedTimes?.[workTimeIndex!].interviews.splice(interviewIndex!, 1);
+        const newWorkTimeIndex = copy.recruiters[recruiterIndex].workedTimes?.findIndex(w => {
+            const start = getDate(w.start);
+            const end = getDate(w.end);
+            const newInterviewTime = getDate(action.payload.newDate);
+            return start >= newInterviewTime && newInterviewTime <= end;
+        });
+
+        copy.selectedData = {
+            name: copy.recruiters[recruiterIndex!].name,
+            workTimeTitle: copy.currentEvent.title,
+            availableInterviewTimes: [],
+            interviews: copy.recruiters[recruiterIndex].workedTimes?.[newWorkTimeIndex!].interviews ?? [],
+        };
+        copy.recruiters[recruiterIndex].workedTimes?.[newWorkTimeIndex!].interviews.push(interview!);
+        return { ...state, state: copy, changePending: false };
     } else if (action.type === ActionTypes.GET_EVENTS_FAILURE) {
         return { ...state, allEventsPending: false, error: action.payload.error };
     } else if (action.type === ActionTypes.GET_INFORMATION_FAILURE) {
@@ -228,7 +257,8 @@ const WorkDayReducer = (
         action.type === ActionTypes.CHANGE_WORK_TIME_FAILURE ||
         action.type === ActionTypes.CHANGE_INTERVIEW_TIME_FAILURE ||
         action.type === ActionTypes.SIGN_UP_VOLUNTEER_FAILURE ||
-        action.type === ActionTypes.CHANGE_RECRUITER_FOR_INTERVIEW_FAILURE
+        action.type === ActionTypes.CHANGE_RECRUITER_FOR_INTERVIEW_FAILURE ||
+        action.type === ActionTypes.REPLACE_INTERVIEW_TIME_FAILURE
     ) {
         return {
             ...state,
@@ -295,6 +325,14 @@ const WorkDayReducer = (
         action.type === ActionTypes.REMOVE_RECRUITER_EVENT_FAILURE
     ) {
         return { ...state, changePending: false, changeError: action.payload.error };
+    } else if (action.type === ActionTypes.SET_SELECTED_EVENT) {
+        const copy = getCopy(state.state);
+        copy.selectedEvent = action.payload;
+        return { ...state, state: copy };
+    } else if (action.type === ActionTypes.SET_SELECTED_DATA) {
+        const copy = getCopy(state.state);
+        copy.selectedData = action.payload;
+        return { ...state, state: copy };
     } else if (action.type === ActionTypes.CHANGE_EVENT) {
         const copy = getCopy(state.state, true);
         copy.currentEvent = action.payload;

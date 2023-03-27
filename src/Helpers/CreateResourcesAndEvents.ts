@@ -26,7 +26,8 @@ export const createResourcesAndEvents = (
     role?: string,
     isWidget?: boolean,
     viewType?: ViewType,
-    interviewDuration?: number
+    interviewDuration?: number,
+    selectedScheduleEventId?: number
 ): [resources: Resource[], events: ScheduleEvent[], interviews: ScheduleInterviewEvent[]] => {
     const resources: Resource[] = [];
     const events: ScheduleEvent[] = [];
@@ -40,6 +41,12 @@ export const createResourcesAndEvents = (
                 const intEnd = workedTime.end.slice(0, 11) + interview.end;
                 const formattedStart = moment(intStart).format(DATE_TIME_FORMAT);
                 const formattedEnd = moment(intEnd).format(DATE_TIME_FORMAT);
+                const bgColor =
+                    interview.isActive && role === ""
+                        ? "#EEE"
+                        : interview.id === selectedScheduleEventId
+                        ? "#1890ff"
+                        : "#D9EDF7";
                 ints.push({
                     id: interview.id,
                     userId: interview.userId,
@@ -48,7 +55,7 @@ export const createResourcesAndEvents = (
                     resourceId: String(r.id),
                     title: interview.start,
                     resizable: false,
-                    bgColor: interview.isActive && role === "" ? "#EEE" : "#D9EDF7",
+                    bgColor,
                     isActive: interview.isActive ?? false,
                     workTimeId: workedTime.id,
                 });
@@ -56,7 +63,12 @@ export const createResourcesAndEvents = (
 
             const formattedStart = moment(workedTime.start).format(DATE_TIME_FORMAT);
             const formattedEnd = moment(workedTime.end).format(DATE_TIME_FORMAT);
-            const eventColor = currentEventId === workedTime.eventId || currentEventId === -1 ? "#D9EDF7" : "#EEE";
+            const eventColor =
+                currentEventId === workedTime.eventId || currentEventId === -1
+                    ? workedTime.id === selectedScheduleEventId
+                        ? "#1890ff"
+                        : "#D9EDF7"
+                    : "#EEE";
             events.push({
                 id: workedTime.id,
                 start: formattedStart,
