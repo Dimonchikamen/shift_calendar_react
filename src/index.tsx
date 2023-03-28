@@ -19,7 +19,7 @@ root.render(
                         : "interview"
                 }
                 isWidget={rootElement.dataset.roleId !== undefined}
-                interviewRole={"teamLead"} //rootElement.dataset.roleName ?? ""}
+                interviewRole={rootElement.dataset.roleName ?? ""}
             />
         </Provider>
     </React.StrictMode>
