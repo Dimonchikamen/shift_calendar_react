@@ -29,7 +29,14 @@ import {
 import { Time } from "../../Types/Time";
 import { getDate, getHour, getMinutes, getTime } from "../../Helpers/DateTimeHelpers";
 import WaitPopup from "../../UiKit/Popup/WaitPopup/WaitPopup";
-import { DATE_FORMAT, DATE_TIME_FORMAT, widthDragDropContext } from "../../Constants";
+import {
+    DATE_FORMAT,
+    DATE_TIME_FORMAT,
+    EVENT_BG_DEFAULT,
+    EVENT_BG_GRAY,
+    EVENT_BG_SELECTED,
+    widthDragDropContext,
+} from "../../Constants";
 import { getInformationRequest } from "../../Redux/Actions/GetInformationActions";
 import { getStartAndEndOfWeek } from "../../Helpers/GetStartAndEndOfWeek";
 import { changeCurrentDateAction } from "../../Redux/Actions/ChangeCurrentDateActions";
@@ -174,7 +181,7 @@ const ReactBigCalendar: FC = () => {
 
     const unselectEvent = () => {
         if (selectedEvent) {
-            selectedEvent.bgColor = "#D9EDF7";
+            selectedEvent.bgColor = EVENT_BG_DEFAULT;
             dispatch(setSelectedEvent(null));
             dispatch(setSelectedData(null));
         }
@@ -245,10 +252,10 @@ const ReactBigCalendar: FC = () => {
     };
 
     const eventItemClick = (schedulerData: SchedulerData, event: ScheduleEvent | ScheduleInterviewEvent) => {
-        if (event.bgColor === "#EEE" || (event as ScheduleEvent).isFree) return;
+        if (event.bgColor === EVENT_BG_GRAY || (event as ScheduleEvent).isFree) return;
         dispatch(setSelectedData(createData(schedulerData, event)));
-        event.bgColor = "#1890ff";
-        if (selectedEvent && event !== selectedEvent) selectedEvent.bgColor = "#D9EDF7";
+        event.bgColor = EVENT_BG_SELECTED;
+        if (selectedEvent && event !== selectedEvent) selectedEvent.bgColor = EVENT_BG_DEFAULT;
         setIsEditing(false);
         dispatch(setSelectedEvent(event));
     };
@@ -348,7 +355,7 @@ const ReactBigCalendar: FC = () => {
         dispatch(
             editRecruiterWorkTimeRequest(start, end, Number(eventEditing.resourceId), eventEditing.id, currentEvent.id)
         );
-        eventEditing.bgColor = "#D9EDF7";
+        eventEditing.bgColor = EVENT_BG_DEFAULT;
         dispatch(setSelectedEvent(null));
         setIsEditing(false);
     };

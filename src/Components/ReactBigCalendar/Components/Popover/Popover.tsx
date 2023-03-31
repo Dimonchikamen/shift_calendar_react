@@ -9,6 +9,7 @@ import { ViewType } from "../../../../Types/ViewType";
 import { ScheduleInterviewEvent } from "../../../../Types/ScheduleInterviewEvent";
 import { isInterviewEvent, isScheduleEvent } from "../../../../Helpers/instanceHelpers";
 import { useAppSelector } from "../../../../Redux/Hooks";
+import moment from "moment";
 
 interface IPopoverProps {
     schedulerData: SchedulerData;
@@ -44,6 +45,7 @@ const Popover: FC<IPopoverProps> = ({
     onChangeInterviewRecruiter,
 }) => {
     const recruiters = useAppSelector(state => state.workDayState.state.recruiters);
+    const canChange = moment() < moment(start);
     return (
         <div className={s.Popover}>
             <span
@@ -59,7 +61,7 @@ const Popover: FC<IPopoverProps> = ({
                 (currentEvent?.id === -1 || currentEvent?.id !== eventItem.eventId) && (
                     <span>{events.filter(e => eventItem.eventId === e.id)[0].title}</span>
                 )}
-            {role && recruiters.length > 1 && isInterviewEvent(eventItem) && (
+            {canChange && role && recruiters.length > 1 && isInterviewEvent(eventItem) && (
                 <Button
                     className={s.Button}
                     onClick={() => onChangeInterviewRecruiter(eventItem)}
@@ -67,7 +69,7 @@ const Popover: FC<IPopoverProps> = ({
                     Назначить на другого рекрутёра
                 </Button>
             )}
-            {isScheduleEvent(eventItem) && view === "worktime" && role === "admin" && viewType === "edit" && (
+            {canChange && isScheduleEvent(eventItem) && view === "worktime" && role === "admin" && viewType === "edit" && (
                 <>
                     {!eventItem.isFree && currentEvent?.id !== -1 ? (
                         <div className={s.btnswrapper}>

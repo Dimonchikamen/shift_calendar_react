@@ -5,7 +5,14 @@ import { Resource } from "react-big-scheduler";
 import moment from "moment";
 import { compareFullDateTime } from "./Compare";
 import { FullDateTime } from "../Types/FullDateTime";
-import { DATE_TIME_FORMAT } from "../Constants";
+import {
+    DATE_TIME_FORMAT,
+    EVENT_BG_DEFAULT,
+    EVENT_BG_FREE,
+    EVENT_BG_GRAY,
+    EVENT_BG_PASSED,
+    EVENT_BG_SELECTED,
+} from "../Constants";
 import { getAvailableTimes } from "./GetAvailableTimes";
 import { ScheduleInterviewEvent } from "../Types/ScheduleInterviewEvent";
 import { getHoursInAllDateTime, getTime } from "./DateTimeHelpers";
@@ -32,6 +39,7 @@ export const createResourcesAndEvents = (
     const resources: Resource[] = [];
     const events: ScheduleEvent[] = [];
     const ints: ScheduleInterviewEvent[] = [];
+    const currentDate = moment();
     if (recruiters.length === 0) return [[], [], []];
     recruiters.forEach(r => {
         resources.push({ id: String(r.id), name: r.name });
@@ -39,14 +47,18 @@ export const createResourcesAndEvents = (
             workedTime.interviews?.forEach(interview => {
                 const intStart = workedTime.start.slice(0, 11) + interview.start;
                 const intEnd = workedTime.end.slice(0, 11) + interview.end;
-                const formattedStart = moment(intStart).format(DATE_TIME_FORMAT);
-                const formattedEnd = moment(intEnd).format(DATE_TIME_FORMAT);
+                const start = moment(intStart);
+                const end = moment(intEnd);
+                const formattedStart = start.format(DATE_TIME_FORMAT);
+                const formattedEnd = end.format(DATE_TIME_FORMAT);
                 const bgColor =
                     interview.isActive && role === ""
-                        ? "#EEE"
+                        ? EVENT_BG_GRAY
                         : interview.id === selectedScheduleEventId
-                        ? "#1890ff"
-                        : "#D9EDF7";
+                        ? EVENT_BG_SELECTED
+                        : end < currentDate
+                        ? EVENT_BG_PASSED
+                        : EVENT_BG_DEFAULT;
                 ints.push({
                     id: interview.id,
                     userId: interview.userId,
@@ -56,6 +68,7 @@ export const createResourcesAndEvents = (
                     title: interview.start,
                     resizable: false,
                     bgColor,
+                    isPassed: end < currentDate,
                     isActive: interview.isActive ?? false,
                     workTimeId: workedTime.id,
                 });
@@ -66,9 +79,9 @@ export const createResourcesAndEvents = (
             const eventColor =
                 currentEventId === workedTime.eventId || currentEventId === -1
                     ? workedTime.id === selectedScheduleEventId
-                        ? "#1890ff"
-                        : "#D9EDF7"
-                    : "#EEE";
+                        ? EVENT_BG_SELECTED
+                        : EVENT_BG_DEFAULT
+                    : EVENT_BG_GRAY;
             events.push({
                 id: workedTime.id,
                 start: formattedStart,
@@ -93,7 +106,7 @@ export const createResourcesAndEvents = (
                     resourceId: String(r.id),
                     title: createTitle(formattedStart, formattedEnd),
                     resizable: false,
-                    bgColor: "#CEC",
+                    bgColor: EVENT_BG_FREE,
                     isFree: true,
                     interviews: [],
                 });
@@ -111,6 +124,7 @@ export const createResourcesAndEvents = (
             const intEnd = obj.event.end.slice(0, 11) + time.split(" - ")[1];
             const formattedStart = moment(intStart).format(DATE_TIME_FORMAT);
             const formattedEnd = moment(intEnd).format(DATE_TIME_FORMAT);
+            const end = moment(intEnd);
             if (
                 !interviews.some(
                     ev =>
@@ -128,7 +142,8 @@ export const createResourcesAndEvents = (
                     resourceId: obj.event.resourceId,
                     title: intStart.split(" ")[1],
                     resizable: false,
-                    bgColor: "#D9EDF7",
+                    isPassed: currentDate < end,
+                    bgColor: EVENT_BG_DEFAULT,
                     workTimeId: obj.event.id,
                 });
             }
@@ -157,7 +172,7 @@ export const createSchedulerEvent = (start: FullDateTime, end: FullDateTime, res
         resourceId,
         title: createTitle(eventStart, eventEnd),
         resizable: false,
-        bgColor: "#D9EDF7",
+        bgColor: EVENT_BG_DEFAULT,
         interviews: [],
     };
 };

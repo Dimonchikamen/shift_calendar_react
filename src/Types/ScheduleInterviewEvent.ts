@@ -10,5 +10,6 @@ export type ScheduleInterviewEvent = {
     resizable: boolean;
     bgColor: string;
     workTimeId: number;
+    isPassed: boolean;
     isActive?: boolean;
 };

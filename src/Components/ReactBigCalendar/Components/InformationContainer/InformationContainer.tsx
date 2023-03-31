@@ -8,6 +8,7 @@ import VolunteerInterviewInformation from "./VolunteerInterviewInformation";
 import EditInformation from "./EditInformation";
 import { ScheduleInterviewEvent } from "../../../../Types/ScheduleInterviewEvent";
 import { ViewTypeWorktime } from "../../../../Types/ViewTypeWorktime";
+import { EVENT_BG_FREE } from "../../../../Constants";
 
 interface IInformationContainerProps {
     role: string;
@@ -52,6 +53,7 @@ const InformationContainer: FC<
                 view === "interview" ? (
                     <AdminInterviewInformationPresentation
                         interview={data.interviews.filter(i => i.id === interview!.id)[0]}
+                        interviewIsPassed={interview?.isPassed}
                         onClickChangeInterviewTime={onClickChangeInterviewTime!}
                     />
                 ) : isEditing ? (

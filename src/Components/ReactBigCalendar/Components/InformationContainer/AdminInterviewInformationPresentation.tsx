@@ -1,15 +1,17 @@
-import { FC, useCallback } from "react";
+import { FC } from "react";
 import s from "./InformationContainer.module.css";
 import { Interview } from "../../../../Types/Interview";
 import { Button } from "@mui/material";
 
 interface IAdminInterviewInformationPresentationProps {
     interview: Interview;
+    interviewIsPassed: boolean | undefined;
     onClickChangeInterviewTime: () => void;
 }
 
 const AdminInterviewInformationPresentation: FC<IAdminInterviewInformationPresentationProps> = ({
     interview,
+    interviewIsPassed,
     onClickChangeInterviewTime,
 }) => {
     return (
@@ -18,14 +20,16 @@ const AdminInterviewInformationPresentation: FC<IAdminInterviewInformationPresen
                 <span className={s.font_size_18}>Время собеседования:</span>
                 <div className={s.work_time__time}>
                     <span className={s.time}>{interview.start + " - " + interview.end}</span>
-                    <Button
-                        className={s.change_time_interview__button}
-                        size={"small"}
-                        variant={"contained"}
-                        onClick={onClickChangeInterviewTime}
-                    >
-                        Перенести
-                    </Button>
+                    {!interviewIsPassed && (
+                        <Button
+                            className={s.change_time_interview__button}
+                            size={"small"}
+                            variant={"contained"}
+                            onClick={onClickChangeInterviewTime}
+                        >
+                            Перенести
+                        </Button>
+                    )}
                 </div>
             </div>
             <div className={s.work_time}>
